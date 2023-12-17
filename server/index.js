@@ -15,7 +15,7 @@ app.use("/api",router);
 
 
 
-// Connecting to MongoDB
+// Connecting to Database
 
 
 // Starting the serveron Localhost
