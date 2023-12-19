@@ -1,0 +1,74 @@
+.studentsListContainer{
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 15px 10px;
+}
+
+.studentList{
+    width: 100%;
+    min-height: 60px;
+    height: auto;
+    background-color: var(--secondary-color);
+    display: flex;
+    padding: 7px 9px;
+    border-radius: 7px;
+    transition: all 0.5s;
+    cursor: pointer;
+}
+
+.studentList:hover{
+    transform: translateX(7px);
+}
+
+.studentAvatar{
+    width: 45px;
+    height: 45px;
+    display: block;
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: #bbb;
+    margin-right: 10px;
+}
+
+.studentName{
+    height: 45px;
+    display: flex;
+    align-items: center;
+    color: var(--font-color);
+    font-size: 18px;
+}
+
+.addStudentButtonContainer{
+    width: 100%;
+    display: flex;
+    padding-right: 15px;
+    height: auto;
+    align-items: center;
+    justify-content: flex-end;
+}
+.addStudentButton{
+    background-color: var(--secondary-color);
+    color: var(--font-color);
+    height: 35px;
+    width: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.5s;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.addStudentButton:hover{
+    transform: translateX(-15px);
+}
+
+
+@media only screen and (max-width: 700px) {
+    .studentList {
+      flex-direction: row;
+    }
+  }

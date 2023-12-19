@@ -1,0 +1,46 @@
+.mentorContainer{
+    height: auto;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    flex-wrap: wrap;
+    padding: 10px 0;
+}
+
+.mentorCard{
+    margin: 20px;
+    min-height: 180px;
+    height: auto;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--secondary-color);
+    border-radius: 10px;
+    transition: all 0.5s;
+    cursor: pointer;
+    padding: 15px 0;
+}
+
+.mentorCard:hover{
+    transform: scale(1.05);
+    box-shadow: 0 0 20px #6666665c;
+}
+
+.profilePicContainer{
+    height: 120px;
+    margin: 10px 0 10px 90px;
+    width: 120px;
+    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.profilePic{
+    height: 100%;
+    width: 100%;
+}
+
