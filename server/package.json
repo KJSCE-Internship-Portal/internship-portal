@@ -20,6 +20,7 @@
     "express-rate-limit": "^7.1.5",
     "express-validator": "^7.0.1",
     "fs": "^0.0.1-security",
+    "google-auth-library": "^9.4.1",
     "joi": "^17.11.0",
     "joi-password-complexity": "^5.2.0",
     "jsonwebtoken": "^9.0.2",

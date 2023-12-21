@@ -10,6 +10,7 @@ import Wrapper from './components/Wrapper/Wrapper';
 //Importing Pages
 import HomePage from './pages/Coordinators/Home/Home';
 import MentorPage from './pages/Coordinators/Mentor/Mentor';
+import Login from './pages/Login/Login';
 
 //importing Functions 
 import { setAuthToken, isAuthenticated, getUserDetails } from './Global/authUtils';
@@ -62,6 +63,7 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/coordinator/mentor/:id" element={<MentorPage />} />
+            <Route path="/login" element={<Login/>} />
            
 
           </Routes>
