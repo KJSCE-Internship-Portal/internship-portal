@@ -4,7 +4,7 @@ const controllerStudent = require("../controllers/students");
 
 
 // Get Routes
-// router.get("/testing", controller.testing);    Just an Example 
+router.get("/students/all", controllerStudent.getAllStudents);
 
 
 // Post Routes
