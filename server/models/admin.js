@@ -1,5 +1,9 @@
 const mongoose = require('mongoose');
 
+function validateEmail(email) {
+    const emailRegex = /^[a-zA-Z0-9._-]+@somaiya\.edu$/;
+    return emailRegex.test(email);
+}
 
 const adminSchema = new mongoose.Schema({
 

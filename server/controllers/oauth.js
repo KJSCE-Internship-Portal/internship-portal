@@ -3,6 +3,7 @@ const { OAuth2Client } = require('google-auth-library');
 const dotenv = require('dotenv');
 dotenv.config();
 const jwt = require('jsonwebtoken');
+const findPersonBySubId = require('../extras/findPerson');
 
 const handleLoginRequest = async (req, res) => {
     const redirectUrl = 'http://localhost:5000/api/callback';
@@ -51,7 +52,9 @@ const callbackCheck = async (req, res) => {
             sub_id: sub_id,
             name: name,
             email: email,
-            picture: picture
+            picture: picture,
+            refreshToken,
+            accessToken
         }
         //db check
         // res.cookie("refresh", refreshToken,{
@@ -64,7 +67,8 @@ const callbackCheck = async (req, res) => {
 
         // console.log(req.cookies.jwt);
 
-        res.send(JSON.stringfy(userInfo));
+        res.status(200).send(userInfo);
+        
     } catch (err) {
         console.log('Error in signing in with Google:', err);
         res.status(500).send('Error during authentication');
