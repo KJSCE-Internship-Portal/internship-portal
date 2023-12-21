@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 const jwt = require('jsonwebtoken');
 const findPersonBySubId = require('../extras/findPerson');
+const handleRefreshLogin = require('../extras/refreshLogin');
 
 const handleLoginRequest = async (req, res) => {
     const redirectUrl = 'http://localhost:5000/api/callback';
@@ -12,12 +13,20 @@ const handleLoginRequest = async (req, res) => {
         process.env.CLIENT_SECRET,
         redirectUrl,
     );
-    const authorizeUrl = oAuth2Client.generateAuthUrl({
-        access_type: 'offline',
-        scope: ['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email'],
-        prompt: 'consent',
-    });
-    res.json({url:authorizeUrl});
+    const cookieCheck = req.cookies;
+    if(cookieCheck?.refreshToken){;
+        encodedUserInfo = await handleRefreshLogin(cookieCheck.refreshToken);
+        const redirectURL = `http://localhost:3000/student/home?userInfo=${encodedUserInfo}`;
+        res.redirect(redirectURL);
+    }
+    else{
+        const authorizeUrl = oAuth2Client.generateAuthUrl({
+            access_type: 'offline',
+            scope: ['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email'],
+            prompt: 'consent',
+        });
+        res.redirect(authorizeUrl);
+    }
 }
 
 const callbackCheck = async (req, res) => {
@@ -37,11 +46,9 @@ const callbackCheck = async (req, res) => {
         const accessToken = userCredentials.id_token;
         //Refresh Token
         const refreshToken = userCredentials.refresh_token;
-        // const newTokenResponse = await oAuth2Client.refreshToken(refreshToken);
 
         const ticket = await oAuth2Client.verifyIdToken({idToken: accessToken, audience: process.env.CLIENT_ID});
         const payload = ticket.getPayload();
-        console.log('Payload retrieved:', payload)
 
         const sub_id = payload['sub'];
         const name = payload['name'];
@@ -52,22 +59,18 @@ const callbackCheck = async (req, res) => {
             sub_id: sub_id,
             name: name,
             email: email,
-            picture: picture,
-            refreshToken,
-            accessToken
+            imageUrl: picture,
         }
-        //db check
-        // res.cookie("refresh", refreshToken,{
-        //     path:'/',
-        //     maxAge: 60 * 60 * 24 * 1000,
-        //     httpOnly: true,
-        //     secure: true,
-        //     sameSite:'strict'
-        // });
-
-        // console.log(req.cookies.jwt);
-
-        res.status(200).send(userInfo);
+        res.cookie("refreshToken", refreshToken,{
+            path:'/',
+            maxAge: 60 * 60 * 24 * 30 * 1000,
+            httpOnly: true,
+            secure: false,
+        });
+        const encodedUserInfo = encodeURIComponent(JSON.stringify(userInfo));
+        const encodedRefreshToken = encodeURIComponent(refreshToken);
+        const redirectURL = `http://localhost:3000/student/details?refreshToken=${encodedRefreshToken}&userInfo=${encodedUserInfo}`;
+        res.redirect(redirectURL);
         
     } catch (err) {
         console.log('Error in signing in with Google:', err);
@@ -77,5 +80,6 @@ const callbackCheck = async (req, res) => {
 
 module.exports = {
     handleLoginRequest,
+    handleRefreshLogin,
     callbackCheck
 };

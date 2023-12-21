@@ -7,11 +7,12 @@ const controllerOAuth = require("../controllers/oauth");
 // Get Routes
 router.get("/students/all", controllerStudent.getAllStudents);
 router.get("/callback", controllerOAuth.callbackCheck);
-
+router.get("/login", controllerOAuth.handleLoginRequest);
+router.get("/refresh-login", controllerOAuth.handleRefreshLogin);
 
 // Post Routes
 router.post("/student-login", controllerStudent.loginStudent);
-router.post("/login", controllerOAuth.handleLoginRequest);
+// router.post("/login", controllerOAuth.handleLoginRequest);
 
 //Put Routes
 

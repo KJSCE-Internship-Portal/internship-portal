@@ -5,9 +5,11 @@ function navigate(url){
 }
 
 async function auth() {
-    const response = await fetch('http://localhost:5000/api/login', {method:'post'});
-    const data = await response.json();
-    navigate(data.url);
+    // const response = await fetch('http://localhost:5000/api/login', {method:'post'});
+    // const data = await response.json();
+    // console.log(data);
+    navigate('http://localhost:5000/api/login');
+    // navigate(data.url);
 }
 
 const Login = () => {

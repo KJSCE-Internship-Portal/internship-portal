@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Button, Img, Line, List, Text } from "components";
 
 const Progress = () => {
     const [startdate, setStartDate] = useState([

@@ -6,10 +6,12 @@ const cors = require('cors');
 const path = require('path');
 const router = require("./routes/router")
 const connectDB = require("./database/db");
+const cookieParser = require('cookie-parser');
 
 // Initiall Set Up
 app.use(express.json());
 app.use(cors());
+app.use(cookieParser());
 app.use('/imgs', express.static(path.join(__dirname, 'imgs')));
 app.use("/api",router);
 
