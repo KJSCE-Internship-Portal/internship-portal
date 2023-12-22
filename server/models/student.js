@@ -92,6 +92,10 @@ const studentSchema = new mongoose.Schema({
                 type: String,
                 required: [true, "Duration in Weeks is Required"]
             },
+            company_mentor: {
+                type: String,
+                required: [true, "Duration in Weeks is Required"]
+            },
             paid: {
                 type: Boolean,
                 default: false,
@@ -156,9 +160,14 @@ const studentSchema = new mongoose.Schema({
     isActive: {
         type: Boolean,
         required: false,
+        default: true
+    },
+
+    isApproved: {
+        type: Boolean,
+        required: false,
         default: false
     }
-
 
 });
 

@@ -54,23 +54,36 @@ const callbackCheck = async (req, res) => {
         const name = payload['name'];
         const email = payload['email'];
         const picture = payload['picture'];
-
-        const userInfo = {
-            sub_id: sub_id,
-            name: name,
-            email: email,
-            imageUrl: picture,
+        
+        const found = await findPersonBySubId(sub_id);
+        if(found){
+            if(found.isApproved) {
+                res.cookie("refreshToken", refreshToken,{
+                    path:'/',
+                    maxAge: 60 * 60 * 24 * 30 * 1000,
+                    httpOnly: true,
+                    secure: false,
+                });
+                const userInfo = {
+                    sub_id: sub_id,
+                    email: email,
+                }
+                const encodedUserInfo = encodeURIComponent(JSON.stringify(userInfo));
+                const redirectURL = process.env.CLIENT_URL + `/student/home?userInfo=${encodedUserInfo}`;
+                res.redirect(redirectURL);
+            }
         }
-        res.cookie("refreshToken", refreshToken,{
-            path:'/',
-            maxAge: 60 * 60 * 24 * 30 * 1000,
-            httpOnly: true,
-            secure: false,
-        });
-        const encodedUserInfo = encodeURIComponent(JSON.stringify(userInfo));
-        const encodedRefreshToken = encodeURIComponent(refreshToken);
-        const redirectURL = process.env.CLIENT_URL + `/student/details?refreshToken=${encodedRefreshToken}&userInfo=${encodedUserInfo}`;
-        res.redirect(redirectURL);
+        else{
+            const userInfo = {
+                sub_id: sub_id,
+                name: name,
+                email: email,
+                imageUrl: picture,
+            }
+            const encodedUserInfo = encodeURIComponent(JSON.stringify(userInfo));
+            const redirectURL = process.env.CLIENT_URL + `/student/details?userInfo=${encodedUserInfo}`;
+            res.redirect(redirectURL);
+        }
         
     } catch (err) {
         console.log('Error in signing in with Google:', err);

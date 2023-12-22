@@ -49,7 +49,17 @@ const mentorSchema = new mongoose.Schema({
                 required: [true, "Student Email is required"]
             }
         }
-    ]
+    ],
+    isActive: {
+        type: Boolean,
+        required: false,
+        default: true
+    },
+    isApproved: {
+        type: Boolean,
+        required: false,
+        default: true
+    }
 
 });
 

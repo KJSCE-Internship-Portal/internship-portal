@@ -33,6 +33,16 @@ const coordinatorSchema = new mongoose.Schema({
     department: {
         type: String,
         required: [true, "Department is Required"]
+    },
+    isActive: {
+        type: Boolean,
+        required: false,
+        default: true
+    },
+    isApproved: {
+        type: Boolean,
+        required: false,
+        default: true
     }
 
 });

@@ -26,6 +26,16 @@ const adminSchema = new mongoose.Schema({
     profile_picture_url: {
         type: String,
         required: false
+    },
+    isActive: {
+        type: Boolean,
+        required: false,
+        default: true
+    },
+    isApproved: {
+        type: Boolean,
+        required: false,
+        default: true
     }
 
 });

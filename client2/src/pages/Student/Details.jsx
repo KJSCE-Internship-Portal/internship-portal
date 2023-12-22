@@ -5,6 +5,7 @@ import { useLocation } from 'react-router-dom';
 const Details = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
+    const [phone, setPhone] = useState('');
     const [startdate, setStartDate] = useState('');
     const [enddate, setEndDate] = useState('');
     const [company, setCompany] = useState('');
@@ -13,68 +14,72 @@ const Details = () => {
     const [division, setDivision] = useState('');
     const [rollNo, setRollNo] = useState('');
     const [batch, setBatch] = useState('');
-    const [facultyMentor, setFacultyMentor] = useState('');
+    // const [facultyMentor, setFacultyMentor] = useState('');
     const [jobDescription, setJobDescription] = useState('');
     const [stipend, setStipend] = useState('');
 
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const encodedUserInfo = queryParams.get('userInfo');
-    const encodedRefreshToken = queryParams.get('refreshToken');
+    // const encodedRefreshToken = queryParams.get('refreshToken');
     const userInfo = JSON.parse(decodeURIComponent(encodedUserInfo));
-    const refreshToken = decodeURIComponent(encodedRefreshToken);
+    // const refreshToken = decodeURIComponent(encodedRefreshToken); 
 
     useEffect(() => {
-        console.log(refreshToken);
         if (userInfo) {
             setName(userInfo.name);
             setEmail(userInfo.email);
             // Other fields can also be set from userInfo
         }
-    }, [refreshToken, userInfo]);
+    }, [userInfo]);
 
-    // const handleSubmit = async (e) => {
-    //     e.preventDefault();
-    //     try {
-    //         const data = {
-    //             name,
-    //             email,
-    //             rollNo,
-    //             department,
-    //             division,
-    //             batch,
-    //             company,
-    //             startdate,
-    //             enddate,
-    //             facultyMentor,
-    //             mentor,
-    //             jobDescription,
-    //             stipend,
-    //             refreshToken,
-
-    //         };
-    //         const response = await fetch('YOUR_BACKEND_API_ENDPOINT', {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //             },
-    //             body: JSON.stringify(data),
-    //         });
-    //         if (response.ok) {
-    //             console.log('Data successfully submitted to the backend!');
-    //         } else {
-    //             console.error('Failed to submit data to the backend.');
-    //         }
-    //     } catch (error) {
-    //         console.error('Error occurred while submitting data:', error);
-    //     }
-    // };
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const data = {
+                name,
+                profile_picture_url: userInfo.imageUrl,    
+                email,
+                sub_id: userInfo.sub_id,
+                div: division,
+                department,
+                rollNo,
+                batch,
+                contact_no: phone,
+                mentor:{},
+                internships:[{
+                    company,
+                    job_description: jobDescription,
+                    startDate: startdate,
+                    endDate: enddate,
+                    company_mentor: mentor,
+                    stipend: stipend,
+                    completion:[],
+                    progress:[]
+                }]
+            };
+            const response = await fetch('YOUR_BACKEND_API_ENDPOINT', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+            if (response.ok) {
+                console.log('Data successfully submitted to the backend!');
+            } else {
+                console.error('Failed to submit data to the backend.');
+            }
+        } catch (error) {
+            console.error('Error occurred while submitting data:', error);
+        }
+    };
 
     return (
         <section class="bg-white dark:bg-gray-900 py-8 lg:py-16 antialiased">
             <div class="max-w-3xl mx-auto px-10">
                 <div className="max-w-2xl mx-auto">
-                    <form className="w-full max-w-2xl mx-auto">
+                    <form className="w-full max-w-2xl mx-auto" onSubmit={handleSubmit}>
                         <div className="text-left mb-6 pb-5">
                             <h2 className="text-5xl font-bold text-gray-900 dark:text-white">
                                 Welcome
@@ -100,6 +105,17 @@ const Details = () => {
                                 name="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
+                                disabled
+                                required
+                            />
+                        </div>
+                        <div class="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-800 dark:border-gray-700">
+                            <label for="rollno" class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-white">Contact No.<span class="text-red-500">*</span></label>
+                            <input class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                type="tel"
+                                name="phone"
+                                value={phone}
+                                onChange={(e) => setPhone(e.target.value)}
                                 disabled
                                 required
                             />
@@ -213,7 +229,7 @@ const Details = () => {
                                 </div>
                             </div>
                         </div>
-                        <div class="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-800 dark:border-gray-700">
+                        {/* <div class="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-800 dark:border-gray-700">
                             <label for="fmentor" class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-white">Faculty Mentor<span class="text-red-500">*</span></label>
                             <input class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 type="text"
@@ -222,7 +238,7 @@ const Details = () => {
                                 onChange={(e) => setFacultyMentor(e.target.value)}
                                 required
                             />
-                        </div>
+                        </div> */}
                         <div class="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-800 dark:border-gray-700">
                             <label for="cmentor" class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-white">Company Mentor<span class="text-red-500">*</span></label>
                             <input class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
