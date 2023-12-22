@@ -7,28 +7,36 @@ const findPersonBySubId = require('../extras/findPerson');
 const handleRefreshLogin = require('../extras/refreshLogin');
 
 const handleLoginRequest = async (req, res) => {
-    const redirectUrl = process.env.SERVER_URL +'/api/callback';
-    const oAuth2Client = new OAuth2Client(
-        process.env.CLIENT_ID,
-        process.env.CLIENT_SECRET,
-        redirectUrl,
-    );
-    const cookieCheck = req.cookies;
-    if(cookieCheck?.refreshToken){
+    try {
+        const redirectUrl = process.env.SERVER_URL + '/api/callback';
+        const oAuth2Client = new OAuth2Client(
+            process.env.CLIENT_ID,
+            process.env.CLIENT_SECRET,
+            redirectUrl,
+        );
 
-        encodedUserInfo = await handleRefreshLogin(cookieCheck.refreshToken);
-        const redirectURL = process.env.CLIENT_URL + `/student/home?userInfo=${encodedUserInfo}`;
-        res.redirect(redirectURL);
-    }
-    else{
-        const authorizeUrl = oAuth2Client.generateAuthUrl({
+        const refreshToken = req.cookies?.refreshToken;
+
+        if (refreshToken) {
+            const accessToken = await handleRefreshLogin(refreshToken);
+            const redirectURL = `${process.env.CLIENT_URL}/redirection/${accessToken}`;
+            return res.redirect(redirectURL);
+        }
+
+        const authUrlOptions = {
             access_type: 'offline',
             scope: ['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email'],
             prompt: 'consent',
-        });
-        res.redirect(authorizeUrl);
+        };
+
+        const authorizeUrl = oAuth2Client.generateAuthUrl(authUrlOptions);
+        return res.redirect(authorizeUrl);
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
     }
-}
+};
 
 const callbackCheck = async (req, res) => {
     const code = req.query.code;
@@ -61,7 +69,9 @@ const callbackCheck = async (req, res) => {
         const picture = payload['picture'];
         
         const found = await findPersonBySubId(sub_id);
+
         if(found){
+
             if(found.isApproved) {
                 res.cookie("refreshToken", refreshToken,{
                     path:'/',
@@ -69,16 +79,12 @@ const callbackCheck = async (req, res) => {
                     httpOnly: true,
                     secure: false,
                 });
-                const userInfo = {
-                    sub_id: sub_id,
-                    email: email,
-                }
-                const user = findPersonBySubId(sub_id);
-                const encodedUserInfo = encodeURIComponent(JSON.stringify(user));
-                const redirectURL = process.env.CLIENT_URL + `/student/home?userInfo=${encodedUserInfo}`;
-                res.redirect(redirectURL);
-            }else{
-                res.send("NOT APPROVED");
+                
+                const redirectURL = `${process.env.CLIENT_URL}/redirection/${accessToken}`;
+                return res.redirect(redirectURL);
+
+            } else {
+                res.send("NOT APPROVED YET !");
             }
         }
         else{
@@ -99,8 +105,40 @@ const callbackCheck = async (req, res) => {
     }
 }
 
+const getUserWithAccessToken = async (req, res) => {
+
+    try {
+        const accessToken = req.body.accessToken;
+        const redirectUrl = 'http://localhost:5000/api/callback';
+        const oAuth2Client = new OAuth2Client(
+            process.env.CLIENT_ID,
+            process.env.CLIENT_SECRET,
+            redirectUrl,
+        );
+        const ticket = await oAuth2Client.verifyIdToken({idToken: accessToken, audience: process.env.CLIENT_ID});
+        const payload = ticket.getPayload();
+        
+        const sub_id = payload['sub'];
+        const email = payload['email'];
+        const user = await findPersonBySubId(sub_id);
+
+        if (!user){
+            return res.status(200).json({ success: false, msg: `User Doesn't Exist`});
+        }
+
+        return res.status(200).json({ success: true, msg: user });
+
+    } catch (error) {
+        console.log(`${error.message} (error)`.red);
+        return res.status(500).json({ success: false, msg: error.message });
+    }
+}
+
+
+
 module.exports = {
     handleLoginRequest,
     handleRefreshLogin,
-    callbackCheck
+    callbackCheck,
+    getUserWithAccessToken
 };

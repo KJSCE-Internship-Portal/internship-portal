@@ -1,17 +1,21 @@
 import React from 'react'
 import styles from "./Loader.module.css";
 import { useTheme } from '../../Global/ThemeContext';
+import { Spinner } from '@chakra-ui/react'
 
 const Loader = () => {
-  const {theme: colors} = useTheme();
+  const { theme: colors } = useTheme();
   return (
-    <div style={{height: '100%', width: '100%'}}>
-    <div className={styles.container}>
-        <div className={styles.ring}></div>
-        <div className={styles.ring}></div>
-        <div className={styles.ring}></div>
-        <p style={{color: colors.font}}>Opportune</p>
-    </div>  
+    <div style={{ height: '100%', width: '100%' }}>
+      <div className={styles.container}>
+        <Spinner
+          thickness='4px'
+          speed='0.65s'
+          emptyColor='gray.200'
+          color= 'blue'
+          size='xl'
+        />
+      </div>
     </div>
   )
 }

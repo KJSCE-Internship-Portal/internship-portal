@@ -13,6 +13,8 @@ router.get("/refresh-login", controllerOAuth.handleRefreshLogin);
 // Post Routes
 router.post("/student-login", controllerStudent.loginStudent);
 router.post("/student/register", controllerStudent.registerStudent);
+router.post("/anyuser", controllerOAuth.getUserWithAccessToken);
+
 
 // router.post("/login", controllerOAuth.handleLoginRequest);
 

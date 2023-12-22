@@ -13,6 +13,7 @@ import MentorPage from './pages/Coordinators/Mentor/Mentor';
 import Login from './pages/Login/login';
 import DetailsPage from './pages/Student/Details';
 import StudentHome from './pages/Student/Home';
+import RedirectionPage from './Global/redirection';
 
 //importing Functions 
 import { setAuthToken, isAuthenticated, getUserDetails } from './Global/authUtils';
@@ -68,6 +69,8 @@ function App() {
             <Route path="/login" element={<Login/>} />
             <Route path="/student/details" element={<DetailsPage />} />
             <Route path="/student/home" element={<StudentHome />} />
+            <Route path="/redirection/:accessToken" element={<RedirectionPage />} />
+
            
 
           </Routes>

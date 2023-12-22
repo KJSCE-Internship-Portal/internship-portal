@@ -14,6 +14,9 @@ async function handleRefreshLogin(refreshToken) {
         );
         const newTokenResponse = await oAuth2Client.refreshToken(refreshToken);
         const newAccessToken = newTokenResponse.tokens.id_token
+
+        return newAccessToken;
+        
         const ticket = await oAuth2Client.verifyIdToken({idToken: newAccessToken, audience: process.env.CLIENT_ID});
         const payload = ticket.getPayload();
         
