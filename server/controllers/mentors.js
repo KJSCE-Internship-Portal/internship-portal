@@ -104,5 +104,4 @@ module.exports = {
     viewAssignedStudents,
     addPrivateComments,
     editPrivateComments,
-    signOut
 };

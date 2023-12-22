@@ -14,6 +14,10 @@ const mentorSchema = new mongoose.Schema({
         type: String,
         required: false
     },
+    contact_no: {
+        type: String,
+        required: [true, "Contact No is required"]
+    },
     email: {
         type: String,
         required: [true, "E-mail is mandatory"],
@@ -32,10 +36,18 @@ const mentorSchema = new mongoose.Schema({
     },
     students: [
         {
-            id: {
+            sub_id: {
                 type: String,
                 required: [true, "Student ID is required"]
             },
+            rollno: {
+                type: String,
+                required: [true, "Roll no. is required"]
+            },
+            email: {
+                type: String,
+                required: [true, "Student Email is required"]
+            }
         }
     ]
 

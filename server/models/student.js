@@ -48,9 +48,27 @@ const studentSchema = new mongoose.Schema({
         default: '8',
         required: false
     },
-    mentor: {
+    contact_no: {
         type: String,
-        required: false
+        required: [true, "Contact No is required"]
+    },
+    hasMentor: {
+        type: Boolean,
+        default: false
+    },
+    mentor: {
+        email: {
+            type: String,
+            required: [true, "Mentor Email is Required"]
+        },
+        contact_no: {
+            type: String,
+            required: false
+        },
+        name: {
+            type: String,
+            required: [true, "Name of Mentor is required"]
+        }
     },
     internships: [
         {

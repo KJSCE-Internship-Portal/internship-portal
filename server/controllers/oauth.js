@@ -7,7 +7,7 @@ const findPersonBySubId = require('../extras/findPerson');
 const handleRefreshLogin = require('../extras/refreshLogin');
 
 const handleLoginRequest = async (req, res) => {
-    const redirectUrl = 'http://localhost:5000/api/callback';
+    const redirectUrl = process.env.SERVER_URL +'/api/callback';
     const oAuth2Client = new OAuth2Client(
         process.env.CLIENT_ID,
         process.env.CLIENT_SECRET,
@@ -16,7 +16,7 @@ const handleLoginRequest = async (req, res) => {
     const cookieCheck = req.cookies;
     if(cookieCheck?.refreshToken){;
         encodedUserInfo = await handleRefreshLogin(cookieCheck.refreshToken);
-        const redirectURL = `http://localhost:3000/student/home?userInfo=${encodedUserInfo}`;
+        const redirectURL = process.env.CLIENT_URL + `/student/home?userInfo=${encodedUserInfo}`;
         res.redirect(redirectURL);
     }
     else{
@@ -32,7 +32,7 @@ const handleLoginRequest = async (req, res) => {
 const callbackCheck = async (req, res) => {
     const code = req.query.code;
     try {
-        const redirectUrl = 'http://localhost:5000/api/callback';
+        const redirectUrl = process.env.SERVER_URL +'/api/callback';
         const oAuth2Client = new OAuth2Client(
             process.env.CLIENT_ID,
             process.env.CLIENT_SECRET,
@@ -69,7 +69,7 @@ const callbackCheck = async (req, res) => {
         });
         const encodedUserInfo = encodeURIComponent(JSON.stringify(userInfo));
         const encodedRefreshToken = encodeURIComponent(refreshToken);
-        const redirectURL = `http://localhost:3000/student/details?refreshToken=${encodedRefreshToken}&userInfo=${encodedUserInfo}`;
+        const redirectURL = process.env.CLIENT_URL + `/student/details?refreshToken=${encodedRefreshToken}&userInfo=${encodedUserInfo}`;
         res.redirect(redirectURL);
         
     } catch (err) {
