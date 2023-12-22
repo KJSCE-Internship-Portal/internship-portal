@@ -55,10 +55,6 @@ const callbackCheck = async (req, res) => {
         const accessToken = userCredentials.id_token;
         //Refresh Token
         const refreshToken = userCredentials.refresh_token;
-        
-
-        // BREAK here
-
 
         const ticket = await oAuth2Client.verifyIdToken({idToken: accessToken, audience: process.env.CLIENT_ID});
         const payload = ticket.getPayload();
@@ -69,10 +65,9 @@ const callbackCheck = async (req, res) => {
         const picture = payload['picture'];
         
         const found = await findPersonBySubId(sub_id);
-
+        console.log(found);
         if(found){
-
-            if(found.isApproved) {
+            if(found._doc.isApproved) {
                 res.cookie("refreshToken", refreshToken,{
                     path:'/',
                     maxAge: 60 * 60 * 24 * 30 * 1000,

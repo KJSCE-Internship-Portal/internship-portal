@@ -13,9 +13,7 @@ const RedirectionPage = () => {
     const getUser = async () => {
         try {
             const data = await axios.post(url + "/anyuser", {accessToken});
-            console.log(data.data.msg);
             const role = data.data.msg.role;
-            console.log(role);
             if (role === 'STUDENT'){
                 window.location.href = '/student/home';
             } else if( role === 'COORDINATOR'){

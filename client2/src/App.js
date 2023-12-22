@@ -11,9 +11,11 @@ import Wrapper from './components/Wrapper/Wrapper';
 import HomePage from './pages/Coordinators/Home/Home';
 import MentorPage from './pages/Coordinators/Mentor/Mentor';
 import Login from './pages/Login/login';
-import DetailsPage from './pages/Student/Details';
+import StudentDetailsPage from './pages/Student/Details';
 import StudentHome from './pages/Student/Home';
+import StudentProgressPage from './pages/Student/Progress';
 import RedirectionPage from './Global/redirection';
+
 
 //importing Functions 
 import { setAuthToken, isAuthenticated, getUserDetails } from './Global/authUtils';
@@ -67,8 +69,9 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/coordinator/mentor/:id" element={<MentorPage />} />
             <Route path="/login" element={<Login/>} />
-            <Route path="/student/details" element={<DetailsPage />} />
+            <Route path="/student/details" element={<StudentDetailsPage />} />
             <Route path="/student/home" element={<StudentHome />} />
+            <Route path="/student/progress" element={<StudentProgressPage />} />
             <Route path="/redirection/:accessToken" element={<RedirectionPage />} />
 
            

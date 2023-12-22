@@ -88,9 +88,37 @@ const registerStudent = async (req, res) => {
 };
 
 const addWeeklyProgress = async (req, res) => {
-
     try {
-        res.status(200).json({ success: true, msg: "Add Progress Route" });
+
+        var taskUpdate = req.body;
+        console.log(taskUpdate);
+        const { sub_id, week, description } = taskUpdate;
+        try{
+            const updatedStudent = await Student.findOneAndUpdate(
+                {
+                  sub_id,
+                  'internships.0.progress.week': week,
+                },
+                {
+                  $set: {
+                    'internships.0.progress.$.description': description.trim(),
+                    'internships.0.progress.$.submitted': true,
+                  },
+                },
+                {
+                  new: true,
+                }
+            );
+            if(updatedStudent){
+                res.status(200).json({ success: true, msg: "Add Progress Route" });
+            } else{
+                res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
+            }
+        } catch (error) {
+            console.error(`Error: ${error.message}`);
+            res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
+        }
+
     } catch (error) {
         console.error(`Error: ${error.message}`);
         res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
