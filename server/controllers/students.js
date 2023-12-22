@@ -1,6 +1,44 @@
 const express = require("express");
 const Student = require('../models/student');
 
+const moment = require('moment');
+
+function calculateWeeks(startDate, endDate) {
+  const start = moment(startDate);
+  const end = moment(endDate);
+
+  let current = start.clone();
+  const weeks = [];
+
+  while (current.isBefore(end)) {
+    const weekStart = current.clone().startOf('isoWeek');
+    const weekEnd = current.clone().endOf('isoWeek').isBefore(end) ? current.clone().endOf('isoWeek') : end.clone();
+
+    weeks.push({
+      start: weekStart.format('YYYY-MM-DD'),
+      end: weekEnd.format('YYYY-MM-DD')
+    });
+
+    current = weekEnd.clone().add(1, 'day');
+  }
+
+  return {
+    numberOfWeeks: weeks.length,
+    weeklyDates: weeks
+  };
+}
+
+// Example usage:
+// const startDate = '2023-12-20';
+// const endDate = '2024-01-26';
+
+// const result = calculateWeeks(startDate, endDate);
+// console.log(Number of weeks: ${result.numberOfWeeks});
+// console.log('Start and End dates of each week:');
+// result.weeklyDates.forEach((week, index) => {
+//   console.log(Week ${index + 1}: Start - ${week.start}, End - ${week.end});
+// });
+
 const loginStudent = async (req, res) => {
 
     try {
@@ -10,12 +48,38 @@ const loginStudent = async (req, res) => {
         res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
     }
 
+    
+
 };
 
 const registerStudent = async (req, res) => {
 
     try {
+
+        var student = req.body;
+        const mentor = {
+            email: '',
+            contact_no: '',
+            sub_id: ''
+        }
+        student = {...student, mentor, role: 'STUDENT'}
+
+        const dates = calculateWeeks(student.internships[0].startDate, student.internships[0].endDate);
+        student.internships[0].duration_in_weeks = dates.numberOfWeeks.toString();
+        for(let i = 1; i<=dates.numberOfWeeks; i++){
+            let obj = {
+                week: i,
+                startDate: dates.weeklyDates[i-1].start,
+                endDate: dates.weeklyDates[i-1].end,             
+            };
+
+            student.internships[0].progress.push(obj);
+        }
+
+        const newStudent = new Student(student);
+        await newStudent.save();
         res.status(200).json({ success: true, msg: "Student Registration Route" });
+
     } catch (error) {
         console.error(`Error: ${error.message}`);
         res.status(400).json({ success: false, msg: `Something Went Wrong : ${error.message}` });

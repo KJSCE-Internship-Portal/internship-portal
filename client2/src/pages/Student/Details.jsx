@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import {url} from '../../Global/URL';
 
 const Details = () => {
     const [name, setName] = useState('');
@@ -12,7 +13,7 @@ const Details = () => {
     const [mentor, setMentor] = useState('');
     const [department, setDepartment] = useState('');
     const [division, setDivision] = useState('');
-    const [rollNo, setRollNo] = useState('');
+    const [rollno, setRollNo] = useState('');
     const [batch, setBatch] = useState('');
     // const [facultyMentor, setFacultyMentor] = useState('');
     const [jobDescription, setJobDescription] = useState('');
@@ -43,10 +44,9 @@ const Details = () => {
                 sub_id: userInfo.sub_id,
                 div: division,
                 department,
-                rollNo,
+                rollno,
                 batch,
                 contact_no: phone,
-                mentor:{},
                 internships:[{
                     company,
                     job_description: jobDescription,
@@ -58,7 +58,8 @@ const Details = () => {
                     progress:[]
                 }]
             };
-            const response = await fetch('YOUR_BACKEND_API_ENDPOINT', {
+            console.log(data);
+            const response = await fetch(url + "/student/register", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -116,7 +117,6 @@ const Details = () => {
                                 name="phone"
                                 value={phone}
                                 onChange={(e) => setPhone(e.target.value)}
-                                disabled
                                 required
                             />
                         </div>
@@ -125,7 +125,7 @@ const Details = () => {
                             <input class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 type="text"
                                 name="rollno"
-                                value={rollNo}
+                                value={rollno}
                                 onChange={(e) => setRollNo(e.target.value)}
                                 required
                             />

@@ -14,7 +14,8 @@ const handleLoginRequest = async (req, res) => {
         redirectUrl,
     );
     const cookieCheck = req.cookies;
-    if(cookieCheck?.refreshToken){;
+    if(cookieCheck?.refreshToken){
+
         encodedUserInfo = await handleRefreshLogin(cookieCheck.refreshToken);
         const redirectURL = process.env.CLIENT_URL + `/student/home?userInfo=${encodedUserInfo}`;
         res.redirect(redirectURL);
@@ -46,6 +47,10 @@ const callbackCheck = async (req, res) => {
         const accessToken = userCredentials.id_token;
         //Refresh Token
         const refreshToken = userCredentials.refresh_token;
+        
+
+        // BREAK here
+
 
         const ticket = await oAuth2Client.verifyIdToken({idToken: accessToken, audience: process.env.CLIENT_ID});
         const payload = ticket.getPayload();
@@ -68,9 +73,12 @@ const callbackCheck = async (req, res) => {
                     sub_id: sub_id,
                     email: email,
                 }
-                const encodedUserInfo = encodeURIComponent(JSON.stringify(userInfo));
+                const user = findPersonBySubId(sub_id);
+                const encodedUserInfo = encodeURIComponent(JSON.stringify(user));
                 const redirectURL = process.env.CLIENT_URL + `/student/home?userInfo=${encodedUserInfo}`;
                 res.redirect(redirectURL);
+            }else{
+                res.send("NOT APPROVED");
             }
         }
         else{

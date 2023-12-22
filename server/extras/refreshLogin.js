@@ -1,6 +1,8 @@
 const { OAuth2Client } = require('google-auth-library');
 const dotenv = require('dotenv');
 dotenv.config();
+const findPersonBySubId = require('../extras/findPerson');
+
 
 async function handleRefreshLogin(refreshToken) {
     try{
@@ -22,8 +24,15 @@ async function handleRefreshLogin(refreshToken) {
             sub_id: sub_id,
             email: email,
         }
-        const encodedUserInfo = encodeURIComponent(JSON.stringify(userInfo));
-        return encodedUserInfo;
+
+        const user = await findPersonBySubId(sub_id);
+        console.log(user);
+        if (user){
+            return encodeURIComponent(JSON.stringify(user));
+        } else{
+            return "404 Not Found";
+        }
+
         
     } catch (err) {
         console.log('Error in signing in with Google:', err);
