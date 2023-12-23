@@ -1,20 +1,15 @@
-
-import './inter.css'; // Make sure to create this CSS file
 import React, { useState } from "react";
-import Footer1 from "/Users/siddharthsingh/Downloads/temp_page/src/pages/Page/footer1.jsx";
-import Header1 from "/Users/siddharthsingh/Downloads/temp_page/src/pages/Page/header1.jsx";
-
 
 
 // Dummy data to simulate the list items
 const currentInternships = [
-  { id: 1, name: 'John Doe', type: 'Marketing', status: 'In Progress', submitted: '1 day ago', img: 'placeholder-image.png' },
+  { id: 1, name: 'John Doe', type: 'Marketing', status: 'In Progress', submitted: '1 day ago', img: 'https://lh3.googleusercontent.com/a/ACg8ocJ59g-2SS5abCne73PIrc-7RFj2FjC2vNxi1rui2GIc=s96-c' },
   // Add more current internship statuses here
 ];
 
 const internshipsForApproval = [
-  { id: 2, name: 'Jane Smith', type: 'Finance', status: 'Pending Approval', submitted: '3 days ago', img: 'placeholder-image.png' },
-  { id: 3, name: 'Alex Johnson', type: 'Design', status: 'Pending Approval', submitted: '5 days ago', img: 'placeholder-image.png' },
+  { id: 2, name: 'Jane Smith', type: 'Finance', status: 'Pending Approval', submitted: '3 days ago', img: 'https://lh3.googleusercontent.com/a/ACg8ocJ59g-2SS5abCne73PIrc-7RFj2FjC2vNxi1rui2GIc=s96-c' },
+  { id: 3, name: 'Alex Johnson', type: 'Design', status: 'Pending Approval', submitted: '5 days ago', img: 'https://lh3.googleusercontent.com/a/ACg8ocJ59g-2SS5abCne73PIrc-7RFj2FjC2vNxi1rui2GIc=s96-c' },
   // Add more internships pending approval here
 ];
 
@@ -27,10 +22,7 @@ const InternshipPlatform = () => {
 
   return (
     
-    <div className="internship-platform">
-      
-      <Header1 />
-     
+    <div className="internship-platform">    
     
       <main className="main-content">
         {/* Current Internship Statuses */}
@@ -49,9 +41,6 @@ const InternshipPlatform = () => {
           ))}
         </div>
       </main>
-      <Footer1 />
-
-
     </div>
   );
 };

@@ -11,10 +11,12 @@ import Wrapper from './components/Wrapper/Wrapper';
 import HomePage from './pages/Coordinators/Home/Home';
 import MentorPage from './pages/Coordinators/Mentor/Mentor';
 import Login from './pages/Login/login';
+import RedirectionPage from './Global/redirection';
 import StudentDetailsPage from './pages/Student/Details';
 import StudentHome from './pages/Student/Home';
 import StudentProgressPage from './pages/Student/Progress';
-import RedirectionPage from './Global/redirection';
+import StudentProgressView from './pages/Student/ProgressView';
+import MentorHome from './pages/Faculty_mentor/homefac';
 
 
 //importing Functions 
@@ -76,10 +78,11 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/" element={<Login />} />
 
-                <Route
+                {/* <Route
                   path="/student/details"
                   element={<PrivateRoute element={<StudentDetailsPage />} />}
-                />
+                /> */}
+                <Route path="/student/details" element={<StudentDetailsPage />} />
                 <Route
                   path="/student/home"
                   element={<PrivateRoute element={<StudentHome />} />}
@@ -87,6 +90,14 @@ function App() {
                 <Route
                   path="/student/progress"
                   element={<PrivateRoute element={<StudentProgressPage />} />}
+                />
+                <Route
+                  path="/student/progress/view"
+                  element={<PrivateRoute element={<StudentProgressView />} />}
+                />
+                <Route
+                  path="/mentor/home"
+                  element={<PrivateRoute element={<MentorHome />} />}
                 />
                 <Route path="/redirection/:accessToken" element={<RedirectionPage />} />
 

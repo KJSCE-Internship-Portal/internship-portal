@@ -70,7 +70,7 @@ const Progress = () => {
     }, []);
 
     return (
-        <section class="bg-white dark:bg-gray-900 py-8 lg:py-16 antialiased">
+        <section class="bg-white dark:bg-gray-900 py-8 lg:py-16 antialiased min-h-screen">
             <div class="max-w-2xl mx-auto px-4">
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-xl lg:text-3xl font-bold text-gray-900 dark:text-white">Weekly Progress:</h2>
