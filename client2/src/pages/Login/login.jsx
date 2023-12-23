@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 function navigate(url){
     window.location.href = url;
@@ -13,6 +13,13 @@ async function auth() {
 }
 
 const Login = () => {
+
+    useEffect(()=>{
+        let item = localStorage.getItem('IMPaccessToken');
+        if (item) {
+            window.location.href = `/redirection/${item}`;
+        }
+    }, [])
     return (
         <div>
             <div className="w-full h-16 flex">

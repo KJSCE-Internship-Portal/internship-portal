@@ -41,7 +41,7 @@ const handleLoginRequest = async (req, res) => {
 const callbackCheck = async (req, res) => {
     const code = req.query.code;
     try {
-        const redirectUrl = process.env.SERVER_URL +'/api/callback';
+        const redirectUrl = process.env.SERVER_URL + '/api/callback';
         const oAuth2Client = new OAuth2Client(
             process.env.CLIENT_ID,
             process.env.CLIENT_SECRET,
@@ -56,25 +56,25 @@ const callbackCheck = async (req, res) => {
         //Refresh Token
         const refreshToken = userCredentials.refresh_token;
 
-        const ticket = await oAuth2Client.verifyIdToken({idToken: accessToken, audience: process.env.CLIENT_ID});
+        const ticket = await oAuth2Client.verifyIdToken({ idToken: accessToken, audience: process.env.CLIENT_ID });
         const payload = ticket.getPayload();
 
         const sub_id = payload['sub'];
         const name = payload['name'];
         const email = payload['email'];
         const picture = payload['picture'];
-        
+
         const found = await findPersonBySubId(sub_id);
         console.log(found);
-        if(found){
-            if(found._doc.isApproved) {
-                res.cookie("refreshToken", refreshToken,{
-                    path:'/',
+        if (found) {
+            if (found._doc.isApproved) {
+                res.cookie("refreshToken", refreshToken, {
+                    path: '/',
                     maxAge: 60 * 60 * 24 * 30 * 1000,
                     httpOnly: true,
                     secure: false,
                 });
-                
+
                 const redirectURL = `${process.env.CLIENT_URL}/redirection/${accessToken}`;
                 return res.redirect(redirectURL);
 
@@ -82,7 +82,7 @@ const callbackCheck = async (req, res) => {
                 res.send("NOT APPROVED YET !");
             }
         }
-        else{
+        else {
             const userInfo = {
                 sub_id: sub_id,
                 name: name,
@@ -93,7 +93,7 @@ const callbackCheck = async (req, res) => {
             const redirectURL = process.env.CLIENT_URL + `/student/details?userInfo=${encodedUserInfo}`;
             res.redirect(redirectURL);
         }
-        
+
     } catch (err) {
         console.log('Error in signing in with Google:', err);
         res.status(500).send('Error during authentication');
@@ -110,15 +110,15 @@ const getUserWithAccessToken = async (req, res) => {
             process.env.CLIENT_SECRET,
             redirectUrl,
         );
-        const ticket = await oAuth2Client.verifyIdToken({idToken: accessToken, audience: process.env.CLIENT_ID});
+        const ticket = await oAuth2Client.verifyIdToken({ idToken: accessToken, audience: process.env.CLIENT_ID });
         const payload = ticket.getPayload();
-        
+
         const sub_id = payload['sub'];
         const email = payload['email'];
         const user = await findPersonBySubId(sub_id);
 
-        if (!user){
-            return res.status(200).json({ success: false, msg: `User Doesn't Exist`});
+        if (!user) {
+            return res.status(200).json({ success: false, msg: `User Doesn't Exist` });
         }
 
         return res.status(200).json({ success: true, msg: user });
@@ -129,11 +129,32 @@ const getUserWithAccessToken = async (req, res) => {
     }
 }
 
+const logoutUser = async (req, res) => {
+
+    try {
+
+        res.clearCookie('refreshToken', {
+            path: '/',
+            httpOnly: true,
+            secure: false,
+            sameSite: 'None'
+        });
+
+        return res.status(200).json({ success: true, msg: 'Successfully Logged Out' });
+
+    } catch (error) {
+        console.log(`${error.message} (error)`.red);
+        return res.status(500).json({ success: false, msg: error.message });
+    }
+
+};
+
 
 
 module.exports = {
     handleLoginRequest,
     handleRefreshLogin,
     callbackCheck,
-    getUserWithAccessToken
+    getUserWithAccessToken,
+    logoutUser
 };

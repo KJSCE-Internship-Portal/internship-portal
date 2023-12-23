@@ -9,6 +9,8 @@ import { Autoplay, Navigation, Pagination, EffectCoverflow } from 'swiper/module
 const HomePage = () => {
     const { theme: colors } = useTheme();
 
+    
+    
     const mentors = [
         {
             name: "Prof. ABC",

@@ -43,7 +43,7 @@ const editPrivateComments = async (req, res) => {
     }
 };
 
-const getAllStudents = async (req, res) => {
+const getAllMentors = async (req, res) => {
 
     try {
 
@@ -104,4 +104,5 @@ module.exports = {
     viewAssignedStudents,
     addPrivateComments,
     editPrivateComments,
+    getAllMentors
 };

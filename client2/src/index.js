@@ -16,7 +16,7 @@ import axios from'axios';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 
-const BASE_URL = "https://opportune-x.vercel.app"
+const BASE_URL = "http://localhost:5000/api"
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -25,7 +25,6 @@ const queryClient = new QueryClient({
           return axios.get(`${BASE_URL}${queryKey}`).then(response => response.data);
         }
       }
-        
     }
   }
 })

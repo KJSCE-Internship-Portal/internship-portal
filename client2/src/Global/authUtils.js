@@ -5,21 +5,27 @@ export const setAuthToken = (token) => {
     localStorage.setItem('authToken', token);
 };
 
-export const logout = () => {
-    localStorage.removeItem('authToken');
-    window.location.reload();
+export const logout = async () => {
+    try {
+        localStorage.removeItem('IMPaccessToken');
+        const response = await axios.get(url + '/logout');
+        window.location.reload();
+    } catch (error) {
+        console.log("Could not Logout !");
+    }   
+    
 }
 
 
 export const getAuthToken = () => {
-    return localStorage.getItem('authToken');
+    return localStorage.getItem('IMPaccessToken');
 };
 
 
 export const isAuthenticated = () => {
     const token = getAuthToken();
-    // return token !== null; 
-    return true
+    return token !== null; 
+    // return true
 };
 
 
@@ -31,7 +37,7 @@ export const getUserDetails = async () => {
     }
 
     try {
-        const response = await axios.post(url + '/authorization', { authorization: token }
+        const response = await axios.post(url + "/anyuser", {token}
             // {
             // headers: {
             //     Authorization: `Bearer ${token}`,

@@ -1,5 +1,5 @@
 //Importing Modules
-import React, {useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 // Importing Components
@@ -27,10 +27,15 @@ import { ThemeProvider, useTheme } from './Global/ThemeContext';
 
 
 function App() {
-  const [showSidebar, setShowSidebar] = useState(window.innerWidth > 700); 
+  const [showSidebar, setShowSidebar] = useState(window.innerWidth > 700);
   const isLoggedIn = isAuthenticated();
   const [smallNav, setSmallNav] = useState(window.innerWidth < 900);
-  
+
+  const PrivateRoute = ({ element }) => {
+    const accessToken = localStorage.getItem('IMPaccessToken');
+    return accessToken ? element : <Navigate to="/login" replace />;
+  };
+
 
 
   useEffect(() => {
@@ -51,35 +56,42 @@ function App() {
   return (
     <Router>
       <ThemeProvider>
-      <Navbar />
-      <div style={{ marginTop: smallNav ? '90px' : '60px' }}>
-        {(showSidebar && isLoggedIn) && <SideBar />}
-        <div
-          style={{
-            width: 'auto',
-            minHeight: smallNav ? 'calc(100vh - 90px)' : 'calc(100vh - 60px)',
-            maxHeight: smallNav ? 'calc(100vh - 90px)' : 'calc(100vh - 60px)',
-            overflowY: 'hidden',
-          }}
-        >
-         
-          <Wrapper>
+        <Navbar />
+        <div style={{ marginTop: smallNav ? '90px' : '60px' }}>
+          {(showSidebar && isLoggedIn) && <SideBar />}
+          <div
+            style={{
+              width: 'auto',
+              minHeight: smallNav ? 'calc(100vh - 90px)' : 'calc(100vh - 60px)',
+              maxHeight: smallNav ? 'calc(100vh - 90px)' : 'calc(100vh - 60px)',
+              overflowY: 'hidden',
+            }}
+          >
 
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/coordinator/mentor/:id" element={<MentorPage />} />
-            <Route path="/login" element={<Login/>} />
-            <Route path="/student/details" element={<StudentDetailsPage />} />
-            <Route path="/student/home" element={<StudentHome />} />
-            <Route path="/student/progress" element={<StudentProgressPage />} />
-            <Route path="/redirection/:accessToken" element={<RedirectionPage />} />
+            <Wrapper>
 
-           
+              <Routes>
+                <Route path="/coordinator/home" element={<PrivateRoute element={<HomePage />} />} />
+                <Route path="/coordinator/mentor/:id" element={<MentorPage />} />
+                <Route path="/login" element={<Login />} />
+                <Route
+                  path="/student/details"
+                  element={<PrivateRoute element={<StudentDetailsPage />} />}
+                />
+                <Route
+                  path="/student/home"
+                  element={<PrivateRoute element={<StudentHome />} />}
+                />
+                <Route
+                  path="/student/progress"
+                  element={<PrivateRoute element={<StudentProgressPage />} />}
+                />
+                <Route path="/redirection/:accessToken" element={<RedirectionPage />} />
 
-          </Routes>
-          </Wrapper>
+              </Routes>
+            </Wrapper>
+          </div>
         </div>
-      </div>
       </ThemeProvider>
     </Router>
 

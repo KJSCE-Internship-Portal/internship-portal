@@ -27,6 +27,7 @@ const RedirectionPage = () => {
         } catch (error) {
             console.log(error);
             localStorage.removeItem('IMPaccessToken');
+            window.location.href = '/login'
         }
     }
 
