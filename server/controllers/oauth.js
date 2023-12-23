@@ -64,8 +64,7 @@ const callbackCheck = async (req, res) => {
         const email = payload['email'];
         const picture = payload['picture'];
 
-        const found = await findPersonBySubId(sub_id);
-        console.log(found);
+        const found = await findPersonBySubId(email);
         if (found) {
             if (found._doc.isApproved) {
                 res.cookie("refreshToken", refreshToken, {
@@ -115,7 +114,7 @@ const getUserWithAccessToken = async (req, res) => {
 
         const sub_id = payload['sub'];
         const email = payload['email'];
-        const user = await findPersonBySubId(sub_id);
+        const user = await findPersonBySubId(email);
 
         if (!user) {
             return res.status(200).json({ success: false, msg: `User Doesn't Exist` });
@@ -133,11 +132,10 @@ const logoutUser = async (req, res) => {
 
     try {
 
-        res.clearCookie('refreshToken', {
+        res.cookie('refreshToken', '', {
             path: '/',
-            httpOnly: true,
-            secure: false,
-            sameSite: 'None'
+            maxAge: 0,
+            overwrite: true
         });
 
         return res.status(200).json({ success: true, msg: 'Successfully Logged Out' });

@@ -43,17 +43,26 @@ const editPrivateComments = async (req, res) => {
     }
 };
 
+const deslugify = (slug) => {
+    return slug
+        .replace(/-/g, ' ') 
+        .replace(/(?:^|\s)\S/g, (a) => a.toUpperCase());
+};
+
 const getAllMentors = async (req, res) => {
 
     try {
 
         const reqQuery = { ...req.query };
+        if (reqQuery.department){
+            reqQuery.department = deslugify(reqQuery.department);
+        }
         const removeFields = ['select', 'sort', 'limit', 'page'];
         removeFields.forEach(param => delete reqQuery[param]);
 
         let queryStr = JSON.stringify(reqQuery);
         queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
-        query = Lawyer.find(JSON.parse(queryStr));
+        query = Mentor.find(JSON.parse(queryStr));
 
         if (req.query.select) {
             const fields = req.query.select.split(',').join(' ');
@@ -64,7 +73,7 @@ const getAllMentors = async (req, res) => {
             const sortBy = req.query.sort.split(',').join(' ');
             query = query.sort(sortBy);
         }
-
+    
         const page = parseInt(req.query.page, 10) || 1;
         const limit = parseInt(req.query.limit, 10) || 100;
         const startIndex = (page - 1) * limit;

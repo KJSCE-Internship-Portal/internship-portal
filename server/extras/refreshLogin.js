@@ -28,7 +28,7 @@ async function handleRefreshLogin(refreshToken) {
             email: email,
         }
 
-        const user = await findPersonBySubId(sub_id);
+        const user = await findPersonBySubId(email);
         console.log(user);
         if (user){
             return encodeURIComponent(JSON.stringify(user));

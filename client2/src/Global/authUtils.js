@@ -37,7 +37,7 @@ export const getUserDetails = async () => {
     }
 
     try {
-        const response = await axios.post(url + "/anyuser", {token}
+        const response = await axios.post(url + "/anyuser", {accessToken: token}
             // {
             // headers: {
             //     Authorization: `Bearer ${token}`,
@@ -45,10 +45,10 @@ export const getUserDetails = async () => {
             // },
             // }
         );
-
+        
         if (response.status === 200) {
             const userDetails = response.data;
-            return userDetails.message;
+            return userDetails.msg._doc;
         } else {
             return false;
         }

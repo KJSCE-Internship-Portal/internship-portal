@@ -72,8 +72,10 @@ function App() {
 
               <Routes>
                 <Route path="/coordinator/home" element={<PrivateRoute element={<HomePage />} />} />
-                <Route path="/coordinator/mentor/:id" element={<MentorPage />} />
+                <Route path="/coordinator/mentor/:id/students" element={<PrivateRoute element={<MentorPage />} />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/" element={<Login />} />
+
                 <Route
                   path="/student/details"
                   element={<PrivateRoute element={<StudentDetailsPage />} />}

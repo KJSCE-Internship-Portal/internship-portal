@@ -3,15 +3,15 @@ const Mentor = require('../models/mentor');
 const Coordinator = require('../models/coordinator');
 const Admin = require('../models/admin');
 
-async function findPersonBySubId(sub_id) {
-  let person = await Student.findOne({ sub_id }).exec();
+async function findPersonBySubId(email) {
+  let person = await Student.findOne({ email }).exec();
 
   if (person){
     return {...person, role: 'STUDENT'};
   }
 
   if (!person) {
-    person = await Mentor.findOne({ sub_id }).exec();
+    person = await Mentor.findOne({ email }).exec();
   }
 
   if (person){
@@ -19,20 +19,23 @@ async function findPersonBySubId(sub_id) {
   }
 
   if (!person) {
-    person = await Coordinator.findOne({ sub_id }).exec();
+    person = await Coordinator.findOne({ email }).exec();
   }
 
   if (person){
+
     return {...person, role: 'COORDINATOR'};
   }
 
   if (!person) {
-    person = await Admin.findOne({ sub_id }).exec();
+    person = await Admin.findOne({ email }).exec();
   }
 
   if (person){
     return {...person, role: 'ADMIN'};
   }
+
+  
 
   return person;
 }

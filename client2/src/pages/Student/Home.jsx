@@ -107,7 +107,7 @@ const FramePage = () => {
           <div className="flex flex-col items-center justify-center px-3 w-full">
             <div className="overflow-y-auto max-h-[230px] md:max-h-[none] w-full">
               <list
-                className="sm:flex-col flex-row gap-5 grid sm:grid-cols-2 md:grid-cols-2 grid-cols-3 justify-start w-full"
+                className="sm:flex-col flex-row gap-5 grid sm:grid-cols-2 md:grid-cols-2 grid-cols-1 justify-start w-full"
                 orientation="horizontal"
               >
                 {progressData.map((week) => (
@@ -143,6 +143,8 @@ const FramePage = () => {
             </div>
           </div>
         </div>
+        <div className="hidden md:block h-[15vh]"></div>
+        <div className="block md:hidden h-[40vh]"></div>
       </div>
     </>
   );
