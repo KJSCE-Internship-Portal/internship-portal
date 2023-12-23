@@ -20,7 +20,7 @@ router.post("/student-login", controllerStudent.loginStudent);
 router.post("/student/register", controllerStudent.registerStudent);
 router.post("/student/progress/add", controllerStudent.addWeeklyProgress);
 router.post("/anyuser", controllerOAuth.getUserWithAccessToken);
-
+router.post("/student/find", controllerStudent.getOneStudent);
 
 // router.post("/login", controllerOAuth.handleLoginRequest);
 

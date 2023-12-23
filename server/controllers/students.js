@@ -191,10 +191,27 @@ const getAllStudents = async (req, res) => {
 
 };
 
+const getOneStudent = async (req, res) => {
+    try {
+        const email = req.body.email;
+        let person = await Student.findOne({ email}).exec();
+        if (person) {
+            res.json(person);
+        } else{
+            console.log("Did not find");
+            res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
+        }
+    } catch (error) {
+        console.error(`Error: ${error.message}`);
+        res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
+    }
+}
+
 module.exports = {
     loginStudent,
     addWeeklyProgress,
     editWeeklyProgress,
     getAllStudents,
+    getOneStudent,
     registerStudent
 };

@@ -1,5 +1,9 @@
 import React, { useState } from "react";
 import { useEffect } from 'react';
+import { useTheme } from '../../Global/ThemeContext';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
+import { url } from '../../Global/URL';
 
 // Dummy data to simulate the list items
 const currentInternships = [
@@ -12,8 +16,6 @@ const internshipsForApproval = [
   { id: 3, name: 'Alex Johnson', type: 'Design', status: 'Not Approved', submitted: '5 days ago', img: 'https://lh3.googleusercontent.com/a/ACg8ocJ59g-2SS5abCne73PIrc-7RFj2FjC2vNxi1rui2GIc=s96-c' },
   // Add more internships pending approval here
 ];
-
-
 
 const InternshipPlatform = () => {
   // Function to handle internship approval
@@ -30,9 +32,86 @@ const InternshipPlatform = () => {
     // Here you would typically call a backend service to update the internship status
   };
 
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [profile_url, setProfilePicture] = useState('');
+  const { theme: colors } = useTheme();
+  const accessToken = localStorage.getItem('IMPaccessToken');
+
+  const getUser = async () => {
+    try {
+      const data = await axios.post(url + "/anyuser", { accessToken });
+      const user = data.data.msg._doc;
+      return user;
+    } catch (error) {
+      console.log(error);
+      localStorage.removeItem('IMPaccessToken');
+    }
+  }
+
+  const [mentorName, setMentorName] = useState('');
+  const [mentorEmail, setMentorEmail] = useState('');
+  const [mentor_profile_url, setMentorProfilePicture] = useState('');
+  const [mentorDepartment, setMentorDepartment] = useState('');
+  const [mentorStudents, setMentorStudents] = useState([]);
+  const [currentStudents, setCurrentStudents] = useState([]);
+  const [studentsForApproval, setStudentsForApproval] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const userInfo = await getUser();
+        if (userInfo) {
+          setMentorName(userInfo.name);
+          setMentorEmail(userInfo.email);
+          setMentorProfilePicture(userInfo.profile_picture_url);
+          setMentorDepartment(userInfo.department);
+          userInfo.students.forEach(async (student) => {
+            const data = {
+              email: student.email
+            };
+            try {
+              const response = await fetch(url + "/student/find", {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+              });
+              if (response.ok) {
+                const studentData = await response.json();
+                console.log(studentData);
+                //have to put approved students into one array and not approved in another
+                // var approvedStudentData = [];
+                // var notApprovedStudentData = [];
+                // if(studentData.isApproved){
+                //   // approvedStudentData = [...approvedStudentData, studentData];
+                //   // console.log(approvedStudentData);
+                //   setCurrentStudents({studentData});
+                  
+                //   // const updatedCurrentStudents = [...updatedCurrentStudents, studentData];
+                //   // setCurrentStudents(updatedCurrentStudents);
+                //   // setCurrentStudents(updatedCurrentStudents => [...updatedCurrentStudents, studentData]);
+                // }
+                // else{
+                //   setCurrentStudents(studentData);
+                //   // const updatedCurrentStudents = [...updatedCurrentStudents, studentData];
+                //   // setCurrentStudents(updatedCurrentStudents => [...updatedCurrentStudents, studentData]);
+                // }
+                // // setCurrentStudents(approvedStudentData);
+                // console.log(currentStudents);
+                console.log('Data retrieved from the backend!');
+              } else {
+                console.error('Failed to retrieve data to the backend.');
+              }
+            } catch (error) {
+              console.error('Error occurred while retrieving data:', error);
+            }
+          });
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchData();
+  }, []);
 
   const InternshipItem = ({ internship, withButton, onApprove, status, onDisapprove }) => {
     return (
@@ -40,7 +119,7 @@ const InternshipPlatform = () => {
         {/* Status and Action Buttons */}
         <div className="flex justify-between items-center mb-4">
           {status && (
-            <div className={`justify-center p-1 rounded-br-md rounded-tl-md text-xs font-semibold w-auto ${internship.status === "Approved" ? "text-green-700" : "text-red-900"} relative`}>{internship.status}</div> 
+            <div className={`justify-center p-1 rounded-br-md rounded-tl-md text-xs font-semibold w-auto ${internship.status === "Approved" ? "text-green-700" : "text-red-900"} relative`}>{internship.status}</div>
           )}
           <div className="flex space-x-2">
             {withButton && (
@@ -76,21 +155,22 @@ const InternshipPlatform = () => {
   };
 
   return (
-
     <div className="bg-gray-100 flex flex-col font-roboto items-center justify-start mx-auto w-full max-h-full py-6 px-4">
       <div className="flex md:flex-col flex-row gap-3 h-[70px] md:h-auto items-center justify-start max-w-[1262px] mx-auto pt-4 md:px-5 w-full mb-3.5">
         <div className="flex flex-row justify-start w-full">
           <img
-            src={profile_url}
+            src={mentor_profile_url}
             alt="User Profile"
             className="h-10 w-10 rounded-full mr-2"
           />
           <div className="flex flex-1 flex-col items-start justify-start w-full">
-            <h1 className="text-base text-black-900 w-full">{name}</h1>
-            <p className="text-black-900_7f text-xs w-full">{email}</p>
+            <h1 className="text-base text-black-900 w-full">{mentorName}</h1>
+            <p className="text-black-900_7f text-xs w-full">{mentorEmail}</p>
           </div>
         </div>
       </div>
+
+      <h1 className="text-base text-black-900 w-full text-center font-bold">{mentorDepartment}</h1>
 
       <div className="flex-grow p-4 min-w-full">
         <div className="mb-8">
