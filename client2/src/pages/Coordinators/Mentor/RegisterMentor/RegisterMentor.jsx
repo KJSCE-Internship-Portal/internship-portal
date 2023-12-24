@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Button,
     Drawer,
@@ -16,18 +16,26 @@ import {
     useDisclosure,
     Box,
 } from '@chakra-ui/react';
-
+import { useTheme } from '../../../../Global/ThemeContext';
 import { AddIcon } from '@chakra-ui/icons';
+import showToast from '../../../../Global/Toast';
+import { useToast } from '@chakra-ui/react';
+import { url } from '../../../../Global/URL';
+import axios from 'axios';
+import { getUserDetails } from '../../../../Global/authUtils';
 
 const RegisterMentor = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const { theme: colors } = useTheme();
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [contactNo, setContactNo] = useState('');
     const [emailError, setEmailError] = useState('');
     const [contactNoError, setContactNoError] = useState('');
-
+    const toast = useToast();
     const firstField = React.useRef();
+    const [user, setUser] = useState(false);
+
 
     const validateEmail = () => {
         const emailRegex = /^[^\s@]+@somaiya\.edu$/;
@@ -49,28 +57,52 @@ const RegisterMentor = () => {
         return true;
     };
 
-    const handleAddMentor = () => {
+    const handleAddMentor = async () => {
+        // if (name == ''){
+        //     showToast(toast, "Error", 'error', "Name Cannot Be Empty");
+        //     return
+        // }
+
         if (validateEmail() && validateContactNo()) {
             console.log(name, email, contactNo);
             onClose();
+            const current_user = await getUserDetails();
+            setUser(current_user)
+            const response = await axios.post(url+ '/coordinator/add/mentor', {name, email, contact_no: contactNo.toString(), department: current_user.department});
+            console.log(response.data)
+            showToast(toast, "Success", 'success', "Mentor Registered Successfully");
+            // setEmail('');
+            // setName('');
+            // setContactNo('');
+            
         }
+        else{
+            if (!validateEmail()){
+                showToast(toast, "Error", 'error', "Provide a valid Somaiya Email");
+            } else if(!validateContactNo()){
+                showToast(toast, "Error", 'error', "Provide a valid Contact no.");
+            } 
+        }
+        
     };
+
 
     return (
         <>
-            <Button leftIcon={<AddIcon />} colorScheme='teal' onClick={onOpen}>
-                Create user
+            <Button leftIcon={<AddIcon />} color={colors.font} bg={colors.hover} onClick={onOpen}>
+                Add Mentor
             </Button>
             <Drawer
                 isOpen={isOpen}
                 placement='right'
                 initialFocusRef={firstField}
                 onClose={onClose}
+                
             >
                 <DrawerOverlay />
-                <DrawerContent>
+                <DrawerContent color={colors.font} bg={colors.secondary}>
                     <DrawerCloseButton />
-                    <DrawerHeader borderBottomWidth='1px'>Add a Mentor</DrawerHeader>
+                    <DrawerHeader borderBottomWidth='0px'>Add a Mentor</DrawerHeader>
 
                     <DrawerBody>
                         <Stack spacing='24px'>
@@ -82,6 +114,8 @@ const RegisterMentor = () => {
                                     placeholder='Name'
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
+                                    required
+                                    isRequired
                                 />
                             </Box>
 
@@ -89,7 +123,7 @@ const RegisterMentor = () => {
                                 <FormLabel htmlFor='email'>E-Mail</FormLabel>
                                 <InputGroup>
                                     <Input
-                                        type='text'
+                                        type='email'
                                         id='email'
                                         placeholder='Email'
                                         value={email}
@@ -110,14 +144,15 @@ const RegisterMentor = () => {
                                     onChange={(e) => setContactNo(e.target.value)}
                                 />
                             </Box>
+
                         </Stack>
                     </DrawerBody>
 
-                    <DrawerFooter borderTopWidth='1px'>
-                        <Button variant='outline' mr={3} onClick={onClose}>
+                    <DrawerFooter borderTopWidth='0px'>
+                        <Button variant='outline' mr={3} onClick={onClose} color={colors.font} bg={colors.hover}>
                             Cancel
                         </Button>
-                        <Button colorScheme='blue' onClick={handleAddMentor}>
+                        <Button colorScheme='blue' onClick={handleAddMentor} color={colors.secondary} bg={colors.primary}>
                             Add
                         </Button>
                     </DrawerFooter>

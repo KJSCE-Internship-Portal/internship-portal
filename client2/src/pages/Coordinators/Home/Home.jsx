@@ -8,6 +8,7 @@ import { useQuery } from '@tanstack/react-query';
 import { url } from '../../../Global/URL';
 import { Link } from 'react-router-dom';
 import { getUserDetails } from '../../../Global/authUtils';
+import RegisterMentor from '../Mentor/RegisterMentor/RegisterMentor';
 
 const slugify = (text) => {
     return text
@@ -57,7 +58,7 @@ const HomePage = () => {
 
     if (isError){
         return (
-            <h1>Something Went Wrong</h1>
+            <h1 style={{color: colors.font}}>Something Went Wrong</h1>
         )
     }
       
@@ -66,9 +67,11 @@ const HomePage = () => {
 
         <div style={{ height: '100%', width: '100%', minHeight: '100%', maxWidth: '100%', maxHeight: '100%', overflowY: 'hidden', padding: 10 }}>
            
-           <h1 style={{color: colors.font, fontWeight: 30, fontSize: 23}}>
-                {user && user.department}
+           <h1 style={{color: colors.font, fontWeight: 'bold', fontSize: 23, marginLeft: 20, marginBottom: '5px'}}>
+                {user && user.department} 
            </h1>
+
+           <div style={{color: colors.font, marginLeft: 20}}><RegisterMentor/></div>
             
            <div className={styles.mentorContainer}>
                 {data.data.map(mentor => (
