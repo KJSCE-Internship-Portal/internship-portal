@@ -7,6 +7,9 @@ const findPersonBySubId = require('../extras/findPerson');
 const handleRefreshLogin = require('../extras/refreshLogin');
 const { findOneAndUpdate } = require('../models/coordinator');
 const Student = require("../models/student");
+const Mentor = require("../models/mentor");
+const Coordinator = require('../models/coordinator');
+const Admin = require("../models/admin");
 
 const handleLoginRequest = async (req, res) => {
     try {
@@ -69,9 +72,9 @@ const callbackCheck = async (req, res) => {
         const found = await findPersonBySubId(email);
         if (found) {
             if (found._doc.isApproved) {
-                const updatedUser = await Student.findOneAndUpdate(
+                var updatedUser = await Student.findOneAndUpdate(
                     {
-                    sub_id
+                    email
                     },
                     {
                     $set: {
@@ -83,6 +86,54 @@ const callbackCheck = async (req, res) => {
                     new: true,
                     }
                 );
+                if(!updatedUser){
+                    updatedUser = await Mentor.findOneAndUpdate(
+                        {
+                        email
+                        },
+                        {
+                        $set: {
+                            'sub_id': sub_id,
+                            'profile_picture_url': picture,
+                        },
+                        },
+                        {
+                        new: true,
+                        }
+                    );
+                }
+                if(!updatedUser){
+                    updatedUser = await Coordinator.findOneAndUpdate(
+                        {
+                        email
+                        },
+                        {
+                        $set: {
+                            'sub_id': sub_id,
+                            'profile_picture_url': picture,
+                        },
+                        },
+                        {
+                        new: true,
+                        }
+                    );
+                }
+                if(!updatedUser){
+                    updatedUser = await Admin.findOneAndUpdate(
+                        {
+                        email
+                        },
+                        {
+                        $set: {
+                            'sub_id': sub_id,
+                            'profile_picture_url': picture,
+                        },
+                        },
+                        {
+                        new: true,
+                        }
+                    );
+                }
                 if(!updatedUser){
                     const redirectURL = `${process.env.CLIENT_URL}/login`;
                     return res.redirect(redirectURL);
