@@ -3,6 +3,7 @@ const router = express.Router();
 const controllerStudent = require("../controllers/students");
 const controllerOAuth = require("../controllers/oauth");
 const controllerMentor = require("../controllers/mentors");
+const controllerCoordinator = require("../controllers/coordinators");
 
 
 
@@ -21,6 +22,8 @@ router.post("/student/register", controllerStudent.registerStudent);
 router.post("/student/progress/add", controllerStudent.addWeeklyProgress);
 router.post("/anyuser", controllerOAuth.getUserWithAccessToken);
 router.post("/student/find", controllerStudent.getOneStudent);
+router.post("/student/approve", controllerStudent.approveStudent);
+router.post('/coordinator/add/mentor', controllerCoordinator.addMentor);
 
 // router.post("/login", controllerOAuth.handleLoginRequest);
 

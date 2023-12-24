@@ -22,7 +22,7 @@ const FramePage = () => {
 
   function generateWeekURL(weekNo) {
     const currentDate = new Date();
-    if (currentDate > new Date(progressData[weekNo - 1].startDate) && progressData[weekNo - 1].status == 'Not Submitted') {
+    if (currentDate > new Date(progressData[weekNo - 1].startDate) && currentDate < new Date(progressData[weekNo - 1].endDate) && progressData[weekNo - 1].status == 'Not Submitted') {
       const baseURL = 'http://localhost:3000/student/progress';
       const weekURL = `${baseURL}?weekNo=${weekNo}`;
       window.location.href = weekURL;

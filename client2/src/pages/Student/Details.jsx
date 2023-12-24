@@ -68,6 +68,7 @@ const Details = () => {
             });
             if (response.ok) {
                 console.log('Data successfully submitted to the backend!');
+                window.location.href = "http://localhost:3000/login";
             } else {
                 console.error('Failed to submit data to the backend.');
             }

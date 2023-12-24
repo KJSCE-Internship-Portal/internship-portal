@@ -91,7 +91,7 @@ const addWeeklyProgress = async (req, res) => {
     try {
 
         var taskUpdate = req.body;
-        console.log(taskUpdate);
+        // console.log(taskUpdate);
         const { sub_id, week, description } = taskUpdate;
         try{
             const updatedStudent = await Student.findOneAndUpdate(
@@ -207,11 +207,60 @@ const getOneStudent = async (req, res) => {
     }
 }
 
+const approveStudent = async (req, res) => {
+    try {
+        var approval = req.body;
+        // console.log(approval);
+        const { sub_id, status } = approval;
+        try{
+            if(status){
+                const updatedStudent = await Student.findOneAndUpdate(
+                    {
+                    sub_id
+                    },
+                    {
+                    $set: {
+                        'isApproved': true,
+                    },
+                    },
+                    {
+                    new: true,
+                    }
+                );
+                if(updatedStudent){
+                    res.status(200).json({ success: true, msg: "Approval Given" });
+                } else{
+                    res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
+                }
+            } else {
+                const deletedStudent = await Student.findOneAndDelete(
+                    {
+                    sub_id
+                    }
+                );
+                if(deletedStudent){
+                    res.status(200).json({ success: true, msg: "Approval Rejected" });
+                } else{
+                    res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
+                }
+            }
+        } catch (error) {
+            console.error(`Error: ${error.message}`);
+            res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
+        }
+
+    } catch (error) {
+        console.error(`Error: ${error.message}`);
+        res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
+    }
+};
+
 module.exports = {
     loginStudent,
     addWeeklyProgress,
     editWeeklyProgress,
     getAllStudents,
     getOneStudent,
+    approveStudent,
     registerStudent
 };
