@@ -50,10 +50,12 @@ export const getUserDetails = async () => {
             const userDetails = response.data;
             return userDetails.msg._doc;
         } else {
+            localStorage.removeItem('IMPaccessToken');
             return false;
         }
     } catch (error) {
         console.error('Error fetching user details:', error.message);
+        localStorage.removeItem('IMPaccessToken');
         return false;
     }
 };
