@@ -80,7 +80,7 @@ const SideBar = () => {
                 <div className={styles.listItem} onClick={
                     ()=>{
                         logout();
-                        window.location = '/';
+                        // window.location = '/';
                     }
                 }>
                     <span className={styles.iconContainer}><FaSignOutAlt/></span>

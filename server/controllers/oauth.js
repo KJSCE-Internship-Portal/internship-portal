@@ -143,6 +143,7 @@ const callbackCheck = async (req, res) => {
                     maxAge: 60 * 60 * 24 * 30 * 1000,
                     httpOnly: true,
                     secure: false,
+                    overwrite: true,
                 });
 
                 const redirectURL = `${process.env.CLIENT_URL}/redirection/${accessToken}`;
@@ -202,14 +203,15 @@ const getUserWithAccessToken = async (req, res) => {
 const logoutUser = async (req, res) => {
 
     try {
-
         res.cookie('refreshToken', '', {
             path: '/',
             maxAge: 0,
+            httpOnly: true,
+            secure: false,
             overwrite: true
         });
-
-        return res.status(200).json({ success: true, msg: 'Successfully Logged Out' });
+        res.redirect(process.env.CLIENT_URL + '/login');    
+        // return res.status(200).json({ success: true, msg: 'Successfully Logged Out' });
 
     } catch (error) {
         console.log(`${error.message} (error)`.red);

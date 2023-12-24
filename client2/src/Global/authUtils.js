@@ -8,8 +8,10 @@ export const setAuthToken = (token) => {
 export const logout = async () => {
     try {
         localStorage.removeItem('IMPaccessToken');
-        const response = await axios.get(url + '/logout');
-        window.location.reload();
+        // const response = await axios.get(url + '/logout');
+        // console.log(url + '/logout');
+        window.location.assign(url + '/logout');
+        // window.location.reload();
     } catch (error) {
         console.log("Could not Logout !");
     }   
