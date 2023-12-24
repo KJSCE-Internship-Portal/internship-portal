@@ -20,16 +20,17 @@ const FramePage = () => {
     }
   }
 
-  function generateWeekURL(weekNo) {
+  function generateWeekURL(week) {
     const currentDate = new Date();
-    if (currentDate > new Date(progressData[weekNo - 1].startDate) && currentDate < new Date(progressData[weekNo - 1].endDate) && progressData[weekNo - 1].status == 'Not Submitted') {
-      const baseURL = 'http://localhost:3000/student/progress';
-      const weekURL = `${baseURL}?weekNo=${weekNo}`;
+    localStorage.setItem('week', week.week);
+    if (currentDate > new Date(progressData[week.week - 1].startDate) && currentDate < new Date(progressData[week.week - 1].endDate) && progressData[week.week - 1].status == 'Not Submitted') {
+      const weekURL = 'http://localhost:3000/student/progress';
+      // const weekURL = `${baseURL}?weekNo=${weekNo}`;
       window.location.href = weekURL;
     }
-    else if (progressData[weekNo - 1].status == 'Submitted') {
-      const baseURL = 'http://localhost:3000/student/progress/view';
-      const weekURL = `${baseURL}?weekNo=${weekNo}`;
+    else if (progressData[week.week - 1].status == 'Submitted') {
+      const weekURL = 'http://localhost:3000/student/progress/view';
+      // const weekURL = `${baseURL}?weekNo=${weekNo}`;
       window.location.href = weekURL;
     }
   }
@@ -44,6 +45,7 @@ const FramePage = () => {
       try {
         const userInfo = await getUser();
         if (userInfo) {
+          localStorage.removeItem('week');
           setName(userInfo.name);
           setEmail(userInfo.email);
           setProfilePicture(userInfo.profile_picture_url);
@@ -65,7 +67,7 @@ const FramePage = () => {
     fetchData();
   }, []);
 
-  const WeekComponent = ({ week, details, status, generateWeekURL }) => {
+  const WeekComponent = ({ week, generateWeekURL }) => {
     return (
       <button
         className="border border-black-900_19 border-solid flex flex-1 flex-col items-center justify-start rounded-md w-full relative"
@@ -74,20 +76,20 @@ const FramePage = () => {
         <div className="flex flex-col h-[164px] md:h-auto items-start justify-start w-full">
           <div className={`bg-black-900_0c flex flex-col gap-[51px] items-left justify-start pb-[73px] md:pr-10 sm:pr-5 pr-[73px] w-full relative`}>
             <text
-              className={`justify-center p-1 rounded-br-md rounded-tl-md text-xs font-semibold w-auto ${status === "Submitted" ? "text-green-700" : "text-red-900"}`}
+              className={`justify-center p-1 rounded-br-md rounded-tl-md text-xs font-semibold w-auto ${week.status === "Submitted" ? "text-green-700" : "text-red-900"}`}
               size="txtRobotoMedium12"
               style={{ position: 'absolute', top: 5, left: 5, backgroundColor: '#ededed' }} // Positioning for status
             >
-              {status}
+              {week.status}
             </text>
           </div>
         </div>
         <div className="flex flex-col gap-1 items-start justify-start p-2 w-full">
           <text className="text-black-900 text-xs w-full" size="txtRobotoRegular12Black900">
-            Week {week}
+            Week {week.week}
           </text>
           <text className="text-base text-black-900 w-full" size="txtRobotoMedium16">
-            {details}
+            {week.details}
           </text>
         </div>
       </button>
@@ -177,7 +179,7 @@ const FramePage = () => {
             <div className="overflow-y-auto max-h-[230px] md:max-h-[none] w-full">
               <div className="sm:flex-col flex-row gap-5 grid sm:grid-cols-2 md:grid-cols-2 grid-cols-1 justify-start w-full">
                 {progressData.map((week) => (
-                  <WeekComponent key={week.week} {...week} generateWeekURL={generateWeekURL} />
+                  <WeekComponent key={week.week} week={week} generateWeekURL={generateWeekURL} />
                 ))}
               </div>
             </div>

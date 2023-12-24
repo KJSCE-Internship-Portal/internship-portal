@@ -1,5 +1,6 @@
 const express = require("express");
 const Mentor = require('../models/mentor')
+const Student = require('../models/student');
 
 const loginMentor = async (req, res) => {
 
@@ -26,7 +27,34 @@ const viewAssignedStudents = async (req, res) => {
 const addPrivateComments = async (req, res) => {
 
     try {
-        res.status(200).json({ success: true, msg: "Add Private Comments Route" });
+        var taskUpdate = req.body;
+        const { sub_id, week, mentor_comment } = taskUpdate;
+        try{
+            const updatedStudent = await Student.findOneAndUpdate(
+                {
+                  sub_id,
+                  'internships.0.progress.week': week,
+                },
+                {
+                  $set: {
+                    'internships.0.progress.$.mentor_comment': mentor_comment.trim(),
+                    // 'internships.0.progress.$.submitted': true,
+                  },
+                },
+                {
+                  new: true,
+                }
+            );
+            if(updatedStudent){
+                res.status(200).json({ success: true, msg: "Add Progress Route" });
+            } else{
+                res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
+            }
+        } catch (error) {
+            console.error(`Error: ${error.message}`);
+            res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
+        }
+
     } catch (error) {
         console.error(`Error: ${error.message}`);
         res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });

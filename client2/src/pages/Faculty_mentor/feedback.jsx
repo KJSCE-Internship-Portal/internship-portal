@@ -1,49 +1,167 @@
 import React, { useState } from "react";
+import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import axios from 'axios';
+import { url } from '../../Global/URL';
 
 const Comment = () => {
-    const [startdate, setStartDate] = useState([
-        {date: '19-12-23'}
-    ]);
-    const [enddate, setEndDate] = useState([
-        {date: '26-12-23'}
-    ]);
-    const [task, setTask] = useState([
-        {description: "I worked on ...."}
-    ]);
+    const [startdate, setStartDate] = useState('');
+    const [enddate, setEndDate] = useState('');
+    const [studentName, setStudentName] = useState('');
+    const [studentEmail, setStudentEmail] = useState('');
+    const [studentProfilePicture, setStudentProfilePicture] = useState('');
+    const [mentorName, setMentorName] = useState('');
+    const [mentorEmail, setMentorEmail] = useState('');
+    const [mentorProfilePicture, setMentorProfilePicture] = useState('');
+    const [weekDescription, setWeekDescription] = useState('');
+    const [mentorComment, setMentorComment] = useState('');
+    const [wantToReply, setWantToReply] = useState('');
+    const [subID, setSubID] = useState('');
+    const [weekNo, setWeekNo] = useState('');
+
+    const accessToken = localStorage.getItem('IMPaccessToken');
+
+    const getUser = async () => {
+        try {
+            const data = await axios.post(url + "/anyuser", { accessToken });
+            const user = data.data.msg._doc;
+            return user;
+        } catch (error) {
+            console.log(error);
+            localStorage.removeItem('IMPaccessToken');
+        }
+    }
+
+    const replyOnClick = () => {
+        const val = !wantToReply;
+        setWantToReply(val);
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const data = {
+                sub_id: subID,
+                week: weekNo,
+                mentor_comment: mentorComment
+            };
+            const response = await axios.post(url + `/mentor/comment/add`, data);
+            window.location.reload();
+        } catch (error) {
+            console.error('Error occurred while submitting data:', error);
+        }
+    }
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const userInfo = await getUser();
+                if (userInfo) {
+                    // console.log(student);
+                    const student_id = localStorage.getItem('student');
+                    const weekNo = localStorage.getItem('week');
+                    const response = await axios
+                        .get(url + `/students/all?sub_id=${student_id}`);
+                    const student = response.data.data[0];
+                    // console.log(studentData);
+                    setWantToReply(false);
+                    setSubID(student.sub_id);
+                    setWeekNo(weekNo);
+                    setStartDate(new Date(student.internships[0].progress[weekNo - 1].startDate).toISOString().substring(0, 10));
+                    setEndDate(new Date(student.internships[0].progress[weekNo - 1].endDate).toISOString().substring(0, 10));
+                    setStudentName(student.name);
+                    setStudentEmail(student.email);
+                    setStudentProfilePicture(student.profile_picture_url);
+                    setWeekDescription(student.internships[0].progress[weekNo - 1].description);
+                    const privComment = student.internships[0].progress[weekNo - 1].mentor_comment;
+                    if (privComment != "No Comments Yet") {
+                        setMentorName(userInfo.name);
+                        setMentorEmail(userInfo.email);
+                        setMentorProfilePicture(userInfo.profile_picture_url);
+                        setMentorComment(privComment);
+                    }
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchData();
+    }, []);
     return (
-    
-        <section class="bg-white dark:bg-gray-900 py-8 lg:py-16 antialiased">
-    
-    <div class="max-w-2xl mx-auto px-4">
-    <div class="flex justify-between items-center mb-6">
-        <h2 class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-white">Weekly Report:</h2>
-    </div>
-    <div class="flex justify-between items-center mb-6">
-        <h2>Start Date: {startdate[0].date}</h2>
-    </div>
-    <div class="flex justify-between items-center mb-6">
-        <h2>End Date: {enddate[0].date}</h2>
-    </div>
-    <div class="flex justify-between items-center mb-6">
-        <h2>Task: {task[0].description}</h2>
-    </div>
-      <div class="flex justify-between items-center mb-6">
-        <h2 class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-white">Feedback:</h2>
-    </div>
-    <form class="mb-6">
-        <div class="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
-            <label for="comment" class="sr-only">Your comment</label>
-            <textarea id="comment" rows="6"
-                class="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-800"
-                placeholder="Write a comment..." required></textarea>
-        </div>
-        <button type="submit"
-            class="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
-            Post comment
-        </button>
-    </form>
-  </div>
-</section>
+        <section class="text-white dark:bg-gray-900 py-8 lg:py-16 antialiased h-screen">
+            <div class="max-w-2xl mx-auto px-4">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-lg lg:text-3xl font-bold text-gray-900 dark:text-white">Weekly Report:</h2>
+                </div>
+                <div class="flex justify-between items-center mb-6 text-white">
+                    <h2>Start Date: {startdate}</h2>
+                </div>
+                <div class="flex justify-between items-center mb-6 text-white">
+                    <h2>End Date: {enddate}</h2>
+                </div>
+                <article class="p-6 text-base bg-white rounded-lg dark:bg-gray-900">
+                    <footer class="flex justify-between items-center mb-2">
+                        <div class="flex items-center">
+                            <p class="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white font-semibold"><img
+                                class="mr-2 w-6 h-6 rounded-full"
+                                src={studentProfilePicture}
+                                alt="Student" />{studentName}</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">{studentEmail}</p>
+                        </div>
+                    </footer>
+                    <p class="text-gray-500 dark:text-gray-400">{weekDescription}</p>
+                    {!mentorProfilePicture && (<div class="flex items-center mt-4 space-x-4 mb-3">
+                        <button type="button"
+                            class="flex items-center text-sm text-gray-500 hover:underline dark:text-gray-400 font-medium" onClick={replyOnClick}>
+                            <svg class="mr-1.5 w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 18">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5h5M5 8h2m6-3h2m-5 3h6m2-7H2a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h3v5l5-5h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1Z" />
+                            </svg>
+                            Feedback
+                        </button>
+                    </div>)}
+                    {wantToReply && wantToReply === true ? (
+                        <form className="mb-6" onSubmit={handleSubmit}>
+                            <div className="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+                                <label htmlFor="comment" className="sr-only">Your comment</label>
+                                <textarea
+                                    id="comment"
+                                    rows="6"
+                                    value={mentorComment}
+                                    onChange={(e) => setMentorComment(e.target.value)}
+                                    className="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-800"
+                                    placeholder="Write a comment..."
+                                    required
+                                ></textarea>
+                            </div>
+                            <button
+                                type="submit"
+                                className="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800"
+                            >
+                                Post comment
+                            </button>
+                        </form>
+                    ) : (
+                        <div></div>
+                    )}
+                </article>
+                {mentorProfilePicture && (<article class="p-6 mb-3 ml-6 lg:ml-12 text-base bg-white rounded-lg dark:bg-gray-900">
+                    <footer class="flex justify-between items-center mb-2">
+                        <div class="flex items-center">
+                            <p class="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white font-semibold">{mentorProfilePicture && (
+                                <img
+                                    className="mr-2 w-6 h-6 rounded-full"
+                                    src={mentorProfilePicture}
+                                    alt="Mentor"
+                                />
+                            )}{mentorName}</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">{mentorEmail}</p>
+                        </div>
+                    </footer>
+                    <p class="text-gray-500 dark:text-gray-400">{mentorComment}</p>
+                </article>)}
+                <hr className="border-gray-300" />
+            </div>
+        </section>
     );
 };
 

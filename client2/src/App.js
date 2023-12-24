@@ -17,6 +17,8 @@ import StudentHome from './pages/Student/Home';
 import StudentProgressPage from './pages/Student/Progress';
 import StudentProgressView from './pages/Student/ProgressView';
 import MentorHome from './pages/Faculty_mentor/homefac';
+import MentorStudentView from './pages/Faculty_mentor/studentprogress';
+import MentorStudentFeedback from './pages/Faculty_mentor/feedback.jsx';
 
 
 //importing Functions 
@@ -98,6 +100,14 @@ function App() {
                 <Route
                   path="/mentor/home"
                   element={<PrivateRoute element={<MentorHome />} />}
+                />
+                <Route
+                  path="/mentor/studentprogress"
+                  element={<PrivateRoute element={<MentorStudentView />} />}
+                />
+                <Route
+                  path="/mentor/studentprogress/feedback"
+                  element={<PrivateRoute element={<MentorStudentFeedback />} />}
                 />
                 <Route path="/redirection/:accessToken" element={<RedirectionPage />} />
 

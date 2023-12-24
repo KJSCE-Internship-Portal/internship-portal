@@ -15,10 +15,14 @@ const InternshipPlatform = () => {
     const response = await axios.post(url + `/student/approve`, data);
     window.location.reload();
   };
-  const viewUser = () => {
+  const viewUser = (studentInfo) => {
     console.log(`USER`);
-    // Here you would typically call a backend service to update the internship status
   };
+  const trackUser = (studentInfo) => {
+    console.log(`APPROVED USER`);
+    localStorage.setItem('student', studentInfo);
+    window.location.href = 'http://localhost:3000/mentor/studentprogress';
+  }
 
   const { theme: colors } = useTheme();
   const accessToken = localStorage.getItem('IMPaccessToken');
@@ -46,6 +50,7 @@ const InternshipPlatform = () => {
     try {
       const userInfo = await getUser();
       if (userInfo) {
+        localStorage.removeItem('student');
         setMentorName(userInfo.name);
         setMentorEmail(userInfo.email);
         setMentorProfilePicture(userInfo.profile_picture_url);
@@ -112,7 +117,7 @@ const InternshipPlatform = () => {
             )}
           </div>
         </div>
-        <div className="flex items-center mb-2" onClick={viewUser}>
+        <div className="flex items-center mb-2" onClick={() => (status === true ? viewUser(student.sub_id) : trackUser(student.sub_id))}>
           <img
             src={student.profile_picture_url}
             alt="Profile"

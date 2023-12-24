@@ -23,6 +23,7 @@ router.post("/student/progress/add", controllerStudent.addWeeklyProgress);
 router.post("/anyuser", controllerOAuth.getUserWithAccessToken);
 router.post("/student/find", controllerStudent.getOneStudent);
 router.post("/student/approve", controllerStudent.approveStudent);
+router.post("/mentor/comment/add", controllerMentor.addPrivateComments);
 router.post('/coordinator/add/mentor', controllerCoordinator.addMentor);
 
 // router.post("/login", controllerOAuth.handleLoginRequest);

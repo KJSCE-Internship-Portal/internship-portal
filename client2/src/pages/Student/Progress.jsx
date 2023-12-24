@@ -9,10 +9,7 @@ const Progress = () => {
     const [enddate, setEndDate] = useState('');
     const [task, setTask] = useState('');
     const [subID, setSubID] = useState('');
-
-    const location = useLocation();
-    const queryParams = new URLSearchParams(location.search);
-    const weekNo = queryParams.get('weekNo');
+    const [weekNo, setWeekNo] = useState(parseInt('', 10));
 
     const accessToken = localStorage.getItem('IMPaccessToken');
 
@@ -35,14 +32,8 @@ const Progress = () => {
                 week: weekNo,
                 description: task
             };
-            console.log(data);
-            const response = await fetch(url + "/student/progress/add", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            });
+            const response = await axios.post(url + `/student/progress/add`, data);
+            window.location.href = 'http://localhost:3000/student/progress/view';
             if (response.ok) {
                 console.log('Data successfully submitted to the backend!');
             } else {
@@ -58,9 +49,11 @@ const Progress = () => {
             try {
                 const userInfo = await getUser();
                 if (userInfo) {
+                    const week = localStorage.getItem('week');
+                    setWeekNo(week);
                     setSubID(userInfo.sub_id);
-                    setStartDate(new Date(userInfo.internships[0].progress[weekNo - 1].startDate).toISOString().substring(0, 10));
-                    setEndDate(new Date(userInfo.internships[0].progress[weekNo - 1].endDate).toISOString().substring(0, 10));
+                    setStartDate(new Date(userInfo.internships[0].progress[week - 1].startDate).toISOString().substring(0, 10));
+                    setEndDate(new Date(userInfo.internships[0].progress[week- 1].endDate).toISOString().substring(0, 10));
                 }
             } catch (error) {
                 console.log(error);

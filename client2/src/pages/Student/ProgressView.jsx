@@ -17,10 +17,6 @@ const Comment = () => {
     const [mentorComment, setMentorComment] = useState('');
     // const [image, setImage] = useState('');
 
-    const location = useLocation();
-    const queryParams = new URLSearchParams(location.search);
-    const weekNo = queryParams.get('weekNo');
-
     const accessToken = localStorage.getItem('IMPaccessToken');
 
     const getUser = async () => {
@@ -39,6 +35,7 @@ const Comment = () => {
             try {
                 const userInfo = await getUser();
                 if (userInfo) {
+                    const weekNo = localStorage.getItem('week');
                     setStartDate(new Date(userInfo.internships[0].progress[weekNo - 1].startDate).toISOString().substring(0, 10));
                     setEndDate(new Date(userInfo.internships[0].progress[weekNo - 1].endDate).toISOString().substring(0, 10));
                     setStudentName(userInfo.name);
@@ -49,7 +46,7 @@ const Comment = () => {
                     if (privComment != "No Comments Yet") {
                         setMentorName(userInfo.mentor.name);
                         setMentorEmail(userInfo.mentor.email);
-                        setMentorProfilePicture(userInfo.profile_picture_url);   
+                        setMentorProfilePicture(userInfo.profile_picture_url);  
                     }
                     setMentorComment(privComment);
                 }

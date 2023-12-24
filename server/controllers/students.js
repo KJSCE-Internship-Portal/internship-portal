@@ -12,7 +12,8 @@ function calculateWeeks(startDate, endDate) {
 
   while (current.isBefore(end)) {
     const weekStart = current.clone().startOf('isoWeek');
-    const weekEnd = current.clone().endOf('isoWeek').isBefore(end) ? current.clone().endOf('isoWeek') : end.clone();
+    let weekEnd = current.clone().endOf('isoWeek').isBefore(end) ? current.clone().endOf('isoWeek') : end.clone();
+    weekEnd = weekEnd.add(1, 'day');
 
     weeks.push({
       start: weekStart.format('YYYY-MM-DD'),
