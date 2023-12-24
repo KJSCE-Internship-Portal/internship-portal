@@ -1,5 +1,5 @@
 import React from 'react'
-import './StudentProfile.scss'
+import './Profile.scss'
 
 const userDetails = [
     {
@@ -34,7 +34,7 @@ const userDetails = [
   const Header = () => {
     return (
       <header className="page-header">
-        <h1 className="page-title">Student Profile</h1>
+        <h1 className="page-title">Profile</h1>
       </header>
     );
   }
@@ -49,7 +49,7 @@ const userDetails = [
     );
   }
   
-  const StudentProfile = () => {
+  const Profile = () => {
     return (
 
       <div className="card">
@@ -62,5 +62,5 @@ const userDetails = [
     );
   }
   
-  export default StudentProfile;
+  export default Profile;
   
