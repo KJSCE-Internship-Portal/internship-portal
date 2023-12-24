@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 import { url } from '../../../Global/URL';
-
+import RegisterMentor from './RegisterMentor/RegisterMentor';
 
 const MentorPage = () => {
     const { theme: colors } = useTheme();
@@ -65,9 +65,10 @@ const MentorPage = () => {
             </div>
 
             <div className={styles.addStudentButtonContainer}>
-                <div className={styles.addStudentButton}>
+                {/* <div className={styles.addStudentButton}>
                     Add More Students
-                </div>
+                </div> */}
+                <RegisterMentor/>
             </div>
 
 
