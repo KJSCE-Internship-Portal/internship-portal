@@ -5,6 +5,8 @@ dotenv.config();
 const jwt = require('jsonwebtoken');
 const findPersonBySubId = require('../extras/findPerson');
 const handleRefreshLogin = require('../extras/refreshLogin');
+const { findOneAndUpdate } = require('../models/coordinator');
+const Student = require("../models/student");
 
 const handleLoginRequest = async (req, res) => {
     try {
@@ -67,6 +69,24 @@ const callbackCheck = async (req, res) => {
         const found = await findPersonBySubId(email);
         if (found) {
             if (found._doc.isApproved) {
+                const updatedUser = await Student.findOneAndUpdate(
+                    {
+                    sub_id
+                    },
+                    {
+                    $set: {
+                        'sub_id': sub_id,
+                        'profile_picture_url': picture,
+                    },
+                    },
+                    {
+                    new: true,
+                    }
+                );
+                if(!updatedUser){
+                    const redirectURL = `${process.env.CLIENT_URL}/login`;
+                    return res.redirect(redirectURL);
+                }
                 res.cookie("refreshToken", refreshToken, {
                     path: '/',
                     maxAge: 60 * 60 * 24 * 30 * 1000,
