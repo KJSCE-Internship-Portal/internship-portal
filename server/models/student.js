@@ -143,6 +143,10 @@ const studentSchema = new mongoose.Schema({
                         type: Boolean,
                         default: false
                     },
+                    isLateSubmission: {
+                        type: Boolean,
+                        default: true
+                    },
                     edited: {
                         type: Boolean,
                         default: false
@@ -150,6 +154,10 @@ const studentSchema = new mongoose.Schema({
                     mentor_comment: {
                         type: String,
                         default: "No Comments Yet"
+                    },
+                    hasMentorCommented: {
+                        type: Boolean,
+                        default: false,
                     },
                     grade: {
                         type: Number,
