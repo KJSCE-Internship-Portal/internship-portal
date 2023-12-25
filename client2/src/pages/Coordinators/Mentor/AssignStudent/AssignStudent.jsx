@@ -21,8 +21,9 @@ import { url } from '../../../../Global/URL';
 import axios from 'axios';
 import { useTheme } from '../../../../Global/ThemeContext';
 import { getUserDetails } from '../../../../Global/authUtils';
+import { useQuery } from '@chakra-ui/react';
 
-const AssignStudent = () => {
+const AssignStudent = ({ mentor_sub_id, mentor_email }) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const { theme: colors } = useTheme();
     const [email, setEmail] = useState('');
@@ -43,20 +44,35 @@ const AssignStudent = () => {
     };
 
     const handleAddStudent = async () => {
-        if (validateEmail()) {
-            console.log(email, rollNo);
+        if (validateEmail() && rollNo.length > 0) {
+
+            try {
+                if (!user) {
+                    var current_user = await getUserDetails();
+                    setUser(current_user);
+                } else {
+                    var current_user = user;
+                }
+                const response = await axios.post(url + '/coordinator/mentor/assign-student', {
+                    mentor_email,
+                    rollno: rollNo.toString(),
+                    student_email: email,
+                    department: current_user.department,
+                });
+                console.log(response.data);
+                if (response.data.success) {
+                    showToast(toast, 'Success', 'success', 'Student Assigned');
+                    setEmail('');
+                    setRollNo('');
+                } else {
+                    showToast(toast, 'Error', 'error', response.data.msg);
+
+                }
+
+            } catch (error) {
+                showToast(toast, 'Error', 'error', 'Something Went Wrong');
+            }
             onClose();
-            const current_user = await getUserDetails();
-            setUser(current_user);
-            const response = await axios.post(url + '/coordinator/add/student', {
-                email,
-                rollno: rollNo.toString(),
-                department: current_user.department,
-            });
-            console.log(response.data);
-            showToast(toast, 'Success', 'success', 'Student Registered Successfully');
-            setEmail('');
-            setRollNo('');
         } else {
             showToast(toast, 'Error', 'error', 'Provide a valid Somaiya Email');
         }

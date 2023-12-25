@@ -18,20 +18,29 @@ const assignStudent = async (req, res) => {
 
     try {
         const rollno = req.body.rollno;
+        const student_email = req.body.student_email;
         const mentor_email = req.body.mentor_email;
-        let student = await Student.findOne({ rollno }).exec();
+        const coordinator_department = req.body.department;
 
-        if (!student){
-            res.status(200).json({ success: false, msg: `Roll no ${rollno} doesn't Exist !` });
+        let student = await Student.findOne({ rollno }).exec();
+        console.log(rollno, mentor_email, coordinator_department);
+        if (!student) {
+            return res.status(200).json({ success: false, msg: `Roll no ${rollno} doesn't Exist !` });
         }
-        if (student.hasMentor){
-            res.status(200).json({ success: false, msg: `Roll no ${rollno} is already assigned to ${student.mentor.name}` });
+        if (student.email != student_email) {
+            return res.status(200).json({ success: false, msg: `${rollno} and ${student_email} does not belong to same student` });
+        }
+        if (student.hasMentor) {
+            return res.status(200).json({ success: false, msg: `Roll no ${rollno} is already assigned to ${student.mentor.name}` });
+        }
+        if (student.department != coordinator_department) {
+            return res.status(200).json({ success: false, msg: `Roll no ${rollno} does not belong to your department` });
         }
 
         let mentor = await Mentor.findOne({ email: mentor_email }).exec();
 
-        if (!mentor){
-            res.status(200).json({ success: false, msg: `Mentor ${mentor_email} doesn't Exist !` });
+        if (!mentor) {
+            return res.status(200).json({ success: false, msg: `Mentor ${mentor_email} doesn't Exist !` });
         }
 
         // Check if the student is already assigned to the mentor
@@ -56,12 +65,12 @@ const assignStudent = async (req, res) => {
 
         await student.save();
         await mentor.save();
-
-        res.status(200).json({ success: true, msg: "Student assigned successfully" });
+        console.log("Assigned Student")
+        return res.status(200).json({ success: true, msg: "Student assigned successfully" });
 
     } catch (error) {
         console.error(`Error: ${error.message}`);
-        res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
+        return res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
     }
 
 };
@@ -90,7 +99,7 @@ const removeAssignedStudent = async (req, res) => {
             return res.status(200).json({ success: false, msg: `Student ${rollno} is not assigned to ${mentor_email}.` });
         }
 
-        if (student.hasMentor){
+        if (student.hasMentor) {
             student.hasMentor = false;
         }
         // Remove the student from the mentor's students array
@@ -111,14 +120,14 @@ const addMentor = async (req, res) => {
 
     try {
         const mentor = new Mentor(req.body);
-        var existing_mentor = await Mentor.findOne({email: req.body.email}).exec();
+        var existing_mentor = await Mentor.findOne({ email: req.body.email }).exec();
         if (existing_mentor) {
-            res.status(201).json({ success: false, msg: `Mentor Already Exists`});
-        }else{
+            res.status(201).json({ success: false, msg: `Mentor Already Exists` });
+        } else {
             await mentor.save();
             res.status(200).json({ success: true, msg: "Mentor Registered Successfully !" });
         }
-        
+
     } catch (error) {
         console.error(`Error: ${error.message}`);
         res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
@@ -185,5 +194,7 @@ const getAllCoordinators = async (req, res) => {
 module.exports = {
     loginCoordinator,
     getAllCoordinators,
-    addMentor
+    addMentor,
+    assignStudent,
+    removeAssignedStudent
 };

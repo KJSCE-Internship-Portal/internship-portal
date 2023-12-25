@@ -15,6 +15,7 @@ const MentorPage = () => {
 
     const { isError, isLoading, data } = useQuery({
         queryKey: [`/mentors/all?sub_id=${id}`],
+        retryDelay: 5000,
         queryFn: () =>
             axios
                 .get(url + `/mentors/all?sub_id=${id}`)
@@ -27,14 +28,20 @@ const MentorPage = () => {
         )
     }
 
+    if (isError) {
+        return (
+            <h1>Something Went Wrong</h1>
+        )
+    }
+
     return (
 
         <div style={{ height: '100%', width: '100%', minHeight: '100%', maxWidth: '100%', maxHeight: '100%', overflowY: 'hidden', padding: 10 }}>
 
             <div>
                 <div>
-                    <span style={{height: '80px', width: '80px', margin: '5px 0 20px 15px'}} className={styles.studentAvatar}>
-                        <img src={data.data[0].profile_picture_url} alt="No Profile Photo"/>
+                    <span style={{ height: '80px', width: '80px', margin: '5px 0 20px 15px' }} className={styles.studentAvatar}>
+                        <img src={data.data[0].profile_picture_url} alt="No Profile Photo" />
                     </span>
                 </div>
                 <h1 style={{ color: colors.font, fontSize: '23px', fontWeight: 'bold', paddingLeft: '15px' }}>
@@ -65,10 +72,7 @@ const MentorPage = () => {
             </div>
 
             <div className={styles.addStudentButtonContainer}>
-                {/* <div className={styles.addStudentButton}>
-                    Add More Students
-                </div> */}
-                <AssignStudent/>
+                <AssignStudent mentor_sub_id={id} mentor_email={data.data[0].email} />
             </div>
 
 

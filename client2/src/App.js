@@ -19,6 +19,7 @@ import StudentProgressView from './pages/Student/ProgressView';
 import MentorHome from './pages/Faculty_mentor/homefac';
 import MentorStudentView from './pages/Faculty_mentor/studentprogress';
 import MentorStudentFeedback from './pages/Faculty_mentor/feedback.jsx';
+import AllStudentsInDepartment from './pages/Coordinators/Mentor/AllStudents/AllStudents.jsx';
 
 
 //importing Functions 
@@ -75,10 +76,11 @@ function App() {
             <Wrapper>
 
               <Routes>
-                <Route path="/coordinator/home" element={<PrivateRoute element={<HomePage />} />} />
-                <Route path="/coordinator/mentor/:id/students" element={<PrivateRoute element={<MentorPage />} />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/" element={<Login />} />
+                <Route path="/coordinator/home" element={<PrivateRoute element={<HomePage />} />} />
+                <Route path="/coordinator/mentor/:id/students" element={<PrivateRoute element={<MentorPage />} />} />
+                <Route path='/coordinator/:department/all-students' element={<PrivateRoute element={<AllStudentsInDepartment />} />} />
 
                 {/* <Route
                   path="/student/details"

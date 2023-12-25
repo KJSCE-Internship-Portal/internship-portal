@@ -25,6 +25,9 @@ router.post("/student/find", controllerStudent.getOneStudent);
 router.post("/student/approve", controllerStudent.approveStudent);
 router.post("/mentor/comment/add", controllerMentor.addPrivateComments);
 router.post('/coordinator/add/mentor', controllerCoordinator.addMentor);
+router.post("/coordinator/mentor/assign-student", controllerCoordinator.assignStudent);
+router.post("/coordinator/mentor/remove-assigned-student", controllerCoordinator.removeAssignedStudent);
+
 
 // router.post("/login", controllerOAuth.handleLoginRequest);
 

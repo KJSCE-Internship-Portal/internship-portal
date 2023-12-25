@@ -136,11 +136,20 @@ const editWeeklyProgress = async (req, res) => {
     }
 };
 
+const deslugify = (slug) => {
+    return slug
+        .replace(/-/g, ' ') 
+        .replace(/(?:^|\s)\S/g, (a) => a.toUpperCase());
+};
+
 const getAllStudents = async (req, res) => {
 
     try {
 
         const reqQuery = { ...req.query };
+        if (reqQuery.department){
+            reqQuery.department = deslugify(reqQuery.department);
+        }
         const removeFields = ['select', 'sort', 'limit', 'page'];
         removeFields.forEach(param => delete reqQuery[param]);
 
