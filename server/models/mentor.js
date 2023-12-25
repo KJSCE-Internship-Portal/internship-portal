@@ -29,7 +29,7 @@ const mentorSchema = new mongoose.Schema({
     sub_id: {
         type: String,
         required: [true, "sub_id is Required"],
-        default: ""
+        default: "None"
     },
     department: {
         type: String,

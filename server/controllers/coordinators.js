@@ -110,10 +110,15 @@ const removeAssignedStudent = async (req, res) => {
 const addMentor = async (req, res) => {
 
     try {
-        console.log(req.body);
         const mentor = new Mentor(req.body);
-        await mentor.save();
-        res.status(200).json({ success: true, msg: "Mentor Registered Successfully !" });
+        var existing_mentor = await Mentor.findOne({email: req.body.email}).exec();
+        if (existing_mentor) {
+            res.status(201).json({ success: false, msg: `Mentor Already Exists`});
+        }else{
+            await mentor.save();
+            res.status(200).json({ success: true, msg: "Mentor Registered Successfully !" });
+        }
+        
     } catch (error) {
         console.error(`Error: ${error.message}`);
         res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });

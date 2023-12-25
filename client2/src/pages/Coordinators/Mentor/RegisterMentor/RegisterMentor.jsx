@@ -68,22 +68,35 @@ const RegisterMentor = () => {
             onClose();
             const current_user = await getUserDetails();
             setUser(current_user)
-            const response = await axios.post(url+ '/coordinator/add/mentor', {name, email, contact_no: contactNo.toString(), department: current_user.department});
-            console.log(response.data)
-            showToast(toast, "Success", 'success', "Mentor Registered Successfully");
-            // setEmail('');
-            // setName('');
-            // setContactNo('');
-            
+            try {
+
+                const response = await axios.post(url + '/coordinator/add/mentor', { name, email, contact_no: contactNo.toString(), department: current_user.department });
+                console.log(response.data)
+                if (response.data.success) {
+                    showToast(toast, "Success", 'success', "Mentor Registered Successfully");
+                } else {
+                    showToast(toast, "Warning", 'info', "Mentor Already Exist");
+                }
+
+                
+                // setEmail('');
+                // setName('');
+                // setContactNo('');
+
+            } catch (error) {
+                showToast(toast, "Error", 'error', "Something Wen't Wrong !");
+            }
+
+
         }
-        else{
-            if (!validateEmail()){
+        else {
+            if (!validateEmail()) {
                 showToast(toast, "Error", 'error', "Provide a valid Somaiya Email");
-            } else if(!validateContactNo()){
+            } else if (!validateContactNo()) {
                 showToast(toast, "Error", 'error', "Provide a valid Contact no.");
-            } 
+            }
         }
-        
+
     };
 
 
@@ -97,7 +110,7 @@ const RegisterMentor = () => {
                 placement='right'
                 initialFocusRef={firstField}
                 onClose={onClose}
-                
+
             >
                 <DrawerOverlay />
                 <DrawerContent color={colors.font} bg={colors.secondary}>
