@@ -4,6 +4,7 @@ import { useTheme } from '../../Global/ThemeContext';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { url } from '../../Global/URL';
+import StudentDrawer from './studentdrawer.jsx';
 
 const InternshipPlatform = () => {
   const approveStudent = async (studentID, approval) => {
@@ -15,7 +16,9 @@ const InternshipPlatform = () => {
     const response = await axios.post(url + `/student/approve`, data);
     window.location.reload();
   };
-  const viewUser = (studentInfo) => {
+  const viewUser = (studentData) => {
+    setStudentData(studentData);
+    setIsDrawerOpen(true);
     console.log(`USER`);
   };
   const trackUser = (studentInfo) => {
@@ -38,6 +41,14 @@ const InternshipPlatform = () => {
     }
   }
 
+  const openDrawer = () => {
+    setIsDrawerOpen(true);
+  };
+
+  const closeDrawer = () => {
+    setIsDrawerOpen(false);
+  };
+
   const [mentorName, setMentorName] = useState('');
   const [mentorEmail, setMentorEmail] = useState('');
   const [mentor_profile_url, setMentorProfilePicture] = useState('');
@@ -45,6 +56,8 @@ const InternshipPlatform = () => {
   const [mentorStudents, setMentorStudents] = useState([]);
   const [currentStudents, setCurrentStudents] = useState([]);
   const [studentsForApproval, setStudentsForApproval] = useState([]);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [studentData, setStudentData] = useState([]);
 
   const fetchData = async () => {
     try {
@@ -117,7 +130,7 @@ const InternshipPlatform = () => {
             )}
           </div>
         </div>
-        <div className="flex items-center mb-2" onClick={() => (status === true ? viewUser(student.sub_id) : trackUser(student.sub_id))}>
+        <div className="flex items-center mb-2" onClick={() => (status === true ? viewUser(student) : trackUser(student.sub_id))}>
           <img
             src={student.profile_picture_url}
             alt="Profile"
@@ -183,6 +196,7 @@ const InternshipPlatform = () => {
           <div className="text-xl font-bold">No new internship approvals.</div>
         )}
       </div>
+      <StudentDrawer isOpen={isDrawerOpen} onClose={closeDrawer} studentData={studentData} />
     </div>
   );
 };

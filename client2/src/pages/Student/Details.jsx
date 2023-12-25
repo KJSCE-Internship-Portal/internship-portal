@@ -140,14 +140,15 @@ const Details = () => {
                                 required
                             >
                                 <option value="" disabled>Select Department</option>
-                                <option value="IT">IT</option>
-                                <option value="CS">CS</option>
-                                <option value="MECH">MECH</option>
-                                <option value="EXTC">EXTC</option>
-                                <option value="ETRX">ETRX</option>
-                                <option value="ETRX" hidden>EXCP</option>
-                                <option value="ETRX" hidden>RAI</option>
-                                <option value="ETRX" hidden>AIDS</option>
+                                <option value="Computer Engineering">CS</option>
+                                <option value="Information Technology">IT</option>
+                                <option value="Mechanical Engineering">MECH</option>
+                                <option value="Electronics & Telecommunication Engineering">EXTC</option>
+                                <option value="Electronics Engineering">ETRX</option>
+                                <option value="Electronics & Computer Engineering" hidden>EXCP</option>
+                                <option value="Robotics & Artificial Intelligence" hidden>RAI</option>
+                                <option value="Artificial Intelligence & Data Science" hidden>AIDS</option>
+                                <option value="Computer & Communication Engineering" hidden>CCE</option>
                             </select>
                         </div>
                         <div className="flex flex-wrap justify-between">
