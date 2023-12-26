@@ -108,7 +108,7 @@ const studentSchema = new mongoose.Schema({
                 default: '0',
                 required: false
             },
-            iscompleted: {
+            isCompleted: {
                 type: Boolean,
                 required: false,
                 default: false
