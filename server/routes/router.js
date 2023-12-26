@@ -4,6 +4,7 @@ const controllerStudent = require("../controllers/students");
 const controllerOAuth = require("../controllers/oauth");
 const controllerMentor = require("../controllers/mentors");
 const controllerCoordinator = require("../controllers/coordinators");
+const controllerAdmin = require("../controllers/admin");
 
 
 
@@ -27,6 +28,7 @@ router.post("/mentor/comment/add", controllerMentor.addPrivateComments);
 router.post('/coordinator/add/mentor', controllerCoordinator.addMentor);
 router.post("/coordinator/mentor/assign-student", controllerCoordinator.assignStudent);
 router.post("/coordinator/mentor/remove-assigned-student", controllerCoordinator.removeAssignedStudent);
+router.post("/statistics", controllerAdmin.getStatistics);
 
 
 // router.post("/login", controllerOAuth.handleLoginRequest);
