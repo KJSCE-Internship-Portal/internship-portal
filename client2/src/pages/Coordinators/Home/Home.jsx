@@ -30,9 +30,12 @@ const HomePage = () => {
         retryDelay: 5000,
         queryFn: async () => {
 
-            const current_user = await getUserDetails();
-            setUser(current_user);
-            console.log(current_user);
+            if (!user) {
+                var current_user = await getUserDetails();
+                setUser(current_user);
+            } else {
+                var current_user = user;
+            }
             return (axios
                 .get(url + `/mentors/all?department=${slugify(current_user.department)}`)
                 .then(response => response.data))
@@ -82,9 +85,17 @@ const HomePage = () => {
             <div style={{ color: colors.font, marginLeft: 20 }}><RegisterMentor /></div>
 
             <div className={styles.mentorContainer}>
-                {data.data.map(mentor => (
-                    <MentorComponent key={mentor.id} {...mentor} />
-                ))}
+                {data.data.map((mentor) => {
+                    if (mentor.sub_id !== 'None') {
+                        return <MentorComponent key={mentor.id} {...mentor} />;
+                    }
+                    return null;
+                })}
+
+                {data.data.length <= 0 && <div style={{ backgroundColor: colors.hover, height: '150px', width: '95%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 15px' }}>
+                    <h1 style={{ color: colors.font, textAlign: 'center' }}>No Mentors in your Department</h1>
+                </div>}
+
             </div>
 
 

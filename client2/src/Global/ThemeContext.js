@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-const initialTheme = {
+const darkTheme = {
   primary: '#006bde',
   secondary: '#000',
   secondary2: '#222',
@@ -9,7 +9,7 @@ const initialTheme = {
   hover: '#333'
 };
 
-const darkTheme = {
+const initialTheme = {
   primary: '#005cbf',
   secondary: '#ededed',
   secondary2: '#d6d6d6',

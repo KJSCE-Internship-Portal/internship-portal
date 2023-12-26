@@ -121,11 +121,14 @@ const addMentor = async (req, res) => {
     try {
         const mentor = new Mentor(req.body);
         var existing_mentor = await Mentor.findOne({ email: req.body.email }).exec();
+        var stu = await Student.findOneAndUpdate({email: req.body.email}, {isActive: false, isApproved: false},{ new: true });
         if (existing_mentor) {
-            res.status(201).json({ success: false, msg: `Mentor Already Exists` });
-        } else {
+            return res.status(201).json({ success: false, msg: `Mentor Already Exists` });
+        } else if (!stu && !existing_mentor){
             await mentor.save();
-            res.status(200).json({ success: true, msg: "Mentor Registered Successfully !" });
+            return res.status(200).json({ success: true, msg: "Mentor Registered Successfully !" });
+        } else if (stu && !existing_mentor){
+            return res.status(500).json({ success: false, msg: "A student with the same E-mail ID is already Registered !" });
         }
 
     } catch (error) {

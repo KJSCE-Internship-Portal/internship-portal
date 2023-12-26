@@ -71,28 +71,29 @@ const AllStudentsInDepartment = () => {
             <h1 style={{ color: colors.font, fontSize: '23px', margin: '5px 2.5vw', fontWeight: 'bold', textAlign: 'center' }}>Following Students Belong to your Department</h1>
             {/* {JSON.stringify(data.data)} */}
 
-            <h2 style={{ color: colors.primary, fontSize: '20px', margin: '5px 3vw', fontWeight: 'bold' }}>Assigned Students</h2>
+            <h2 style={{ color: colors.primary, fontSize: '20px', margin: '5px 3vw', fontWeight: 'bold' }}>Students</h2>
 
             <Accordion allowToggle padding={'1.5vw'}>
 
                 {data.success && data.data.map((student) => {
-                    if (student.isApproved && student.isActive && student.hasMentor) {
+                    if (student.isActive) {
                         return (
                             <AccordionItem border='none' key={student.email}>
                                 <h2>
                                     <AccordionButton _expanded={{ bg: colors.hover, color: 'white' }}>
                                         <Box as="span" flex='1' textAlign='left' style={{ color: colors.font, fontSize: '20px' }}>
-                                            <span>{student.rollno}</span>
+                                            <span>{student.rollno} {student.hasMentor && <Badge colorScheme='green'>Assigned</Badge>}</span>
                                         </Box>
 
                                         <AccordionIcon color={colors.font} />
                                     </AccordionButton>
                                 </h2>
+                                
                                 <AccordionPanel pb={4}>
-                                    <div style={{ fontSize: '18px', color: colors.font }}>  {student.name} <Badge colorScheme='green'>Approved</Badge> </div>
+                                    <div style={{ fontSize: '18px', color: colors.font }}>  {student.name} </div>
                                     <div style={{ fontSize: '17px', color: '#c20010', fontStyle: 'italic', fontWeight: 'bold' }}>{student.email}</div>
 
-                                    <div style={{ borderRadius: '10px', margin: '5px 0', backgroundColor: colors.hover, padding: '5px 1.5vw', display: 'flex', flexDirection: 'column' }}>
+                                    {student.hasMentor && <div style={{ borderRadius: '10px', margin: '5px 0', backgroundColor: colors.hover, padding: '5px 1.5vw', display: 'flex', flexDirection: 'column' }}>
                                         <div style={{ color: colors.font }}>Mentor Details :</div>
                                         <div style={{ height: '10px' }}></div>
                                         <div style={{ fontSize: '17px', color: colors.font, fontWeight: 'bold' }}><span style={{ color: colors.primary }}>Name:</span> {student.mentor.name}</div>
@@ -100,7 +101,7 @@ const AllStudentsInDepartment = () => {
                                         <div style={{ fontSize: '17px', color: colors.font, fontWeight: 'bold' }}><span style={{ color: colors.primary }}>Email:</span> {student.mentor.email}</div>
                                         <div style={{ fontSize: '17px', color: colors.font, fontWeight: 'bold' }}><span style={{ color: colors.primary }}>Contact No. :</span> {student.mentor.contact_no}</div>
 
-                                    </div>
+                                    </div>}
 
                                 </AccordionPanel>
                             </AccordionItem>
@@ -110,16 +111,14 @@ const AllStudentsInDepartment = () => {
                 {data.data.length <= 0 && <div style={{ backgroundColor: colors.hover, height: '150px', width: '95%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 15px' }}>
                     <h1 style={{ color: colors.font, textAlign: 'center' }}>No Students Here</h1>
                 </div>}
-
-
             </Accordion>
 
-            <h2 style={{ color: colors.primary, fontSize: '20px', margin: '5px 3vw', fontWeight: 'bold' }}>Students having no Mentors</h2>
+            {/* <h2 style={{ color: colors.primary, fontSize: '20px', margin: '5px 3vw', fontWeight: 'bold' }}>Students having no Mentors</h2>
 
             <Accordion allowToggle padding={'1.5vw'}>
 
                 {data.success && data.data.map((student) => {
-                    if (student.isApproved && student.isActive && !student.hasMentor) {
+                    if (student.isActive && !student.hasMentor) {
                         setStudentsNotHavingMentor((studentsnothavingmentor) => studentsnothavingmentor + 1)
                         return (
                             <AccordionItem border='none' key={student.email}>
@@ -159,7 +158,7 @@ const AllStudentsInDepartment = () => {
                     </div>
                 }
 
-            </Accordion>
+            </Accordion> */}
 
         </div>
     )
