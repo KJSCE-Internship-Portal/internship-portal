@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useEffect } from 'react';
 import { useTheme } from '../../Global/ThemeContext';
 import { useParams } from 'react-router-dom';
+import { Card, CardHeader, CardBody, CardFooter } from '@chakra-ui/react'
 import axios from 'axios';
 import { url } from '../../Global/URL';
 
@@ -87,9 +88,10 @@ const Week = () => {
 
   const WeekComponent = ({ week, generateWeekURL }) => {
     return (
+      <Card>
       <button
-        className="border border-black-900_19 border-solid flex flex-1 flex-col items-center justify-start rounded-md w-full relative"
-        onClick={() => generateWeekURL(week)}
+          className={`border border-${colors.font} border-solid flex flex-1 flex-col items-center justify-start rounded-md w-full relative transform transition-transform hover:translate-y-[-2px] hover:shadow-md`}
+          onClick={() => generateWeekURL(week)}
       >
         <div className="flex flex-col h-[164px] md:h-auto items-start justify-start w-full">
           <div className={`bg-black-900_0c flex flex-col gap-[51px] items-left justify-start pb-[73px] md:pr-10 sm:pr-5 pr-[73px] w-full relative`}>
@@ -117,47 +119,49 @@ const Week = () => {
           </text>
         </div>
       </button>
+      </Card>
     );
   };
 
   return (
     <>
-      <div className="bg-gray-100 flex flex-col font-roboto items-center justify-start mx-auto w-full max-h-full py-6 px-4">
+      <div className={`bg-${colors.secondary2} flex flex-col font-roboto items-center justify-start mx-auto w-full max-h-full py-6 px-4`}>
         {/* Mentor */}
-        <div className="flex flex-col gap-3 h-[70px] md:h-auto items-center justify-start max-w-[1262px] mx-auto pt-4 md:px-5 w-full mb-3.5">
-          <text
-            className="text-base text-black-900 w-full"
-            size="txtRobotoMedium16"
-          >
-            <h1>{department}</h1>
-          </text>
-          <div className="flex flex-row justify-start w-full">
-            <img
-              src={mentor_profile_url}
-              alt="User Profile"
-              className="h-10 w-10 rounded-full mr-2"
-            />
-            <div className="flex flex-1 flex-col items-start justify-start w-full">
-              <text
-                className="text-base text-black-900 w-full"
-                size="txtRobotoMedium16"
-              >
-                <h1>{mentorName}</h1>
-              </text>
-              <text
-                className="text-black-900_7f text-xs w-full"
-                size="txtRobotoRegular12"
-              >
-                {mentorEmail}
-              </text>
-            </div>
-          </div>
-        </div>
-        <div className="border-t border-gray-300 my-3 min-w-full"></div>
-        <div className="flex flex-col h-[47px] md:h-auto items-center justify-start max-w-[1262px] mx-auto mb-3.5 pt-4 md:px-5 w-full">
+<div className={`flex md:flex-col flex-row gap-3 h-[70px] md:h-auto items-center justify-start max-w-[1262px] mx-auto pt-4 md:px-5 w-full mb-3.5`}>
+  <text
+    className={`text-base text-${colors.font} w-full`}
+    size="txtRobotoMedium16"
+  >
+    <h1>{department}</h1>
+  </text>
+  <div className="flex flex-row justify-start w-full">
+    <img
+      src={mentor_profile_url}
+      alt="User Profile"
+      className="h-10 w-10 rounded-full mr-2"
+    />
+    <div className="flex flex-1 flex-col items-start justify-start w-full">
+      <text
+        className={`text-base text-${colors.font} w-full`}
+        size="txtRobotoMedium16"
+      >
+        <h1>{mentorName}</h1>
+      </text>
+      <text
+        className={`text-${colors.font} text-xs w-full`}
+        size="txtRobotoRegular12"
+      >
+        {mentorEmail}
+      </text>
+    </div>
+  </div>
+</div>
+
+        <div className={`border-t border-${colors.font} my-3 min-w-full`}></div>
+        <div className={`flex flex-col h-[47px] md:h-auto items-center justify-start max-w-[1262px] mx-auto mb-3.5 pt-4 md:px-5 w-full`}>
           <div className="flex flex-col items-start justify-start w-full">
             <text
-              className="text-black-900 text-lg w-full"
+              className={`text-${colors.font} text-lg w-full`}              
               size="txtRobotoMedium18"
             >
               Internship Progress
@@ -174,14 +178,14 @@ const Week = () => {
             />
             <div className="flex flex-1 flex-col items-start justify-start w-full">
               <text
-                className="text-base text-black-900 w-full"
+                className={`text-base text-${colors.font} w-full`}                
                 size="txtRobotoMedium16"
               >
                 <h1>{studentName}</h1>
               </text>
               <text
-                className="text-black-900_7f text-xs w-full"
-                size="txtRobotoRegular12"
+                  className={`text-${colors.font} text-xs w-full`}
+                  size="txtRobotoRegular12"
               >
                 {studentEmail}
               </text>

@@ -4,7 +4,7 @@ const darkTheme = {
   primary: '#006bde',
   secondary: '#000',
   secondary2: '#222',
-  font: '#fff',
+  font: 'white',
   accent: '#ff8800',
   hover: '#333'
 };
