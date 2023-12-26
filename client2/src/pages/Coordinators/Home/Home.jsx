@@ -47,13 +47,15 @@ const HomePage = () => {
     }
 
 
-    const MentorComponent = ({ name, profile_picture_url, sub_id }) => (
+    const MentorComponent = ({ name, profile_picture_url, sub_id, students }) => (
         <Link to={'/coordinator/mentor/' + `${sub_id}` + '/students'}>
             <div className={styles.mentorCard}>
                 <span className={styles.profilePicContainer}>
                     <img src={profile_picture_url} alt={`${name}'s photo`} className={styles.profilePic} />
                 </span>
                 <h1 style={{ color: colors.font, margin: '5px 8px', fontWeight: 'bold', fontSize: '20px', textAlign: 'center' }}>{name}</h1>
+                <h1 style={{ color: colors.primary, margin: '5px 8px', fontWeight: 'bold', fontSize: '16px', textAlign: 'center' }}>Mentoring {students.length} students</h1>
+
             </div>
         </Link>
     );

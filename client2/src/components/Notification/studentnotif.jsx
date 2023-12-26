@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-export default function Modal() {
+export default function StudentNotification() {
   const [showDropdown, setShowDropdown] = useState(false);
   const [notfication, setNotification] = useState('');
   

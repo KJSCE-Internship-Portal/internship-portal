@@ -61,7 +61,7 @@ function App() {
   return (
     <Router>
       <ThemeProvider>
-        <Navbar />
+        {window.location.pathname!='/' && window.location.pathname!='/login' && <Navbar />}
         <div style={{ marginTop: smallNav ? '90px' : '60px' }}>
           {(showSidebar && isLoggedIn) && <SideBar />}
           <div

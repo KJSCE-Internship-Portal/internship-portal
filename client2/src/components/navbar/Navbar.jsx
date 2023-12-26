@@ -6,6 +6,7 @@ import { FaHome, FaRocket, FaSignOutAlt, FaThLarge, FaTimes, FaSun, FaStream } f
 import { setAuthToken, isAuthenticated, getUserDetails, logout } from '../../Global/authUtils';
 import { useTheme } from '../../Global/ThemeContext';
 import { useNavigate } from 'react-router-dom';
+import StudentNotification from '../Notification/studentnotif';
 
 
 const Navbar = () => {
@@ -29,20 +30,20 @@ const Navbar = () => {
     };
   }, []);
 
-  const options = [
-    {
-      name: "Internships",
-      link: '/internships/browse'
-    },
-    {
-      name: "Courses",
-      link: "/courses/browse/all"
-    },
-    {
-      name: "Contact Us",
-      link: false
-    }
-  ]
+  // const options = [
+  //   {
+  //     name: "Internships",
+  //     link: '/internships/browse'
+  //   },
+  //   {
+  //     name: "Courses",
+  //     link: "/courses/browse/all"
+  //   },
+  //   {
+  //     name: "Contact Us",
+  //     link: false
+  //   }
+  // ]
 
   const sideBarOptions = [
     {
@@ -112,18 +113,16 @@ const Navbar = () => {
             <p onClick={() => navigate('/')}></p>
           </div>
 
-          {!isLoggedIn &&
+          {
 
             <div className={styles.loginContainer} >
-
-              
-              <button className={styles.signUp} onClick={() => (window.location = "/signup")}>SignUp</button>
-
+              {/* <button className={styles.signUp} onClick={() => (window.location = "/signup")}>SignUp</button> */}
+              <StudentNotification/>
             </div>}
 
         </div>
 
-        <div style={{ maxHeight: smallNav ? '30px' : '0px', height: smallNav ? '30px' : '0px', backgroundColor: colors.secondary, display: 'flex', justifyContent: 'center', position: 'relative' }}>
+        {/* <div style={{ maxHeight: smallNav ? '30px' : '0px', height: smallNav ? '30px' : '0px', backgroundColor: colors.secondary, display: 'flex', justifyContent: 'center', position: 'relative' }}>
           {(menu && isLoggedIn) &&
             (showMenu ? <FaTimes style={{ color: colors.font, position: 'absolute', left: '15px', top: '5px' }} onClick={() => { setShowMenu(!showMenu) }} /> : < FaStream style={{ color: colors.font, position: 'absolute', left: '15px', top: '5px' }} onClick={() => { setShowMenu(!showMenu) }} />)}
 
@@ -138,7 +137,7 @@ const Navbar = () => {
               ))
             }
           </div>
-        </div>
+        </div> */}
 
       </div>
     </>

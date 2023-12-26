@@ -7,6 +7,19 @@ import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 import { url } from '../../../Global/URL';
 import AssignStudent from './AssignStudent/AssignStudent';
+import { Avatar } from '@chakra-ui/react';
+
+const getRandomLightColor = () => {
+
+    const r = Math.floor(Math.random() * 128) + 128; // Red component
+    const g = Math.floor(Math.random() * 128) + 128; // Green component
+    const b = Math.floor(Math.random() * 128) + 128; // Blue component
+  
+    // Convert RGB values to hexadecimal and concatenate
+    const color = `#${r.toString(16)}${g.toString(16)}${b.toString(16)}`;
+  
+    return color;
+  };
 
 const MentorPage = () => {
     const { theme: colors } = useTheme();
@@ -58,7 +71,9 @@ const MentorPage = () => {
                         data.data[0].students.map((student, index) => (
                             <div className={styles.studentList} key={index}>
                                 <div>
-                                    <span className={styles.studentAvatar}></span>
+                                    <span className={styles.studentAvatar}>
+                                    <Avatar name={student.email} src='' bg={getRandomLightColor()}/>
+                                    </span>
                                 </div>
                                 <div className={styles.studentName}>{student.rollno}</div>
                             </div>

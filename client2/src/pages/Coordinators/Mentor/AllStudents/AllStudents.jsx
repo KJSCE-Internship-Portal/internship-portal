@@ -14,7 +14,20 @@ import {
     Badge
 } from '@chakra-ui/react';
 import Loader from '../../../../components/loader/Loader';
-import { ThemeProvider, useTheme } from '../../../../Global/ThemeContext';
+import { useTheme } from '../../../../Global/ThemeContext';
+import { Avatar } from '@chakra-ui/react';
+
+const getRandomLightColor = () => {
+
+    const r = Math.floor(Math.random() * 128) + 128; // Red component
+    const g = Math.floor(Math.random() * 128) + 128; // Green component
+    const b = Math.floor(Math.random() * 128) + 128; // Blue component
+  
+    // Convert RGB values to hexadecimal and concatenate
+    const color = `#${r.toString(16)}${g.toString(16)}${b.toString(16)}`;
+  
+    return color;
+  };
 
 const slugify = (text) => {
     return text
@@ -44,7 +57,7 @@ const AllStudentsInDepartment = () => {
                 var current_user = user;
             }
             var fetched = axios
-                .get(url + `/students/all?department=${slugify(current_user.department)}&select=name,mentor,email,isApproved,isActive,hasMentor,div,contact_no,sem,batch,rollno`)
+                .get(url + `/students/all?department=${slugify(current_user.department)}&select=name,mentor,email,isApproved,isActive,hasMentor,div,contact_no,sem,batch,rollno,profile_picture_url`)
                 .then(response => response.data);
             setStudentsNotHavingMentor(0);
             return (
@@ -82,7 +95,9 @@ const AllStudentsInDepartment = () => {
                                 <h2>
                                     <AccordionButton _expanded={{ bg: colors.hover, color: 'white' }}>
                                         <Box as="span" flex='1' textAlign='left' style={{ color: colors.font, fontSize: '20px' }}>
-                                            <span>{student.rollno} {student.hasMentor && <Badge colorScheme='green'>Assigned</Badge>}</span>
+                                        <Avatar h={30} w={30} mr={5} src={student.profile_picture_url} />
+                                        <span style={{marginTop: '10px', height: '100%'}} >{student.name}</span>
+                                        <span style={{display: 'block',marginTop: '10px', height: '100%'}} >{student.rollno} &nbsp;&nbsp; {student.hasMentor && <Badge colorScheme='green'>Assigned</Badge>}</span>
                                         </Box>
 
                                         <AccordionIcon color={colors.font} />
@@ -90,7 +105,7 @@ const AllStudentsInDepartment = () => {
                                 </h2>
                                 
                                 <AccordionPanel pb={4}>
-                                    <div style={{ fontSize: '18px', color: colors.font }}>  {student.name} </div>
+                                    <div style={{ fontSize: '18px', color: colors.primary }}>  Semester: {student.sem}, Batch: {student.batch} </div>
                                     <div style={{ fontSize: '17px', color: '#c20010', fontStyle: 'italic', fontWeight: 'bold' }}>{student.email}</div>
 
                                     {student.hasMentor && <div style={{ borderRadius: '10px', margin: '5px 0', backgroundColor: colors.hover, padding: '5px 1.5vw', display: 'flex', flexDirection: 'column' }}>
