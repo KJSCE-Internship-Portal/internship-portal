@@ -35,14 +35,15 @@ const Comment = () => {
             try {
                 const userInfo = await getUser();
                 if (userInfo) {
-                    const weekNo = localStorage.getItem('week');
-                    setStartDate(new Date(userInfo.internships[0].progress[weekNo - 1].startDate).toISOString().substring(0, 10));
-                    setEndDate(new Date(userInfo.internships[0].progress[weekNo - 1].endDate).toISOString().substring(0, 10));
+                    const weekData = JSON.parse(localStorage.getItem('week'));
+                    const {week, late} = weekData;
+                    setStartDate(new Date(userInfo.internships[0].progress[week - 1].startDate).toISOString().substring(0, 10));
+                    setEndDate(new Date(userInfo.internships[0].progress[week - 1].endDate).toISOString().substring(0, 10));
                     setStudentName(userInfo.name);
                     setStudentEmail(userInfo.email);
                     setStudentProfilePicture(userInfo.profile_picture_url);
-                    setWeekDescription(userInfo.internships[0].progress[weekNo - 1].description);
-                    const privComment = userInfo.internships[0].progress[weekNo - 1].mentor_comment;
+                    setWeekDescription(userInfo.internships[0].progress[week - 1].description);
+                    const privComment = userInfo.internships[0].progress[week - 1].mentor_comment;
                     if (privComment != "No Comments Yet") {
                         setMentorName(userInfo.mentor.name);
                         setMentorEmail(userInfo.mentor.email);
@@ -59,34 +60,34 @@ const Comment = () => {
 
     return (
 
-        <section class="bg-white dark:bg-gray-900 py-8 lg:py-16 antialiased min-h-screen">
+        <section class="bg-white dark:bg-gray-200 py-8 lg:py-16 antialiased min-h-screen">
             <div class="max-w-2xl mx-auto px-4">
                 <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-lg lg:text-3xl font-bold text-gray-900 dark:text-white">Weekly Report:</h2>
+                    <h2 class="text-lg lg:text-3xl font-bold text-gray-900 dark:text-black">Weekly Report:</h2>
                 </div>
-                <div class="flex justify-between items-center mb-6 text-white">
+                <div class="flex justify-between items-center mb-6 text-black">
                     <h2>Start Date: {startdate}</h2>
                 </div>
-                <div class="flex justify-between items-center mb-6 text-white">
+                <div class="flex justify-between items-center mb-6 text-black">
                     <h2>End Date: {enddate}</h2>
                 </div>
-                <article class="p-6 text-base bg-white rounded-lg dark:bg-gray-900">
+                <article class="p-6 text-base bg-white rounded-lg dark:bg-gray-300">
                     <footer class="flex justify-between items-center mb-2">
                         <div class="flex items-center">
-                            <p class="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white font-semibold"><img
+                            <p class="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-black font-semibold"><img
                                 class="mr-2 w-6 h-6 rounded-full"
                                 src={studentProfilePicture}
                                 alt="Student" />{studentName}</p>
-                            <p class="text-sm text-gray-600 dark:text-gray-400">{studentEmail}</p>
+                            <p class="text-sm text-gray-600 dark:text-black">{studentEmail}</p>
                         </div>
                     </footer>
-                    <p class="text-gray-500 dark:text-gray-400">{weekDescription}</p>
+                    <p class="text-gray-500 dark:text-black">{weekDescription}</p>
                 </article>
                 {!mentorProfilePicture && (<hr className="border-gray-300" />)}
-                <article class="p-6 mb-3 ml-6 lg:ml-12 text-base bg-white rounded-lg dark:bg-gray-900">
+                <article class="p-6 mb-3 ml-6 lg:ml-12 text-base bg-white rounded-lg dark:bg-gray-300">
                     <footer class="flex justify-between items-center mb-2">
                         <div class="flex items-center">
-                            <p class="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white font-semibold">{mentorProfilePicture && (
+                            <p class="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-black font-semibold">{mentorProfilePicture && (
                                 <img
                                     className="mr-2 w-6 h-6 rounded-full"
                                     src={mentorProfilePicture}
@@ -96,7 +97,7 @@ const Comment = () => {
                             <p class="text-sm text-gray-600 dark:text-gray-400">{mentorEmail}</p>
                         </div>
                     </footer>
-                    <p class="text-gray-500 dark:text-gray-400">{mentorComment}</p>
+                    <p class="text-gray-500 dark:text-black">{mentorComment}</p>
                 </article>
                 {mentorProfilePicture && (<hr className="border-gray-300" />)}
             </div>

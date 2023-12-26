@@ -9,7 +9,7 @@ const Certificate = () => {
     };
 
     return (
-        <section className="bg-white dark:bg-gray-900 py-8 lg:py-16 antialiased">
+        <section className="bg-white dark:bg-gray-200 py-8 lg:py-16 antialiased">
             <div className="max-w-2xl mx-auto px-4">
                 <div className="text-lg lg:text-2xl font-bold text-gray-900 dark:text-white">Submit your Certificate</div>
                 <div className="flex items-center justify-center w-full">
