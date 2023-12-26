@@ -1,25 +1,30 @@
 import React, { useState } from "react";
 import { useEffect } from 'react';
 import { useTheme } from '../../Global/ThemeContext';
-import { useParams } from 'react-router-dom';
+import showToast from '../../Global/Toast';
+import { useToast } from '@chakra-ui/react';
 import axios from 'axios';
 import { url } from '../../Global/URL';
 import StudentDrawer from './studentdrawer.jsx';
 
 const InternshipPlatform = () => {
-  const approveStudent = async (studentID, approval) => {
-    console.log(`Internship with ID ${studentID} approved.`);
+  const approveStudent = async (studentID, approval, mentorEmail) => {
     const data = {
       sub_id: studentID,
-      status: approval
+      status: approval,
+      email: mentorEmail,
     }
     const response = await axios.post(url + `/student/approve`, data);
-    window.location.reload();
+    if(approval){
+      showToast(toast, 'Success', 'success', 'Student Approved');
+    } else {
+      showToast(toast, 'Success', 'success', 'Student Rejected');
+    }
+    fetchData();
   };
   const viewUser = (studentData) => {
     setStudentData(studentData);
     setIsDrawerOpen(true);
-    console.log(`USER`);
   };
   const trackUser = (studentInfo) => {
     console.log(`APPROVED USER`);
@@ -58,6 +63,7 @@ const InternshipPlatform = () => {
   const [studentsForApproval, setStudentsForApproval] = useState([]);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [studentData, setStudentData] = useState([]);
+  const toast = useToast();
 
   const fetchData = async () => {
     try {
@@ -187,8 +193,8 @@ const InternshipPlatform = () => {
                 student={student}
                 withButton={true}
                 status={true}
-                onApprove={() => approveStudent(student.sub_id, true)}
-                onDisapprove={() => approveStudent(student.sub_id, false)}
+                onApprove={() => approveStudent(student.sub_id, true, student.mentor.email)}
+                onDisapprove={() => approveStudent(student.sub_id, false, student.mentor.email)}
               />
             ))}
           </div>

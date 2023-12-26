@@ -71,7 +71,9 @@ const Week = () => {
               status: weekInfo.submitted ? 'Submitted' : 'Not Submitted',
               details: `Details for Week ${index + 1}`,
               startDate: weekInfo.startDate,
-              endDate: weekInfo.endDate
+              endDate: weekInfo.endDate,
+              description: weekInfo.description,
+              late: weekInfo.isLateSubmission
             }));
             setProgressData(updatedProgressData);
           }
@@ -92,11 +94,17 @@ const Week = () => {
         <div className="flex flex-col h-[164px] md:h-auto items-start justify-start w-full">
           <div className={`bg-black-900_0c flex flex-col gap-[51px] items-left justify-start pb-[73px] md:pr-10 sm:pr-5 pr-[73px] w-full relative`}>
             <text
-              className={`justify-center p-1 rounded-br-md rounded-tl-md text-xs font-semibold w-auto ${week.status === "Submitted" ? "text-green-700" : "text-red-900"}`}
+              className={`justify-center p-1 rounded-br-md rounded-tl-md text-xs font-semibold w-auto ${week.description ?
+                  (week.late ? "text-orange-600" : (week.status === "Submitted" ? "text-green-700" : "text-red-900"))
+                  : "text-red-900"
+                }`}
               size="txtRobotoMedium12"
               style={{ position: 'absolute', top: 5, left: 5, backgroundColor: '#ededed' }} // Positioning for status
             >
-              {week.status}
+              {week.description ?
+                (week.late ? "Late Submission" : week.status)
+                : "Not Submitted"
+              }
             </text>
           </div>
         </div>
@@ -116,7 +124,7 @@ const Week = () => {
     <>
       <div className="bg-gray-100 flex flex-col font-roboto items-center justify-start mx-auto w-full max-h-full py-6 px-4">
         {/* Mentor */}
-        <div className="flex md:flex-col flex-row gap-3 h-[70px] md:h-auto items-center justify-start max-w-[1262px] mx-auto pt-4 md:px-5 w-full mb-3.5">
+        <div className="flex flex-col gap-3 h-[70px] md:h-auto items-center justify-start max-w-[1262px] mx-auto pt-4 md:px-5 w-full mb-3.5">
           <text
             className="text-base text-black-900 w-full"
             size="txtRobotoMedium16"
@@ -145,6 +153,7 @@ const Week = () => {
             </div>
           </div>
         </div>
+        <div className="border-t border-gray-300 my-3 min-w-full"></div>
         <div className="flex flex-col h-[47px] md:h-auto items-center justify-start max-w-[1262px] mx-auto mb-3.5 pt-4 md:px-5 w-full">
           <div className="flex flex-col items-start justify-start w-full">
             <text

@@ -1,5 +1,6 @@
 const express = require("express");
 const Student = require('../models/student');
+const Mentor = require('../models/mentor');
 
 const moment = require('moment');
 
@@ -93,7 +94,7 @@ const addWeeklyProgress = async (req, res) => {
 
         var taskUpdate = req.body;
         // console.log(taskUpdate);
-        const { sub_id, week, description } = taskUpdate;
+        const { sub_id, week, description, isLateSubmission } = taskUpdate;
         try{
             const updatedStudent = await Student.findOneAndUpdate(
                 {
@@ -104,6 +105,7 @@ const addWeeklyProgress = async (req, res) => {
                   $set: {
                     'internships.0.progress.$.description': description.trim(),
                     'internships.0.progress.$.submitted': true,
+                    'internships.0.progress.$.isLateSubmission': isLateSubmission,
                   },
                 },
                 {
@@ -113,16 +115,16 @@ const addWeeklyProgress = async (req, res) => {
             if(updatedStudent){
                 res.status(200).json({ success: true, msg: "Add Progress Route" });
             } else{
-                res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
+                res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}`});
             }
         } catch (error) {
             console.error(`Error: ${error.message}`);
-            res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
+            res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message} `});
         }
 
     } catch (error) {
         console.error(`Error: ${error.message}`);
-        res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
+        res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}`});
     }
 
 };
@@ -221,7 +223,7 @@ const approveStudent = async (req, res) => {
     try {
         var approval = req.body;
         // console.log(approval);
-        const { sub_id, status } = approval;
+        const { sub_id, status, email } = approval;
         try{
             if(status){
                 const updatedStudent = await Student.findOneAndUpdate(
@@ -243,12 +245,17 @@ const approveStudent = async (req, res) => {
                     res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
                 }
             } else {
-                const deletedStudent = await Student.findOneAndDelete(
+                const rejectedStudent = await Student.findOneAndDelete(
                     {
                     sub_id
-                    }
+                    },
                 );
-                if(deletedStudent){
+                const updatedMentor = await Mentor.findOneAndUpdate(
+                    {email},
+                    {$pull: {students: {sub_id}}},
+                    {new: true}
+                );
+                if(rejectedStudent && updatedMentor){
                     res.status(200).json({ success: true, msg: "Approval Rejected" });
                 } else{
                     res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
