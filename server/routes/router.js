@@ -28,7 +28,8 @@ router.post("/mentor/comment/add", controllerMentor.addPrivateComments);
 router.post('/coordinator/add/mentor', controllerCoordinator.addMentor);
 router.post("/coordinator/mentor/assign-student", controllerCoordinator.assignStudent);
 router.post("/coordinator/mentor/remove-assigned-student", controllerCoordinator.removeAssignedStudent);
-router.post("/statistics", controllerAdmin.getStatistics);
+router.post("/coordinator/statistics", controllerCoordinator.getStatisticsCoordinator);
+router.post("/admin/statistics", controllerAdmin.getStatisticsAdmin);
 
 
 // router.post("/login", controllerOAuth.handleLoginRequest);

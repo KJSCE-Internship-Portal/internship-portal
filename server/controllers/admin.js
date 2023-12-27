@@ -13,161 +13,215 @@ const loginAdmin = async (req, res) => {
 
 };
 
-const getStatistics = async (req,res) => {
-    try {
+const getStatisticsAdmin = async (req, res) => {
 
-        const department = req.body.department;
+  try {
+      const studentsInAllDepartments = await Students.countDocuments({ isActive: true });
+      const assignedStudents = await Students.countDocuments({ isActive: true, hasMentor: true });
+      const completedStudentsAndVerified = await Students.countDocuments({
+          isActive: true,
+          isApproved: true,
+          'internships.0.isCompleted': true
+      });
 
-        const students = await Students.countDocuments({ isActive: true });
-        const studentsInDepartment = await Students.countDocuments({ department, isActive: true });
-        const assignedStudents = await Students.countDocuments({
-            isActive: true,
-            hasMentor: true,
-            department
-        });
-        const completedStudentsAndVerified = await Students.countDocuments({
-            isActive: true,
-            isApproved: true,
-            'internships.0.isCompleted': true,
-            department
-        });
-        const divWiseDistribution = await Students.aggregate([
-            {
-              $match: {
-                department: department,
-              },
-            },
-            {
-              $group: {
-                _id: '$div',
-                count: { $sum: 1 },
-              },
-            },
-          ]);
-          const batchWiseDistribution = await Students.aggregate([
-            {
-              $match: {
-                department: department,
-              },
-            },
-            {
-              $group: {
-                _id: '$batch',
-                count: { $sum: 1 },
-              },
-            },
-          ]);
-          const avgInternshipDuration = await Students.aggregate([
-            {
-              $match: { department }
-            },
-            {
-              $unwind: '$internships'
-            },
-            {
-              $addFields: {
-                internshipDuration: {
-                  $divide: [
-                    { $subtract: ['$internships.endDate', '$internships.startDate'] },
-                    1000 * 60 * 60 * 24 * 7 
-                  ]
-                }
-              }
-            },
-            {
-              $group: {
-                _id: null,
-                avgDuration: { $avg: '$internshipDuration' }
-              }
-            }
-          ]);
-
-          const topCompanies = await Students.aggregate([
-            {
-              $match: { department }
-            },
-            {
-              $unwind: '$internships'
-            },
-            {
-              $group: {
-                _id: '$internships.company',
+      const departmentWiseDistribution = await Students.aggregate([
+        {
+            $group: {
+                _id: '$department',
                 count: { $sum: 1 }
-              }
-            },
-            {
-              $sort: { count: -1 }
-            },
-            {
-              $limit: 5
             }
-          ]);
-
-          const completedInternshipsPercentage = await Students.aggregate([
-            {
-              $match: { department }
-            },
-            {
-              $project: {
-                totalInternships: { $size: '$internships' },
-                completedInternships: {
-                  $size: {
-                    $filter: {
-                      input: '$internships',
-                      as: 'internship',
-                      cond: { $eq: ['$$internship.isCompleted', true] }
-                    }
-                  }
-                }
-              }
-            },
-            {
-              $group: {
-                _id: null,
-                totalInternships: { $sum: '$totalInternships' },
-                completedInternships: { $sum: '$completedInternships' }
-              }
-            },
-            {
-              $project: {
-                completedPercentage: { $multiply: [{ $divide: ['$completedInternships', '$totalInternships'] }, 100] }
-              }
-            }
-          ]);
-        //   const lateSubmissions = await Student.aggregate([
-        //     {
-        //       $match: {
-        //         department ,
-        //         'internships.progress.isLateSubmission': true
-        //       }
-        //     },
-        //     {
-        //       $count: 'totalLateSubmissions'
-        //     }
-        //   ]);
-
-        const data = {
-            students,
-            studentsInDepartment,
-            assignedStudents,
-            completedStudentsAndVerified,
-            batchWiseDistribution,
-            divWiseDistribution,
-            avgInternshipDuration,
-            topCompanies,
-            completedInternshipsPercentage,
-            // lateSubmissions
         }
+      ]);
 
-        console.log(data);
+      const avgInternshipDuration = await Students.aggregate([
+          {
+              $unwind: '$internships'
+          },
+          {
+              $addFields: {
+                  internshipDuration: {
+                      $divide: [
+                          { $subtract: ['$internships.endDate', '$internships.startDate'] },
+                          1000 * 60 * 60 * 24 * 7
+                      ]
+                  }
+              }
+          },
+          {
+              $group: {
+                  _id: null,
+                  avgDuration: { $avg: '$internshipDuration' }
+              }
+          }
+      ]);
 
-        return res.status(200).json({ success: true, msg: "Statistics Route", data });
+      const topCompanies = await Students.aggregate([
+          {
+              $unwind: '$internships'
+          },
+          {
+              $group: {
+                  _id: '$internships.company',
+                  count: { $sum: 1 }
+              }
+          },
+          {
+              $sort: { count: -1 }
+          },
+          {
+              $limit: 5
+          }
+      ]);
 
-    } catch (error) {
-        console.error(`Error: ${error.message}`);
-        return res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
-    }
-}
+      const totalCompletedInternshipsPercentage = await Students.aggregate([
+        {
+          $match: { isActive: true }
+        },
+        {
+          $group: {
+            _id: '$department',
+            totalStudents: { $sum: 1 },
+            completedInternships: {
+              $sum: {
+                $cond: [{ $eq: ['$internships.iscompleted', true] }, 1, 0]
+              }
+            }
+          }
+        },
+        {
+          $project: {
+            _id: 0,
+            department: '$_id',
+            completedInternshipsPercentage: {
+              $multiply: [
+                { $divide: ['$completedInternships', '$totalStudents'] },
+                100
+              ]
+            }
+          }
+        }
+      ]);
+
+      const departmentCompletedInternshipsPercentage = await Students.aggregate([
+        {
+          $match: { isActive: true }
+        },
+        {
+          $unwind: '$internships'
+        },
+        {
+          $group: {
+            _id: '$department',
+            totalStudents: { $sum: 1 },
+            completedInternships: {
+              $sum: {
+                $cond: [{ $eq: ['$internships.iscompleted', true] }, 1, 0]
+              }
+            }
+          }
+        },
+        {
+          $project: {
+            _id: 0,
+            department: '$_id',
+            completedInternshipsPercentage: {
+              $multiply: [
+                { $divide: ['$completedInternships', '$totalStudents'] },
+                100
+              ]
+            }
+          }
+        }
+      ]);
+      
+
+      const lateSubmissions = await Students.aggregate([
+          {
+              $project: {
+                  lateSubmissions: {
+                      $size: {
+                          $filter: {
+                              input: '$internships.0.progress',
+                              as: 'progress',
+                              cond: { $eq: ['$$progress.isLateSubmission', true] }
+                          }
+                      }
+                  }
+              }
+          },
+          {
+              $group: {
+                  _id: null,
+                  totalLateSubmissions: { $sum: '$lateSubmissions' }
+              }
+          }
+      ]);
+
+      const departmentProgress = await Students.aggregate([
+          {
+              $project: {
+                  department: 1, // Assuming 'department' is a field in the Student schema
+                  totalProgress: { $size: '$internships.progress' },
+                  submittedProgress: {
+                      $size: {
+                          $filter: {
+                              input: '$internships.progress',
+                              as: 'progress',
+                              cond: { $eq: ['$$progress.submitted', true] }
+                          }
+                      }
+                  }
+              }
+          },
+          {
+              $group: {
+                  _id: '$department',
+                  totalDepartmentProgress: { $sum: '$totalProgress' },
+                  submittedDepartmentProgress: { $sum: '$submittedProgress' }
+              }
+          },
+          {
+              $project: {
+                  department: '$_id',
+                  _id: 0,
+                  departmentProgressPercentage: {
+                      $cond: {
+                          if: { $eq: ['$totalDepartmentProgress', 0] },
+                          then: 0,
+                          else: {
+                              $multiply: [
+                                  { $divide: ['$submittedDepartmentProgress', '$totalDepartmentProgress'] },
+                                  100
+                              ]
+                          }
+                      }
+                  }
+              }
+          }
+      ]);
+
+      const data = {
+          studentsInAllDepartments,
+          assignedStudents,
+          completedStudentsAndVerified,
+          departmentWiseDistribution,
+          avgInternshipDuration,
+          topCompanies,
+          totalCompletedInternshipsPercentage,
+          departmentCompletedInternshipsPercentage,
+          lateSubmissions,
+          departmentProgress
+      };
+
+      console.log(data);
+
+      return res.status(200).json({ success: true, msg: "Statistics Route", data });
+
+  } catch (error) {
+      console.error(`Error: ${error.message}`);
+      return res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
+  }
+};
 
 
 const signOutAdmin = async (req, res) => {
@@ -182,5 +236,5 @@ const signOutAdmin = async (req, res) => {
 module.exports = {
     loginAdmin,
     signOutAdmin,
-    getStatistics
+    getStatisticsAdmin
 };
