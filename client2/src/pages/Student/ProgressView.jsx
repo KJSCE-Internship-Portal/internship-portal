@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useEffect } from 'react';
+import { useTheme } from '../../Global/ThemeContext';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { url } from '../../Global/URL';
@@ -15,6 +16,7 @@ const Comment = () => {
     const [mentorProfilePicture, setMentorProfilePicture] = useState('');
     const [weekDescription, setWeekDescription] = useState('');
     const [mentorComment, setMentorComment] = useState('');
+    const { theme: colors } = useTheme();
     // const [image, setImage] = useState('');
 
     const accessToken = localStorage.getItem('IMPaccessToken');
@@ -35,6 +37,7 @@ const Comment = () => {
             try {
                 const userInfo = await getUser();
                 if (userInfo) {
+                    console.log(userInfo);
                     const weekData = JSON.parse(localStorage.getItem('week'));
                     const {week, late} = weekData;
                     setStartDate(new Date(userInfo.internships[0].progress[week - 1].startDate).toISOString().substring(0, 10));
@@ -60,46 +63,45 @@ const Comment = () => {
 
     return (
 
-        <section class="bg-white dark:bg-gray-200 py-8 lg:py-16 antialiased min-h-screen">
-            <div class="max-w-2xl mx-auto px-4">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-lg lg:text-3xl font-bold text-gray-900 dark:text-black">Weekly Report:</h2>
+        <section className={`bg-${colors.secondary} py-8 lg:py-16 antialiased min-h-screen`}>
+        <div className={`max-w-2xl mx-auto px-4 text-${colors.font} dark:text-black`}>
+                <div className="flex justify-between items-center mb-6">
+                    <h2 className={`text-lg lg:text-3xl font-bold text-${colors.font}`}>Weekly Report:</h2>
                 </div>
-                <div class="flex justify-between items-center mb-6 text-black">
+                <div className={`flex justify-between items-center mb-6 text-${colors.font}`}>
                     <h2>Start Date: {startdate}</h2>
                 </div>
-                <div class="flex justify-between items-center mb-6 text-black">
+                <div className={`flex justify-between items-center mb-6 text-${colors.font}`}>
                     <h2>End Date: {enddate}</h2>
                 </div>
-                <article class="p-6 text-base bg-white rounded-lg dark:bg-gray-300">
-                    <footer class="flex justify-between items-center mb-2">
-                        <div class="flex items-center">
-                            <p class="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-black font-semibold"><img
-                                class="mr-2 w-6 h-6 rounded-full"
-                                src={studentProfilePicture}
-                                alt="Student" />{studentName}</p>
-                            <p class="text-sm text-gray-600 dark:text-black">{studentEmail}</p>
+                <article className={`p-6 text-base bg-${colors.secondary} rounded-lg`}>
+                    <footer className="flex justify-between items-center mb-2">
+                        <div className="flex items-center">
+                            <p className={`inline-flex items-center mr-3 text-sm text-${colors.font} font-semibold`}>
+                                <img className="mr-2 w-6 h-6 rounded-full" src={studentProfilePicture} alt="Student" />
+                                {studentName}
+                            </p>
+                            <p className={`text-sm text-${colors.font}`}>{studentEmail}</p>
                         </div>
                     </footer>
-                    <p class="text-gray-500 dark:text-black">{weekDescription}</p>
+                    <p className={`text-${colors.font}`}>{weekDescription}</p>
                 </article>
                 {!mentorProfilePicture && (<hr className="border-gray-300" />)}
-                <article class="p-6 mb-3 ml-6 lg:ml-12 text-base bg-white rounded-lg dark:bg-gray-300">
-                    <footer class="flex justify-between items-center mb-2">
-                        <div class="flex items-center">
-                            <p class="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-black font-semibold">{mentorProfilePicture && (
-                                <img
-                                    className="mr-2 w-6 h-6 rounded-full"
-                                    src={mentorProfilePicture}
-                                    alt="Mentor"
-                                />
-                            )}{mentorName}</p>
-                            <p class="text-sm text-gray-600 dark:text-gray-400">{mentorEmail}</p>
+                <article className={`p-2 mb-3 ml-6 lg:ml-12 text-base bg-${colors.secondary} rounded-lg`}>
+                    <footer className="flex justify-between items-center mb-2">
+                        <div className="flex items-center">
+                            <p className={`inline-flex items-center mr-3 text-sm text-${colors.font} font-semibold`}>
+                                {mentorProfilePicture && (
+                                    <img className="mr-2 w-6 h-6 rounded-full" src={mentorProfilePicture} alt="Mentor" />
+                                )}
+                                {mentorName}
+                            </p>
+                            <p className={`text-sm text-${colors.font}`}>{mentorEmail}</p>
                         </div>
                     </footer>
-                    <p class="text-gray-500 dark:text-black">{mentorComment}</p>
+                    <p className={`text-${colors.font}`}>{mentorComment}</p>
                 </article>
-                {mentorProfilePicture && (<hr className="border-gray-300" />)}
+                {mentorProfilePicture && (<hr className={`border border-${colors.accent}`} />)}
             </div>
         </section>
     );

@@ -127,9 +127,9 @@ const FramePage = () => {
 
   return (
     <>
-      <div className="bg-gray-100 flex flex-col font-roboto items-center justify-start mx-auto w-full max-h-full py-6 px-4">
+<div className={`bg-${colors.secondary} flex flex-col font-roboto items-center justify-start mx-auto w-full max-h-full py-6 px-4`}>
         {/* User */}
-        <div className="flex md:flex-col flex-row gap-3 h-[70px] md:h-auto items-center justify-start max-w-[1262px] mx-auto pt-4 md:px-5 w-full mb-3.5">
+        <div className={`flex md:flex-col flex-row gap-3 h-[70px] md:h-auto items-center justify-start max-w-[1262px] mx-auto pt-4 md:px-5 w-full mb-3.5`}>
           <div className="flex flex-row justify-start w-full">
             <img
               src={profile_url}
@@ -138,28 +138,18 @@ const FramePage = () => {
             />
             <div className="flex flex-1 flex-col items-start justify-start w-full">
               <text
-                className="text-base text-black-900 w-full"
+                className={`text-base text-${colors.font} w-full`}
                 size="txtRobotoMedium16"
               >
                 <h1>{name}</h1>
               </text>
               <text
-                className="text-black-900_7f text-xs w-full"
+                className={`text-${colors.font} text-xs w-full`}
                 size="txtRobotoRegular12"
               >
                 {email}
               </text>
             </div>
-          </div>
-        </div>
-        <div className="flex flex-col h-[47px] md:h-auto items-center justify-start max-w-[1262px] mx-auto mb-3.5 pt-4 md:px-5 w-full">
-          <div className="flex flex-col items-start justify-start w-full">
-            <text
-              className="text-black-900 text-lg w-full"
-              size="txtRobotoMedium18"
-            >
-              Internship Progress
-            </text>
           </div>
         </div>
         {/* Week Details */}

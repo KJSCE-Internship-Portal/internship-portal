@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useEffect } from 'react';
+import { useTheme } from '../../Global/ThemeContext';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { url } from '../../Global/URL';
@@ -18,6 +19,7 @@ const Comment = () => {
     const [wantToReply, setWantToReply] = useState('');
     const [subID, setSubID] = useState('');
     const [weekNo, setWeekNo] = useState('');
+    const { theme: colors } = useTheme();
 
     const accessToken = localStorage.getItem('IMPaccessToken');
 
@@ -88,31 +90,31 @@ const Comment = () => {
         fetchData();
     }, []);
     return (
-        <section class="text-white dark:bg-gray-900 py-8 lg:py-16 antialiased h-screen">
+        <section class={`bg-${colors.secondary} py-8 lg:py-16 antialiased h-screen`}>
             <div class="max-w-2xl mx-auto px-4">
                 <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-lg lg:text-3xl font-bold text-gray-900 dark:text-white">Weekly Report:</h2>
+                    <h2 class={`text-lg lg:text-3xl font-bold text-${colors.font}`}>Weekly Report:</h2>
                 </div>
-                <div class="flex justify-between items-center mb-6 text-white">
+                <div class={`flex justify-between items-center mb-6 text-${colors.font}`}>
                     <h2>Start Date: {startdate}</h2>
                 </div>
-                <div class="flex justify-between items-center mb-6 text-white">
+                <div class={`flex justify-between items-center mb-6 text-${colors.font}`}>
                     <h2>End Date: {enddate}</h2>
                 </div>
-                <article class="p-6 text-base bg-white rounded-lg dark:bg-gray-900">
+                <article class={`p-6 text-base bg-${colors.secondary} rounded-lg`}>
                     <footer class="flex justify-between items-center mb-2">
                         <div class="flex items-center">
-                            <p class="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white font-semibold"><img
+                            <p class={`inline-flex items-center mr-3 text-sm text-${colors.font} font-semibold`}><img
                                 class="mr-2 w-6 h-6 rounded-full"
                                 src={studentProfilePicture}
                                 alt="Student" />{studentName}</p>
-                            <p class="text-sm text-gray-600 dark:text-gray-400">{studentEmail}</p>
+                            <p class={`text-sm text-${colors.font}`}>{studentEmail}</p>
                         </div>
                     </footer>
-                    <p class="text-gray-500 dark:text-gray-400">{weekDescription}</p>
+                    <p class={`text-${colors.font}`}>{weekDescription}</p>
                     {!mentorProfilePicture && (<div class="flex items-center mt-4 space-x-4 mb-3">
                         <button type="button"
-                            class="flex items-center text-sm text-gray-500 hover:underline dark:text-gray-400 font-medium" onClick={replyOnClick}>
+                            class={`flex items-center text-sm text-${colors.font} hover:underline font-medium`} onClick={replyOnClick}>
                             <svg class="mr-1.5 w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 18">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5h5M5 8h2m6-3h2m-5 3h6m2-7H2a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h3v5l5-5h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1Z" />
                             </svg>
@@ -121,21 +123,21 @@ const Comment = () => {
                     </div>)}
                     {wantToReply && wantToReply === true ? (
                         <form className="mb-6" onSubmit={handleSubmit}>
-                            <div className="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+                            <div className={`py-2 px-4 mb-4 bg-${colors.secondary} rounded-lg rounded-t-lg border border-${colors.accent}`}>
                                 <label htmlFor="comment" className="sr-only">Your comment</label>
                                 <textarea
                                     id="comment"
                                     rows="6"
                                     value={mentorComment}
                                     onChange={(e) => setMentorComment(e.target.value)}
-                                    className="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-800"
+                                    className={`px-0 w-full text-sm text-${colors.font} border-0 focus:ring-0 focus:outline-none bg-${colors.secondary} dark:text-${colors.font} dark:placeholder-${colors.font} dark:bg-${colors.secondary}`}
                                     placeholder="Write a comment..."
                                     required
                                 ></textarea>
                             </div>
                             <button
                                 type="submit"
-                                className="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800"
+                                className={`inline-flex items-center py-2.5 px-4 font-medium text-center text-${colors.font} bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800`}
                             >
                                 Post comment
                             </button>
@@ -144,22 +146,22 @@ const Comment = () => {
                         <div></div>
                     )}
                 </article>
-                {mentorProfilePicture && (<article class="p-6 mb-3 ml-6 lg:ml-12 text-base bg-white rounded-lg dark:bg-gray-900">
+                {mentorProfilePicture && (<article class={`p-2 mb-3 ml-6 lg:ml-12 text-base bg-${colors.secondary} rounded-lg`}>
                     <footer class="flex justify-between items-center mb-2">
                         <div class="flex items-center">
-                            <p class="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white font-semibold">{mentorProfilePicture && (
+                            <p class={`inline-flex items-center mr-3 text-sm text-${colors.font} font-semibold`}>{mentorProfilePicture && (
                                 <img
                                     className="mr-2 w-6 h-6 rounded-full"
                                     src={mentorProfilePicture}
                                     alt="Mentor"
                                 />
                             )}{mentorName}</p>
-                            <p class="text-sm text-gray-600 dark:text-gray-400">{mentorEmail}</p>
+                            <p class={`text-sm text-${colors.font}`}>{mentorEmail}</p>
                         </div>
                     </footer>
-                    <p class="text-gray-500 dark:text-gray-400">{mentorComment}</p>
+                    <p class={`text-${colors.font}`}>{mentorComment}</p>
                 </article>)}
-                <hr className="border-gray-300" />
+                <hr className={`border border-${colors.accent}`} />
             </div>
         </section>
     );

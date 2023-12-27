@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useTheme } from '../../Global/ThemeContext';
 import axios from 'axios';
 import { url } from '../../Global/URL';
 import showToast from '../../Global/Toast';
@@ -16,6 +17,7 @@ const Progress = () => {
     const [isLate, setIsLate] = useState(late);
     const [weekNo, setWeekNo] = useState(parseInt('', 10));
     const toast = useToast();
+    const { theme: colors } = useTheme();
 
     const accessToken = localStorage.getItem('IMPaccessToken');
 
@@ -78,28 +80,28 @@ const Progress = () => {
     }, []);
 
     return (
-        <section class="bg-white dark:bg-gray-200 py-8 lg:py-16 antialiased min-h-screen">
+        <section class={`bg-${colors.secondary} py-8 lg:py-16 antialiased min-h-screen`}>
             <div class="max-w-2xl mx-auto px-4">
                 <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-xl lg:text-3xl font-bold text-gray-900 dark:text-black">Weekly Progress:</h2>
+                    <h2 class={`text-xl lg:text-3xl font-bold text-${colors.font}`}>Weekly Progress:</h2>
                 </div>
                 <form class="mb-6" onSubmit={handleSubmit}>
                     <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-black">Week Start Date:</h2>
+                        <h2 class={`text-lg lg:text-2xl font-bold text-${colors.font}`}>Week Start Date:</h2>
                     </div>
                     <div class="py-2 px-4 mb-4 text-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-500 dark:border-gray-700">
                         <h1>{startdate}</h1>
                     </div>
 
                     <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-black">Week End Date:</h2>
+                        <h2 class={`text-lg lg:text-2xl font-bold text-${colors.font}`}>Week End Date:</h2>
                     </div>
                     <div class="py-2 px-4 mb-4 text-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-500 dark:border-gray-700">
                         <h1>{enddate}</h1>
                     </div>
 
                     <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-black">Task:</h2>
+                        <h2 class={`text-lg lg:text-2xl font-bold text-${colors.font}`}>Task:</h2>
                     </div>
                     <div class="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-500 dark:border-gray-700">
                         <textarea id="comment" rows="6" value={task}

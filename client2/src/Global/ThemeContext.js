@@ -14,7 +14,7 @@ const initialTheme = {
   secondary: '#ededed',
   secondary2: '#d6d6d6',
   font: '#000',
-  accent: '#ff8800',
+  accent: 'black',
   hover: '#999999'
 };
 

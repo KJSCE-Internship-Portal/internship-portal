@@ -38,7 +38,7 @@ const addPrivateComments = async (req, res) => {
                 {
                   $set: {
                     'internships.0.progress.$.mentor_comment': mentor_comment.trim(),
-                    // 'internships.0.progress.$.submitted': true,
+                    'internships.0.progress.$.hasMentorCommented': true,
                   },
                 },
                 {
