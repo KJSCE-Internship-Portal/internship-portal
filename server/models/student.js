@@ -113,6 +113,89 @@ const studentSchema = new mongoose.Schema({
                 required: false,
                 default: false
             },
+            evaluation: [    // 0th index for ISE and 1st Index for ESE
+                {
+                    mentor_name: {
+                        type: String,
+                        required: [true, "Mentor Name is required"]
+                    },
+                    date: {
+                        type: Date,
+                        required: [true, "date is required"]
+                    },
+                    time: {
+                        type: String,
+                        required: [true, 'Time is required']
+                    },
+                    venue: {
+                        type: String,
+                        required: [true, 'Venue is required']
+                    },
+                    job_title: {
+                        type: String,
+                        required: [true, 'Job title is required']
+                    },
+                    quality_of_report: {
+                        outOf: {
+                            type: Number,
+                            default: 20
+                        },
+                        scored: {
+                            type: Number,
+                            required: true,
+                            default: 0
+                        }
+                    },
+                    oral_presentation: {
+                        outOf: {
+                            type: Number,
+                            default: 20
+                        },
+                        scored: {
+                            type: Number,
+                            required: true,
+                            default: 0
+                        }
+                    },
+                    quality_of_work_done: {
+                        outOf: {
+                            type: Number,
+                            default: 15,
+                        },
+                        scored: {
+                            type: Number,
+                            required: true,
+                            default: 0
+                        }
+                    },
+                    understanding_of_work: {
+                        outOf: {
+                            type: Number,
+                            default: 15
+                        },
+                        scored: {
+                            type: Number,
+                            required: true,
+                            default: 0
+                        }
+                    },
+                    periodic_interaction: {
+                        outOf: {
+                            type: Number,
+                            default: 15
+                        },
+                        scored: {
+                            type: Number,
+                            required: true,
+                            default: 0
+                        }
+                    },
+                    remarks: {
+                        type: String,
+                        required: false
+                    }
+                }
+            ],
             completion: [
                 {
                     document_type: {
