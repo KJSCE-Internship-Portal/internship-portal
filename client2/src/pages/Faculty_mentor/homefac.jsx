@@ -4,7 +4,7 @@ import { useTheme } from '../../Global/ThemeContext';
 import showToast from '../../Global/Toast';
 import { useToast } from '@chakra-ui/react';
 import axios from 'axios';
-import { Card, CardHeader, CardBody, CardFooter } from '@chakra-ui/react'
+import { Card, CardHeader, CardBody, CardFooter, Avatar, AvatarBadge } from '@chakra-ui/react'
 import { url } from '../../Global/URL';
 import StudentDrawer from './studentdrawer.jsx';
 
@@ -16,7 +16,7 @@ const InternshipPlatform = () => {
       email: mentorEmail,
     }
     const response = await axios.post(url + `/student/approve`, data);
-    if(approval){
+    if (approval) {
       showToast(toast, 'Success', 'success', 'Student Approved');
     } else {
       showToast(toast, 'Success', 'success', 'Student Rejected');
@@ -114,8 +114,8 @@ const InternshipPlatform = () => {
 
   const InternshipItem = ({ student, withButton, onApprove, status, onDisapprove }) => {
     return (
-      
-<div>
+
+      <div>
         <Card className={`bg-white rounded-lg shadow-md p-4 min-w-full mb-4 mt-4 transform transition-transform hover:translate-y-[-2px] hover:shadow-md text-${colors.font}`}>
           {/* Status and Action Buttons */}
           <div className="flex justify-between items-center mb-4">
@@ -129,28 +129,24 @@ const InternshipPlatform = () => {
                 <div className="flex space-x-2 items-end ml-full">
                   <button className={`w-8 h-8 flex items-center justify-center bg-green-500 rounded-full cursor-pointer text-${colors.font}`} onClick={onApprove}>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="white" className="w-5 h-5">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                </button>
-                <button className={`w-8 h-8 flex items-center justify-center bg-red-500 rounded-full cursor-pointer text-${colors.font}`} onClick={onDisapprove}>
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="white" className="w-5 h-5">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-            )}
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </button>
+                  <button className={`w-8 h-8 flex items-center justify-center bg-red-500 rounded-full cursor-pointer text-${colors.font}`} onClick={onDisapprove}>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="white" className="w-5 h-5">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-        <div className="flex items-center mb-2" onClick={() => (status === true ? viewUser(student) : trackUser(student.sub_id))}>
-          <img
-            src={student.profile_picture_url}
-            alt="Profile"
-            className="w-10 h-10 rounded-full mr-2"
-          />
-          <div>
-            <div className="text-sm font-semibold">{student.name}</div>
-            <div className="text-xs text-gray-500">Company Name {student.internships[0].company}</div>
-          </div>
+          <div className="flex items-center mb-2" onClick={() => (status === true ? viewUser(student) : trackUser(student.sub_id))}>
+            <Avatar size="md" bg='red.700' color="white" name={student.name} src={student.profile_picture_url} className="h-10 w-10 mr-2"></Avatar>
+            <div>
+              <div className="text-sm font-semibold">{student.name}</div>
+              <div className="text-xs text-gray-500">Company Name {student.internships[0].company}</div>
+            </div>
           </div></Card>
       </div>
 
@@ -159,16 +155,12 @@ const InternshipPlatform = () => {
 
   return (
     <div className={`bg-${colors.secondary2} flex flex-col font-roboto items-center justify-start mx-auto w-full max-h-full py-6 px-4 h-screen text-${colors.font}`}>
-    <div className="flex md:flex-col flex-row gap-3 h-[70px] md:h-auto items-center justify-start max-w-[1262px] mx-auto pt-4 md:px-5 w-full mb-3.5">
-      <div className="flex flex-row justify-start w-full">
-          <img
-            src={mentor_profile_url}
-            alt="User Profile"
-            className="h-10 w-10 rounded-full mr-2"
-          />
+      <div className="flex md:flex-col flex-row gap-3 h-[70px] md:h-auto items-center justify-start max-w-[1262px] mx-auto pt-4 md:px-5 w-full mb-3.5">
+        <div className="flex flex-row justify-start w-full">
+          <Avatar size="md" bg='red.700' color="white" name={mentorName} src={mentor_profile_url} className="h-10 w-10 mr-2"></Avatar>
           <div className="flex flex-1 flex-col items-start justify-start w-full">
-          <h1 className={`text-base text-${colors.font} w-full`}>{mentorName}</h1>
-          <p className={`text-${colors.font} text-xs w-full`}>{mentorEmail}</p>
+            <h1 className={`text-base text-${colors.font} w-full`}>{mentorName}</h1>
+            <p className={`text-${colors.font} text-xs w-full`}>{mentorEmail}</p>
           </div>
         </div>
       </div>

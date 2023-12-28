@@ -1,7 +1,24 @@
 import React, { useState } from "react";
 import { useEffect } from 'react';
 import { useTheme } from '../../Global/ThemeContext';
-import { Card, CardHeader, CardBody, CardFooter } from '@chakra-ui/react'
+import {
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  Avatar,
+  AvatarBadge,
+  Progress,
+  Stat,
+  StatLabel,
+  StatNumber,
+  StatHelpText,
+  StatArrow,
+  StatGroup,
+} from '@chakra-ui/react';
+// import Slider from 'react-slick';
+// import 'slick-carousel/slick/slick.css';
+// import 'slick-carousel/slick/slick-theme.css';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { url } from '../../Global/URL';
@@ -23,7 +40,6 @@ const FramePage = () => {
 
   function generateWeekURL(week) {
     const currentDate = new Date();
-
     if (currentDate > new Date(progressData[week.week - 1].startDate) && currentDate < new Date(progressData[week.week - 1].endDate) && progressData[week.week - 1].status == 'Not Submitted') {
       const weekData = {
         week: week.week,
@@ -31,7 +47,6 @@ const FramePage = () => {
       }
       localStorage.setItem('week', JSON.stringify(weekData));
       const weekURL = 'http://localhost:3000/student/progress';
-      // const weekURL = `${baseURL}?weekNo=${weekNo}`;
       window.location.href = weekURL;
     }
     if (currentDate > new Date(progressData[week.week - 1].endDate) && progressData[week.week - 1].status == 'Not Submitted') {
@@ -50,7 +65,6 @@ const FramePage = () => {
       }
       localStorage.setItem('week', JSON.stringify(weekData));
       const weekURL = 'http://localhost:3000/student/progress/view';
-      // const weekURL = `${baseURL}?weekNo=${weekNo}`;
       window.location.href = weekURL;
     }
   }
@@ -59,28 +73,69 @@ const FramePage = () => {
   const [email, setEmail] = useState('');
   const [profile_url, setProfilePicture] = useState('');
   const [progressData, setProgressData] = useState([]);
+  const [onTimeSubmission, setOnTimeSubmission] = useState(null);
+  const [noSubmission, setNoSubmission] = useState(null);
+  const [lateSubmission, setLateSubmission] = useState(null);
+  const [progressValue, setProgressValue] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const userInfo = await getUser();
         if (userInfo) {
-          localStorage.removeItem('week');
+          // localStorage.removeItem('week');
+          const currentDate = new Date();
           setName(userInfo.name);
           setEmail(userInfo.email);
           setProfilePicture(userInfo.profile_picture_url);
           if (userInfo.internships[0].progress && userInfo.internships[0].progress.length > 0) {
-            const updatedProgressData = userInfo.internships[0].progress.map((weekInfo, index) => ({
-              week: index + 1,
-              status: weekInfo.submitted ? 'Submitted' : 'Not Submitted',
-              details: `Details for Week ${index + 1}`,
-              startDate: weekInfo.startDate,
-              endDate: weekInfo.endDate,
-              description: weekInfo.description,
-              late: weekInfo.isLateSubmission
-            }));
+            setOnTimeSubmission(0);
+            setNoSubmission(0);
+            setLateSubmission(0);
+            const updatedProgressData = userInfo.internships[0].progress
+              .filter(weekInfo => {
+                const startDate = new Date(weekInfo.startDate);
+                const endDate = new Date(weekInfo.endDate);
+
+                return (currentDate >= startDate && currentDate <= endDate) || endDate < currentDate;
+              })
+              .map((weekInfo, index) => {
+                const isSubmitted = weekInfo.submitted;
+                const isLateSubmission = weekInfo.isLateSubmission;
+                if (isSubmitted && !isLateSubmission) {
+                  setOnTimeSubmission(prevValue => (prevValue === null ? 1 : prevValue + 1));
+                }
+                else if (!isSubmitted){
+                  setNoSubmission(prevValue => (prevValue === null ? 1 : prevValue + 1));
+                }
+                if (isSubmitted && isLateSubmission) {
+                  setLateSubmission(prevValue => (prevValue === null ? 1 : prevValue + 1));
+                }
+                return {
+                  week: index + 1,
+                  status: weekInfo.submitted ? 'Submitted' : 'Not Submitted',
+                  details: `Details for Week ${index + 1}`,
+                  startDate: weekInfo.startDate,
+                  endDate: weekInfo.endDate,
+                  description: weekInfo.description,
+                  late: weekInfo.isLateSubmission
+                };
+          });
             setProgressData(updatedProgressData);
+            setProgressValue((updatedProgressData.length / parseInt(userInfo.internships[0].duration_in_weeks))*100);
           }
+          // if (userInfo.internships[0].progress && userInfo.internships[0].progress.length > 0) {
+          //   const updatedProgressData = userInfo.internships[0].progress.map((weekInfo, index) => ({
+          //     week: index + 1,
+          //     status: weekInfo.submitted ? 'Submitted' : 'Not Submitted',
+          //     details: `Details for Week ${index + 1}`,
+          //     startDate: weekInfo.startDate,
+          //     endDate: weekInfo.endDate,
+          //     description: weekInfo.description,
+          //     late: weekInfo.isLateSubmission
+          //   }));
+
+          // }
         }
       } catch (error) {
         console.log(error);
@@ -97,7 +152,7 @@ const FramePage = () => {
           onClick={() => generateWeekURL(week)}
         >
           <div className="flex flex-col h-[164px] md:h-auto items-start justify-start w-full">
-            <div className={`bg-black-900_0c flex flex-col gap-[51px] items-left justify-start pb-[73px] md:pr-10 sm:pr-5 pr-[73px] w-full relative`}>
+            <div className={`bg-${colors.secondary} flex flex-col gap-[51px] items-left justify-start pb-[73px] md:pr-10 sm:pr-5 pr-[73px] w-full relative`}>
               <text
                 className={`justify-center p-1 rounded-br-md rounded-tl-md text-xs font-semibold w-auto ${week.description ?
                   (week.late ? "text-orange-600" : (week.status === "Submitted" ? "text-green-700" : "text-red-900"))
@@ -114,10 +169,10 @@ const FramePage = () => {
             </div>
           </div>
           <div className="flex flex-col gap-1 items-start justify-start p-2 w-full">
-            <text className="text-black-900 text-xs w-full" size="txtRobotoRegular12Black900">
+            <text className={`text-${colors.font} text-xs w-full`} size="txtRobotoRegular12Black900">
               Week {week.week}
             </text>
-            <text className="text-base text-black-900 w-full" size="txtRobotoMedium16">
+            <text className={`text-base text-${colors.font} w-full`} size="txtRobotoMedium16">
               {week.details}
             </text>
           </div>
@@ -125,17 +180,33 @@ const FramePage = () => {
     );
   };
 
+  // const WeekCarousel = ({ weeks, generateWeekURL }) => {
+  //   const settings = {
+  //     dots: false,
+  //     infinite: true,
+  //     speed: 500,
+  //     slidesToShow: 3,
+  //     slidesToScroll: 1,
+  //   };
+  
+  //   return (
+  //     <Slider {...settings}>
+  //       {weeks.map((week, index) => (
+  //         <div key={index}>
+  //           <WeekComponent week={week} generateWeekURL={generateWeekURL} />
+  //         </div>
+  //       ))}
+  //     </Slider>
+  //   );
+  // };
+
   return (
     <>
-<div className={`bg-${colors.secondary} flex flex-col font-roboto items-center justify-start mx-auto w-full max-h-full py-6 px-4`}>
+      <div className={`bg-${colors.secondary} flex flex-col font-roboto items-center justify-start mx-auto w-full max-h-full py-6 px-4`}>
         {/* User */}
-        <div className={`flex md:flex-col flex-row gap-3 h-[70px] md:h-auto items-center justify-start max-w-[1262px] mx-auto pt-4 md:px-5 w-full mb-3.5`}>
+        <div className={`flex md:flex-col flex-row gap-3 h-[100px] md:h-auto items-center justify-start max-w-[1262px] mx-auto pt-4 md:px-5 w-full mb-3.5`}>
           <div className="flex flex-row justify-start w-full">
-            <img
-              src={profile_url}
-              alt="User Profile"
-              className="h-10 w-10 rounded-full mr-2"
-            />
+            <Avatar size="md" bg='red.700' color="white" name={name} src={profile_url} className="h-10 w-10 mr-2"></Avatar>
             <div className="flex flex-1 flex-col items-start justify-start w-full">
               <text
                 className={`text-base text-${colors.font} w-full`}
@@ -152,48 +223,23 @@ const FramePage = () => {
             </div>
           </div>
         </div>
-        {/* Week Details */}
-        {/* <div className="flex flex-col h-[269px] md:h-auto items-center justify-center max-w-[1262px] mt-[13px] mx-auto md:px-5 w-full">
-          <div className="flex flex-col items-center justify-center px-3 w-full">
-            <div className="overflow-y-auto max-h-[230px] md:max-h-[none] w-full">
-              <list
-                className="sm:flex-col flex-row gap-5 grid sm:grid-cols-2 md:grid-cols-2 grid-cols-1 justify-start w-full"
-                orientation="horizontal"
-              >
-                {progressData.map((week) => (
-                  <button key={week.week} className="border border-black-900_19 border-solid flex flex-1 flex-col items-center justify-start rounded-md w-full relative" onClick={() => generateWeekURL(week.week)}>
-                    <div className="flex flex-col h-[164px] md:h-auto items-start justify-start w-full">
-                      <div className={`bg-black-900_0c flex flex-col gap-[51px] items-left justify-start pb-[73px] md:pr-10 sm:pr-5 pr-[73px] w-full relative`}>
-                        <text
-                          className={`justify-center p-1 rounded-br-md rounded-tl-md text-xs font-semibold w-auto ${week.status === "Submitted" ? "text-green-700" : "text-red-900"}`}
-                          size="txtRobotoMedium12"
-                          style={{ position: 'absolute', top: 5, left: 5, backgroundColor: '#ededed'}} // Positioning for week.status
-                        >
-                          {week.status}
-                        </text>
-                      </div>
-                    </div>
-                    <div className="flex flex-col gap-1 items-start justify-start p-2 w-full">
-                      <text
-                        className="text-black-900 text-xs w-full"
-                        size="txtRobotoRegular12Black900"
-                      >
-                        Week {week.week}
-                      </text>
-                      <text
-                        className="text-base text-black-900 w-full"
-                        size="txtRobotoMedium16"
-                      >
-                        {week.details}
-                      </text>
-                    </div>
-                  </button>
-                ))}
-              </list>
-            </div>
-          </div>
-        </div> */}
-
+        <div className="md:pl-6 mx-10 md:mt-3 mb:5 md:pr-6 min-w-full">
+          <Progress hasStripe value={progressValue} className="mb-3" />
+          <StatGroup>
+            <Stat className="mr-5">
+              <StatLabel>On time Submissions</StatLabel>
+              <StatNumber>{onTimeSubmission}</StatNumber>
+            </Stat>
+            <Stat className="mr-5">
+              <StatLabel>Missed Submissions</StatLabel>
+              <StatNumber>{noSubmission == 0 ? 0 : noSubmission }</StatNumber>
+            </Stat>
+            <Stat className="mr-5">
+              <StatLabel>Late Submissions</StatLabel>
+              <StatNumber>{lateSubmission}</StatNumber>
+            </Stat>
+          </StatGroup>
+        </div>
         <div className="flex flex-col h-[269px] md:h-auto items-center justify-center max-w-[1262px] mt-[13px] mx-auto md:px-5 w-full">
           <div className="flex flex-col items-center justify-center px-3 w-full">
             <div className="overflow-y-auto max-h-[230px] md:max-h-[none] w-full">
@@ -202,6 +248,9 @@ const FramePage = () => {
                 {progressData.map((week) => (
                   <WeekComponent key={week.week} week={week} generateWeekURL={generateWeekURL} />
                 ))}
+                {/* {progressData.map((week) => (
+                  <WeekCarousel key={week.week} weeks={[week]} generateWeekURL={generateWeekURL} />
+                ))} */}
 
               </div>
             </div>

@@ -8,6 +8,8 @@ import {
     DrawerHeader,
     DrawerBody,
     DrawerFooter,
+    Avatar,
+    AvatarBadge,
 } from "@chakra-ui/react";
 
 function StudentDrawer({ isOpen, onClose, studentData }) {
@@ -21,11 +23,7 @@ function StudentDrawer({ isOpen, onClose, studentData }) {
                 <DrawerBody maxH="80vh" overflowY="auto">
                     <div className="flex flex-col items-start space-y-4">
                         <div className="flex items-center space-x-4">
-                            <img
-                                src={studentData.profile_picture_url}
-                                alt={studentData.name}
-                                className="w-12 h-12 rounded-full"
-                            />
+                            <Avatar size="md" bg='red.700' color="white" name={studentData.name} src={studentData.profile_picture_url} className="h-10 w-10 mr-2"></Avatar>
                             <div className="flex flex-col">
                                 <h2 className="font-bold">{studentData.name}</h2>
                                 <p>{studentData.email}</p>

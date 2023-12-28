@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { Avatar, AvatarBadge } from '@chakra-ui/react';
 import {url} from '../../Global/URL';
 import showToast from '../../Global/Toast';
 import { useToast } from '@chakra-ui/react';
@@ -94,11 +95,7 @@ const Details = () => {
                                 Welcome
                             </h2>
                             <h3 className="text-2xl font-bold text-gray-900 dark:text-black flex items-center">
-                                <img
-                                    src={userInfo.imageUrl}
-                                    alt="User Profile"
-                                    className="h-8 w-8 rounded-full mr-2"
-                                />
+                                <Avatar size="md" bg='red.700' color="white" name={name} src={userInfo.imageUrl} className="h-10 w-10 mr-2"></Avatar>
                                 <span
                                     className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-blue-500"
                                     style={{ animation: 'fadeIn 3s forwards' }}

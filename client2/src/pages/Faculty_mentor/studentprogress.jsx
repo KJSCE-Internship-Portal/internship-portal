@@ -2,7 +2,21 @@ import React, { useState } from "react";
 import { useEffect } from 'react';
 import { useTheme } from '../../Global/ThemeContext';
 import { useParams } from 'react-router-dom';
-import { Card, CardHeader, CardBody, CardFooter } from '@chakra-ui/react'
+import {
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  Avatar,
+  AvatarBadge,
+  Progress,
+  Stat,
+  StatLabel,
+  StatNumber,
+  StatHelpText,
+  StatArrow,
+  StatGroup,
+} from '@chakra-ui/react'
 import axios from 'axios';
 import { url } from '../../Global/URL';
 
@@ -48,13 +62,17 @@ const Week = () => {
   const [studentEmail, setStudentEmail] = useState('');
   const [student_profile_url, setStudentProfilePicture] = useState('');
   const [progressData, setProgressData] = useState([]);
+  const [onTimeSubmission, setOnTimeSubmission] = useState(null);
+  const [noSubmission, setNoSubmission] = useState(null);
+  const [lateSubmission, setLateSubmission] = useState(null);
+  const [progressValue, setProgressValue] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const userInfo = await getUser();
         if (userInfo) {
-          localStorage.removeItem('week');
+          const currentDate = new Date();
           setDepartment(userInfo.department);
           setMentorName(userInfo.name);
           setMentorEmail(userInfo.email);
@@ -67,17 +85,53 @@ const Week = () => {
           setStudentEmail(student.email);
           setStudentProfilePicture(student.profile_picture_url);
           if (student.internships[0].progress && student.internships[0].progress.length > 0) {
-            const updatedProgressData = student.internships[0].progress.map((weekInfo, index) => ({
-              week: index + 1,
-              status: weekInfo.submitted ? 'Submitted' : 'Not Submitted',
-              details: `Details for Week ${index + 1}`,
-              startDate: weekInfo.startDate,
-              endDate: weekInfo.endDate,
-              description: weekInfo.description,
-              late: weekInfo.isLateSubmission
-            }));
+            setOnTimeSubmission(0);
+            setNoSubmission(0);
+            setLateSubmission(0);
+            const updatedProgressData = student.internships[0].progress
+              .filter(weekInfo => {
+                const startDate = new Date(weekInfo.startDate);
+                const endDate = new Date(weekInfo.endDate);
+
+                return (currentDate >= startDate && currentDate <= endDate) || endDate < currentDate;
+              })
+              .map((weekInfo, index) => {
+                const isSubmitted = weekInfo.submitted;
+                const isLateSubmission = weekInfo.isLateSubmission;
+                if (isSubmitted && !isLateSubmission) {
+                  setOnTimeSubmission(prevValue => (prevValue === null ? 1 : prevValue + 1));
+                }
+                else if (!isSubmitted){
+                  setNoSubmission(prevValue => (prevValue === null ? 1 : prevValue + 1));
+                }
+                if (isSubmitted && isLateSubmission) {
+                  setLateSubmission(prevValue => (prevValue === null ? 1 : prevValue + 1));
+                }
+                return {
+                  week: index + 1,
+                  status: weekInfo.submitted ? 'Submitted' : 'Not Submitted',
+                  details: `Details for Week ${index + 1}`,
+                  startDate: weekInfo.startDate,
+                  endDate: weekInfo.endDate,
+                  description: weekInfo.description,
+                  late: weekInfo.isLateSubmission
+                };
+          });
             setProgressData(updatedProgressData);
+            setProgressValue((updatedProgressData.length / parseInt(student.internships[0].duration_in_weeks))*100);
           }
+          // if (student.internships[0].progress && student.internships[0].progress.length > 0) {
+          //   const updatedProgressData = student.internships[0].progress.map((weekInfo, index) => ({
+          //     week: index + 1,
+          //     status: weekInfo.submitted ? 'Submitted' : 'Not Submitted',
+          //     details: `Details for Week ${index + 1}`,
+          //     startDate: weekInfo.startDate,
+          //     endDate: weekInfo.endDate,
+          //     description: weekInfo.description,
+          //     late: weekInfo.isLateSubmission
+          //   }));
+          //   setProgressData(updatedProgressData);
+          // }
         }
       } catch (error) {
         console.log(error);
@@ -89,36 +143,36 @@ const Week = () => {
   const WeekComponent = ({ week, generateWeekURL }) => {
     return (
       <Card>
-      <button
+        <button
           className={`border border-${colors.font} border-solid flex flex-1 flex-col items-center justify-start rounded-md w-full relative transform transition-transform hover:translate-y-[-2px] hover:shadow-md`}
           onClick={() => generateWeekURL(week)}
-      >
-        <div className="flex flex-col h-[164px] md:h-auto items-start justify-start w-full">
-          <div className={`bg-black-900_0c flex flex-col gap-[51px] items-left justify-start pb-[73px] md:pr-10 sm:pr-5 pr-[73px] w-full relative`}>
-            <text
-              className={`justify-center p-1 rounded-br-md rounded-tl-md text-xs font-semibold w-auto ${week.description ?
+        >
+          <div className="flex flex-col h-[164px] md:h-auto items-start justify-start w-full">
+            <div className={`bg-black-900_0c flex flex-col gap-[51px] items-left justify-start pb-[73px] md:pr-10 sm:pr-5 pr-[73px] w-full relative`}>
+              <text
+                className={`justify-center p-1 rounded-br-md rounded-tl-md text-xs font-semibold w-auto ${week.description ?
                   (week.late ? "text-orange-600" : (week.status === "Submitted" ? "text-green-700" : "text-red-900"))
                   : "text-red-900"
-                }`}
-              size="txtRobotoMedium12"
-              style={{ position: 'absolute', top: 5, left: 5, backgroundColor: '#ededed' }} // Positioning for status
-            >
-              {week.description ?
-                (week.late ? "Late Submission" : week.status)
-                : "Not Submitted"
-              }
+                  }`}
+                size="txtRobotoMedium12"
+                style={{ position: 'absolute', top: 5, left: 5, backgroundColor: '#ededed' }} // Positioning for status
+              >
+                {week.description ?
+                  (week.late ? "Late Submission" : week.status)
+                  : "Not Submitted"
+                }
+              </text>
+            </div>
+          </div>
+          <div className="flex flex-col gap-1 items-start justify-start p-2 w-full">
+            <text className="text-black-900 text-xs w-full" size="txtRobotoRegular12Black900">
+              Week {week.week}
+            </text>
+            <text className="text-base text-black-900 w-full" size="txtRobotoMedium16">
+              {week.details}
             </text>
           </div>
-        </div>
-        <div className="flex flex-col gap-1 items-start justify-start p-2 w-full">
-          <text className="text-black-900 text-xs w-full" size="txtRobotoRegular12Black900">
-            Week {week.week}
-          </text>
-          <text className="text-base text-black-900 w-full" size="txtRobotoMedium16">
-            {week.details}
-          </text>
-        </div>
-      </button>
+        </button>
       </Card>
     );
   };
@@ -127,41 +181,34 @@ const Week = () => {
     <>
       <div className={`bg-${colors.secondary2} flex flex-col font-roboto items-center justify-start mx-auto w-full max-h-full py-6 px-4`}>
         {/* Mentor */}
-<div className={`flex md:flex-col flex-row gap-3 h-[70px] md:h-auto items-center justify-start max-w-[1262px] mx-auto pt-4 md:px-5 w-full mb-3.5`}>
-  <text
-    className={`text-base text-${colors.font} w-full`}
-    size="txtRobotoMedium16"
-  >
-    <h1>{department}</h1>
-  </text>
-  <div className="flex flex-row justify-start w-full">
-    <img
-      src={mentor_profile_url}
-      alt="User Profile"
-      className="h-10 w-10 rounded-full mr-2"
-    />
-    <div className="flex flex-1 flex-col items-start justify-start w-full">
-      <text
-        className={`text-base text-${colors.font} w-full`}
-        size="txtRobotoMedium16"
-      >
-        <h1>{mentorName}</h1>
-      </text>
-      <text
-        className={`text-${colors.font} text-xs w-full`}
-        size="txtRobotoRegular12"
-      >
-        {mentorEmail}
-      </text>
-    </div>
-  </div>
-</div>
-
-        <div className={`border-t border-${colors.font} my-3 min-w-full`}></div>
-        <div className={`flex flex-col h-[47px] md:h-auto items-center justify-start max-w-[1262px] mx-auto mb-3.5 pt-4 md:px-5 w-full`}>
+        <div className={`flex flex-col gap-3 h-[100px] md:h-auto md:items-center max-w-[1262px] mx-auto pt-4 md:px-5 w-full mb-3.5`}>
+          <div className="items-start">
+            <text
+              className={`text-base text-${colors.font} w-full md:text-xl`}
+              size="txtRobotoMedium16"
+            >
+              <h1>{department}</h1>
+            </text>
+          </div>
+          <div className="flex items-center justify-start w-full">
+            <Avatar size="md" bg='red.700' color="white" name={mentorName} src={mentor_profile_url} className="h-10 w-10 mr-2" />
+            <div className="flex flex-col">
+              <h1 className={`text-base text-${colors.font}`} size="txtRobotoMedium16">
+                {mentorName}
+              </h1>
+              <p className={`text-${colors.font} text-xs`} size="txtRobotoRegular12">
+                {mentorEmail}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="md:pl-6 mx-10 mt-3 mb:3 my-auto md:pr-6 min-w-full">
+          <hr className={`border border-${colors.accent}`} />
+        </div>
+        <div className={`flex flex-col h-[27px] md:h-auto items-center justify-start max-w-[1262px] mx-auto mb-3.5 pt-4 md:px-5 w-full`}>
           <div className="flex flex-col items-start justify-start w-full">
             <text
-              className={`text-${colors.font} text-lg w-full`}              
+              className={`text-${colors.font} text-lg w-full`}
               size="txtRobotoMedium18"
             >
               Internship Progress
@@ -169,28 +216,41 @@ const Week = () => {
           </div>
         </div>
         {/* Mentor */}
-        <div className="flex md:flex-col flex-row gap-3 h-[70px] md:h-auto items-center justify-start max-w-[1262px] mx-auto pt-4 md:px-5 w-full mb-3.5">
+        <div className="flex md:flex-col flex-row gap-3 h-[100px] md:h-auto items-center justify-start max-w-[1262px] mx-auto pt-4 md:px-5 w-full mb-3.5">
           <div className="flex flex-row justify-start w-full">
-            <img
-              src={student_profile_url}
-              alt="User Profile"
-              className="h-10 w-10 rounded-full mr-2"
-            />
+            <Avatar size="md" bg='red.700' color="white" name={studentName} src={student_profile_url} className="h-10 w-10 mr-2"></Avatar>
             <div className="flex flex-1 flex-col items-start justify-start w-full">
               <text
-                className={`text-base text-${colors.font} w-full`}                
+                className={`text-base text-${colors.font} w-full`}
                 size="txtRobotoMedium16"
               >
                 <h1>{studentName}</h1>
               </text>
               <text
-                  className={`text-${colors.font} text-xs w-full`}
-                  size="txtRobotoRegular12"
+                className={`text-${colors.font} text-xs w-full`}
+                size="txtRobotoRegular12"
               >
                 {studentEmail}
               </text>
             </div>
           </div>
+        </div>
+        <div className="md:pl-6 mx-10 md:mt-3 mb:5 md:pr-6 min-w-full">
+          <Progress hasStripe value={progressValue} className="mb-3" />
+          <StatGroup>
+            <Stat className="mr-5">
+              <StatLabel>On time Submissions</StatLabel>
+              <StatNumber>{onTimeSubmission}</StatNumber>
+            </Stat>
+            <Stat className="mr-5">
+              <StatLabel>Missed Submissions</StatLabel>
+              <StatNumber>{noSubmission == 0 ? 0 : noSubmission }</StatNumber>
+            </Stat>
+            <Stat className="mr-5">
+              <StatLabel>Late Submissions</StatLabel>
+              <StatNumber>{lateSubmission}</StatNumber>
+            </Stat>
+          </StatGroup>
         </div>
         <div className="flex flex-col h-[269px] md:h-auto items-center justify-center max-w-[1262px] mt-[13px] mx-auto md:px-5 w-full">
           <div className="flex flex-col items-center justify-center px-3 w-full">
@@ -203,8 +263,6 @@ const Week = () => {
             </div>
           </div>
         </div>
-        <div className="hidden md:block h-[15vh]"></div>
-        <div className="block md:hidden h-[40vh]"></div>
       </div>
     </>
   );

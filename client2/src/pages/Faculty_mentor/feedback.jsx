@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useEffect } from 'react';
 import { useTheme } from '../../Global/ThemeContext';
+import { Avatar, AvatarBadge } from '@chakra-ui/react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { url } from '../../Global/URL';
@@ -104,10 +105,10 @@ const Comment = () => {
                 <article class={`p-6 text-base bg-${colors.secondary} rounded-lg`}>
                     <footer class="flex justify-between items-center mb-2">
                         <div class="flex items-center">
-                            <p class={`inline-flex items-center mr-3 text-sm text-${colors.font} font-semibold`}><img
-                                class="mr-2 w-6 h-6 rounded-full"
-                                src={studentProfilePicture}
-                                alt="Student" />{studentName}</p>
+                            <p class={`inline-flex items-center mr-3 text-sm text-${colors.font} font-semibold`}>
+                                <Avatar size="xs" bg='red.700' color="white" name={studentName} src={studentProfilePicture} className="h-10 w-10 mr-2"></Avatar>
+                                {studentName}
+                            </p>
                             <p class={`text-sm text-${colors.font}`}>{studentEmail}</p>
                         </div>
                     </footer>
@@ -150,11 +151,7 @@ const Comment = () => {
                     <footer class="flex justify-between items-center mb-2">
                         <div class="flex items-center">
                             <p class={`inline-flex items-center mr-3 text-sm text-${colors.font} font-semibold`}>{mentorProfilePicture && (
-                                <img
-                                    className="mr-2 w-6 h-6 rounded-full"
-                                    src={mentorProfilePicture}
-                                    alt="Mentor"
-                                />
+                                <Avatar size="xs" bg='red.700' color="white" name={mentorName} src={mentorProfilePicture} className="h-10 w-10 mr-2"></Avatar>
                             )}{mentorName}</p>
                             <p class={`text-sm text-${colors.font}`}>{mentorEmail}</p>
                         </div>
