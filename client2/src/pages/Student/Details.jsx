@@ -6,6 +6,7 @@ import {url} from '../../Global/URL';
 import showToast from '../../Global/Toast';
 import { useToast } from '@chakra-ui/react';
 
+
 const Details = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -86,7 +87,7 @@ const Details = () => {
     };
 
     return (
-        <section class="bg-white dark:bg-gray-200 py-8 lg:py-16 antialiased">
+        <section class="bg-white dark:bg-gray-300 py-8 lg:py-16 antialiased">
             <div class="max-w-3xl mx-auto px-10">
                 <div className="max-w-2xl mx-auto">
                     <form className="w-full max-w-2xl mx-auto" onSubmit={handleSubmit}>
@@ -106,7 +107,7 @@ const Details = () => {
                         </div>
                         <div class="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
                             <label for="rollno" class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-black">Email<span class="text-red-500">*</span></label>
-                            <input class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            <input class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 type="text"
                                 name="email"
                                 value={email}
@@ -117,7 +118,7 @@ const Details = () => {
                         </div>
                         <div class="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
                             <label for="rollno" class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-black">Contact No.<span class="text-red-500">*</span></label>
-                            <input class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            <input class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 type="tel"
                                 name="phone"
                                 value={phone}
@@ -127,7 +128,7 @@ const Details = () => {
                         </div>
                         <div class="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
                             <label for="rollno" class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-black">Roll. No.<span class="text-red-500">*</span></label>
-                            <input class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            <input class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 type="text"
                                 name="rollno"
                                 value={rollno}
@@ -137,7 +138,7 @@ const Details = () => {
                         </div>
                         <div className="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
                             <label for="dept" class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-black">Department<span class="text-red-500">*</span></label>
-                            <select class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            <select class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 name="department"
                                 value={department}
                                 onChange={(e) => setDepartment(e.target.value)}
@@ -159,7 +160,7 @@ const Details = () => {
                             <div className="mr-4 flex-1 py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
                                 <label for="division" className="text-lg lg:text-2xl font-bold text-gray-900 dark:text-black">Division<span className="text-red-500">*</span></label>
                                 <select
-                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                     name="division"
                                     value={division}
                                     onChange={(e) => setDivision(e.target.value)}
@@ -174,7 +175,7 @@ const Details = () => {
                             <div className="flex-1 py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
                                 <label for="batch" className="text-lg lg:text-2xl font-bold text-gray-900 dark:text-black">Batch<span className="text-red-500">*</span></label>
                                 <input
-                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                     type="text"
                                     name="batch"
                                     value={batch}
@@ -199,7 +200,7 @@ const Details = () => {
 
                         <div class="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
                             <label for="cname" class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-black">Company Name<span class="text-red-500">*</span></label>
-                            <input class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            <input class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 type="text"
                                 name="company"
                                 value={company}
@@ -212,7 +213,7 @@ const Details = () => {
                                 <div className="py-2 px-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
                                     <label htmlFor="startdate" className="text-lg lg:text-2xl font-bold text-gray-900 dark:text-black">Start Date<span className="text-red-500">*</span></label>
                                     <input
-                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                         type="date"
                                         name="startdate"
                                         value={startdate}
@@ -225,7 +226,7 @@ const Details = () => {
                                 <div className="py-2 px-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
                                     <label htmlFor="enddate" className="text-lg lg:text-2xl font-bold text-gray-900 dark:text-black">End Date<span className="text-red-500">*</span></label>
                                     <input
-                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                         type="date"
                                         name="enddate"
                                         value={enddate}
@@ -247,7 +248,7 @@ const Details = () => {
                         </div> */}
                         <div class="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
                             <label for="cmentor" class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-black">Company Mentor<span class="text-red-500">*</span></label>
-                            <input class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            <input class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 type="text"
                                 name="mentor"
                                 value={mentor}
@@ -259,12 +260,12 @@ const Details = () => {
                             <label for="jobdesc" class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-black">Job Description<span class="text-red-500">*</span></label>
                             <textarea id="comment" rows="6" value={jobDescription}
                                 onChange={(e) => setJobDescription(e.target.value)}
-                                class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 placeholder="Enter Description..." required></textarea>
                         </div>
                         <div class="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
                             <label for="stipend" class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-black">Stipend  (Leave Empty if N/A)</label>
-                            <input class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            <input class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 type="number"
                                 name="stipend"
                                 value={stipend}
