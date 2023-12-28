@@ -1,6 +1,13 @@
 const express = require("express");
 const Students = require("../models/student");
 const Mentor = require("../models/mentor");
+const Announcement = require("../models/announcements");
+
+const deslugify = (slug) => {
+    return slug
+        .replace(/-/g, ' ') 
+        .replace(/(?:^|\s)\S/g, (a) => a.toUpperCase());
+};
 
 const loginAdmin = async (req, res) => {
 
@@ -10,6 +17,65 @@ const loginAdmin = async (req, res) => {
         console.error(`Error: ${error.message}`);
         res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
     }
+
+};
+
+const getAllAnnouncements = async(req,res) => {
+
+    try {
+
+      const reqQuery = { ...req.query };
+      if (reqQuery.department){
+          reqQuery.department = deslugify(reqQuery.department);
+      }
+      const removeFields = ['select', 'sort', 'limit', 'page'];
+      removeFields.forEach(param => delete reqQuery[param]);
+
+      let queryStr = JSON.stringify(reqQuery);
+      queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
+      query = Announcement.find(JSON.parse(queryStr));
+
+      if (req.query.select) {
+          const fields = req.query.select.split(',').join(' ');
+          query = query.select(fields);
+      }
+
+      if (req.query.sort) {
+          const sortBy = req.query.sort.split(',').join(' ');
+          query = query.sort(sortBy);
+      }
+
+      const page = parseInt(req.query.page, 10) || 1;
+      const limit = parseInt(req.query.limit, 10) || 100;
+      const startIndex = (page - 1) * limit;
+      const endIndex = page * limit;
+      const total = await Announcement.countDocuments(query);
+
+      query = query.skip(startIndex).limit(limit);
+      const pagination = {};
+      if (endIndex < total) {
+          pagination.next = {
+              page: page + 1,
+              limit
+          }
+      }
+      if (startIndex > 0) {
+          pagination.prev = {
+              page: page - 1,
+              limit
+          }
+      }
+
+      const announcements = await query;
+      if (!announcements) {
+          return res.status(401).json({ success: false, msg: "There are no Announcements" });
+      }
+      return res.status(200).json({ success: true, count: total, pagination, data: announcements });
+
+  } catch (error) {
+      console.log(`${error.message} (error)`.red);
+      return res.status(400).json({ success: false, msg: error.message });
+  }
 
 };
 
@@ -236,5 +302,6 @@ const signOutAdmin = async (req, res) => {
 module.exports = {
     loginAdmin,
     signOutAdmin,
-    getStatisticsAdmin
+    getStatisticsAdmin,
+    getAllAnnouncements
 };

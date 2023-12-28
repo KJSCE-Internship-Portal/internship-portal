@@ -9,6 +9,7 @@ import { url } from '../../../Global/URL';
 import { Link } from 'react-router-dom';
 import { getUserDetails } from '../../../Global/authUtils';
 import RegisterMentor from '../Mentor/RegisterMentor/RegisterMentor';
+import {LinkIcon} from '@chakra-ui/icons';
 
 const slugify = (text) => {
     return text
@@ -36,9 +37,11 @@ const HomePage = () => {
             } else {
                 var current_user = user;
             }
-            return (axios
-                .get(url + `/mentors/all?department=${slugify(current_user.department)}`)
-                .then(response => response.data))
+            const temp= await axios
+            .get(url + `/mentors/all?department=${slugify(current_user.department)}`)
+            .then(response => response.data);
+            console.log(temp);
+            return (temp);
         }
     });
 
@@ -62,6 +65,7 @@ const HomePage = () => {
 
 
     if (isLoading) {
+
         return (
             <Loader />
         )
@@ -80,14 +84,14 @@ const HomePage = () => {
 
             <h1 style={{ color: colors.font, fontWeight: 'bold', fontSize: 23, marginLeft: 20, marginBottom: '5px' }}>
                 <span onClick={() => navigateToStudentsList(user && user.department)} style={{ cursor: 'pointer' }}>
-                    {user && user.department}
+                    {user && user.department} <LinkIcon color={colors.primary}/>
                 </span>
             </h1>
 
             <div style={{ color: colors.font, marginLeft: 20 }}><RegisterMentor /></div>
 
             <div className={styles.mentorContainer}>
-                {data.data.map((mentor) => {
+                {data.data && data.data.map((mentor) => {
                     if (mentor.sub_id !== 'None') {
                         return <MentorComponent key={mentor.id} {...mentor} />;
                     }

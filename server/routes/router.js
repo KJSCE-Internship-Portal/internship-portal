@@ -15,6 +15,8 @@ router.get("/login", controllerOAuth.handleLoginRequest);
 router.get("/refresh-login", controllerOAuth.handleRefreshLogin);
 router.get("/logout", controllerOAuth.logoutUser);
 router.get("/mentors/all", controllerMentor.getAllMentors);
+router.get("/announcements/all", controllerAdmin.getAllAnnouncements);
+
 
 
 // Post Routes

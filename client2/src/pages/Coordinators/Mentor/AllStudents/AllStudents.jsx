@@ -16,6 +16,9 @@ import {
 import Loader from '../../../../components/loader/Loader';
 import { useTheme } from '../../../../Global/ThemeContext';
 import { Avatar } from '@chakra-ui/react';
+import AssignedStudentsPie from '../../Statistic_Components/AssignedStudentsPie';
+import CompletedStudentsAndVerified from '../../Statistic_Components/CompletedStudents';
+import { CompanyProvidingInternships } from '../../Statistic_Components/CompanyProvidingInternships';
 
 const getRandomLightColor = () => {
 
@@ -56,12 +59,33 @@ const AllStudentsInDepartment = () => {
             } else {
                 var current_user = user;
             }
-            var fetched = axios
+            var fetched = await axios
                 .get(url + `/students/all?department=${slugify(current_user.department)}&select=name,mentor,email,isApproved,isActive,hasMentor,div,contact_no,sem,batch,rollno,profile_picture_url`)
                 .then(response => response.data);
             setStudentsNotHavingMentor(0);
             return (
                 fetched
+            );
+        }
+    });
+
+    const {data: pie_data } = useQuery({
+        queryKey: ['/statistics/department'],
+        retryDelay: 10000,
+        queryFn: async () => {
+            if (!user) {
+                var current_user = await getUserDetails();
+                setUser(current_user);
+            } else {
+                var current_user = user;
+            }
+            var fetched = await axios
+                .post(url + `/coordinator/statistics`, {department: current_user.department})
+                .then(response => response.data);
+            console.log(fetched.data);
+            setStudentsNotHavingMentor(0);
+            return (
+                fetched.data
             );
         }
     });
@@ -81,7 +105,15 @@ const AllStudentsInDepartment = () => {
 
     return (
         <div>
-            <h1 style={{ color: colors.font, fontSize: '23px', margin: '5px 2.5vw', fontWeight: 'bold', textAlign: 'center' }}>Following Students Belong to your Department</h1>
+            <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'space-evenly'}}>
+                {pie_data  &&
+                <AssignedStudentsPie assigned={pie_data.assignedStudents} notAssigned={pie_data.studentsInDepartment-pie_data.assignedStudents}/>}
+                {pie_data && pie_data.completedStudentsAndVerified!=(pie_data.assignedStudents-pie_data.completedStudentsAndVerified)!=0 && 
+                <CompletedStudentsAndVerified completed={pie_data.completedStudentsAndVerified} notCompleted={pie_data.assignedStudents-pie_data.completedStudentsAndVerified}/>
+                }
+
+            </div>
+            {/* <h1 style={{ color: colors.font, fontSize: '23px', margin: '5px 2.5vw', fontWeight: 'bold', textAlign: 'center' }}>Following Students Belong to your Department</h1> */}
             {/* {JSON.stringify(data.data)} */}
 
             <h2 style={{ color: colors.primary, fontSize: '20px', margin: '5px 3vw', fontWeight: 'bold' }}>Students</h2>

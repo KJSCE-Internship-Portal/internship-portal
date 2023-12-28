@@ -13,7 +13,7 @@ const announcementSchema = new mongoose.Schema({
         required: [true, "Sender's name is required"]
     },
 
-    receieved_by: [
+    receieved_by: 
         {
             department: {
                 type: String,
@@ -25,7 +25,7 @@ const announcementSchema = new mongoose.Schema({
                 default: false
             }
         }
-    ],
+    ,
 
     content: {
         type: String,
