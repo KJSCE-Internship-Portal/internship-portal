@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useEffect } from 'react';
 import { useTheme } from '../../Global/ThemeContext';
 import { useParams } from 'react-router-dom';
+import showToast from '../../Global/Toast';
+import { useToast } from '@chakra-ui/react';
 import {
   Card,
   CardHeader,
@@ -40,6 +42,9 @@ const Week = () => {
       localStorage.setItem('week', week.week);
       const weekURL = 'http://localhost:3000/mentor/studentprogress/feedback';
       window.location.href = weekURL;
+    } 
+    else if (week.status == 'Not Submitted') {
+      showToast(toast, 'Error', 'error', 'Update Not yet Submitted');
     }
     // const currentDate = new Date();
     // if (currentDate > new Date(progressData[weekNo - 1].startDate) && currentDate < new Date(progressData[weekNo - 1].endDate) && progressData[weekNo - 1].status == 'Not Submitted') {
@@ -66,6 +71,7 @@ const Week = () => {
   const [noSubmission, setNoSubmission] = useState(null);
   const [lateSubmission, setLateSubmission] = useState(null);
   const [progressValue, setProgressValue] = useState(null);
+  const toast = useToast();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -144,18 +150,19 @@ const Week = () => {
     return (
       <Card>
         <button
-          className={`border border-${colors.font} border-solid flex flex-1 flex-col items-center justify-start rounded-md w-full relative transform transition-transform hover:translate-y-[-2px] hover:shadow-md`}
+          className={`border border-${colors.accent} border-solid flex flex-1 flex-col items-center justify-start rounded-md w-full relative transform transition-transform hover:translate-y-[-2px] hover:shadow-md`}
           onClick={() => generateWeekURL(week)}
+          style={{backgroundColor: colors.secondary}}
         >
           <div className="flex flex-col h-[164px] md:h-auto items-start justify-start w-full">
             <div className={`bg-black-900_0c flex flex-col gap-[51px] items-left justify-start pb-[73px] md:pr-10 sm:pr-5 pr-[73px] w-full relative`}>
               <text
                 className={`justify-center p-1 rounded-br-md rounded-tl-md text-xs font-semibold w-auto ${week.description ?
                   (week.late ? "text-orange-600" : (week.status === "Submitted" ? "text-green-700" : "text-red-900"))
-                  : "text-red-900"
+                  : "text-red-700"
                   }`}
                 size="txtRobotoMedium12"
-                style={{ position: 'absolute', top: 5, left: 5, backgroundColor: '#ededed' }} // Positioning for status
+                style={{ position: 'absolute', top: 5, left: 5, backgroundColor: colors.secondary2 }} // Positioning for status
               >
                 {week.description ?
                   (week.late ? "Late Submission" : week.status)
@@ -165,10 +172,10 @@ const Week = () => {
             </div>
           </div>
           <div className="flex flex-col gap-1 items-start justify-start p-2 w-full">
-            <text className="text-black-900 text-xs w-full" size="txtRobotoRegular12Black900">
+            <text className={`text-${colors.font} text-xs w-full`} size="txtRobotoRegular12Black900">
               Week {week.week}
             </text>
-            <text className="text-base text-black-900 w-full" size="txtRobotoMedium16">
+            <text className={`text-base text-${colors.font} w-full`} size="txtRobotoMedium16">
               {week.details}
             </text>
           </div>
@@ -237,7 +244,7 @@ const Week = () => {
         </div>
         <div className="md:pl-6 mx-10 md:mt-3 mb:5 md:pr-6 min-w-full">
           <Progress hasStripe value={progressValue} className="mb-3" />
-          <StatGroup>
+          <StatGroup className={`text-${colors.font}`}>
             <Stat className="mr-5">
               <StatLabel>On time Submissions</StatLabel>
               <StatNumber>{onTimeSubmission}</StatNumber>
