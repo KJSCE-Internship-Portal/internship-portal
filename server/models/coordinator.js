@@ -14,6 +14,10 @@ const coordinatorSchema = new mongoose.Schema({
         type: String,
         required: false
     },
+    contact_no: {
+        type: String,
+        required: [true, "Contact no is required"],
+    },
     email: {
         type: String,
         required: [true, "E-mail is mandatory"],
@@ -28,7 +32,8 @@ const coordinatorSchema = new mongoose.Schema({
     },
     sub_id: {
         type: String,
-        required: true
+        required: false,
+        default: "None"
     },
     department: {
         type: String,
@@ -43,6 +48,10 @@ const coordinatorSchema = new mongoose.Schema({
         type: Boolean,
         required: false,
         default: true
+    },
+    createdAt: {
+        type: Date,
+        required: true
     }
 
 });

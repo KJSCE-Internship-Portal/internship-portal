@@ -141,7 +141,7 @@ const AllStudentsInDepartment = () => {
                         return (
                             <AccordionItem border='none' key={student.email}>
                                 <h2>
-                                    <AccordionButton _expanded={{ bg: colors.hover, color: 'white' }}>
+                                    <AccordionButton _expanded={{ bg: colors.secondary, color: 'white' }}>
                                         <Box as="span" flex='1' textAlign='left' style={{ color: colors.font, fontSize: '20px' }}>
                                         <Avatar h={30} w={30} mr={5} src={student.profile_picture_url} />
                                         <span style={{marginTop: '10px', height: '100%'}} >{student.name}</span>
@@ -156,7 +156,7 @@ const AllStudentsInDepartment = () => {
                                     <div style={{ fontSize: '18px', color: colors.primary }}>  Semester: {student.sem}, Batch: {student.batch} </div>
                                     <div style={{ fontSize: '17px', color: colors.heading1, fontStyle: 'italic', fontWeight: 'bold' }}>{student.email}</div>
 
-                                    {student.hasMentor && <div style={{ borderRadius: '10px', margin: '5px 0', backgroundColor: colors.hover, padding: '5px 1.5vw', display: 'flex', flexDirection: 'column' }}>
+                                    {student.hasMentor && <div style={{ borderRadius: '10px', margin: '5px 0', backgroundColor: colors.secondary, padding: '5px 1.5vw', display: 'flex', flexDirection: 'column' }}>
                                         <div style={{ color: colors.font }}>Mentor Details :</div>
                                         <div style={{ height: '10px' }}></div>
                                         <div style={{ fontSize: '17px', color: colors.font, fontWeight: 'bold' }}><span style={{ color: colors.primary }}>Name:</span> {student.mentor.name}</div>

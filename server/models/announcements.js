@@ -13,7 +13,7 @@ const announcementSchema = new mongoose.Schema({
         required: [true, "Sender's name is required"]
     },
 
-    receieved_by: 
+    received_by: 
         {
             department: {
                 type: String,
@@ -30,6 +30,10 @@ const announcementSchema = new mongoose.Schema({
     content: {
         type: String,
         required: [true, "Announcement should not be Empty"]
+    },
+    postedAt: {
+        type: Date,
+        required: [true, "Date is required"]
     }
 
 });

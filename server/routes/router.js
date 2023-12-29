@@ -32,6 +32,8 @@ router.post("/coordinator/mentor/assign-student", controllerCoordinator.assignSt
 router.post("/coordinator/mentor/remove-assigned-student", controllerCoordinator.removeAssignedStudent);
 router.post("/coordinator/statistics", controllerCoordinator.getStatisticsCoordinator);
 router.post("/admin/statistics", controllerAdmin.getStatisticsAdmin);
+router.post("/admin/add/coordinator", controllerAdmin.addCoordinator);
+router.post("/announcement/add", controllerAdmin.postAnnouncement);
 
 
 // router.post("/login", controllerOAuth.handleLoginRequest);

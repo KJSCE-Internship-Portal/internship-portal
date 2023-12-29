@@ -1,6 +1,7 @@
 const express = require("express");
 const Students = require("../models/student");
 const Mentor = require("../models/mentor");
+const Coordinator = require("../models/coordinator");
 const Announcement = require("../models/announcements");
 
 const deslugify = (slug) => {
@@ -9,10 +10,49 @@ const deslugify = (slug) => {
         .replace(/(?:^|\s)\S/g, (a) => a.toUpperCase());
 };
 
-const loginAdmin = async (req, res) => {
+const postAnnouncement = async (req, res) => {
+    try {
+
+        const { department, sender, received_by, content } = req.body;
+
+        const newAnnouncement = new Announcement({
+            department,
+            sender,
+            received_by,
+            content,
+            postedAt: new Date(),
+        });
+
+        const savedAnnouncement = await newAnnouncement.save();
+
+        if (!savedAnnouncement) {
+            return res.status(500).json({ success: false, msg: "Announcement Cannot Be Posted" });
+        }
+
+        return res.status(201).json({ success: true, msg: "Announcement Posted Successfully", data: savedAnnouncement });
+
+    } catch (error) {
+        console.error(`Error: ${error.message}`);
+        return res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
+    }
+};
+
+const addCoordinator = async (req, res) => {
 
     try {
-        res.status(200).json({ success: true, msg: "Student Login Route" });
+
+        const coordinator = new Coordinator({...req.body, createdAt: new Date()});
+        var existing_coordinator = await Coordinator.findOne({ email: req.body.email }).exec();
+        var existing_mentor = await Mentor.findOneAndUpdate({ email: req.body.email }, { isActive: false, isApproved: false }, { new: true });
+        if (existing_coordinator) {
+            return res.status(201).json({ success: false, msg: `Coordinator Already Exists` });
+        } else if (!existing_mentor && !existing_coordinator) {
+            await coordinator.save();
+            return res.status(200).json({ success: true, msg: "Coordinator Registered Successfully !" });
+        } else if (existing_mentor && !existing_coordinator) {
+            return res.status(500).json({ success: false, msg: "A Mentor with the same E-mail ID is already Registered !" });
+        }
+
     } catch (error) {
         console.error(`Error: ${error.message}`);
         res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
@@ -328,8 +368,9 @@ const signOutAdmin = async (req, res) => {
 };
 
 module.exports = {
-    loginAdmin,
+    postAnnouncement,
     signOutAdmin,
     getStatisticsAdmin,
-    getAllAnnouncements
+    getAllAnnouncements,
+    addCoordinator
 };
