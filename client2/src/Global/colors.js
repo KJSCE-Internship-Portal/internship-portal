@@ -5,7 +5,8 @@ export const colorsDark = {
     font: '#fff',
     fontt2:'white',
     accent: '#ff8800',
-    hover: '#333'
+    hover: '#333',
+    heading1: '#c9002c'
 };
 
 
@@ -17,5 +18,6 @@ export const colors = {
   font: '#000',
   fontt2:'black',
   accent: '#ff8800',
-  hover: '#999999'
+  hover: '#999999',
+  heading1: '#ffa1b5'
 };

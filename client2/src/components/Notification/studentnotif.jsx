@@ -47,8 +47,8 @@ export default function StudentNotification() {
   const renderNotifications = () => {
     return notifications.map((notification) => (
       <div key={notification._id} className="my-3">
-        <p className={`text-sm font-medium text-${colors.font}`}>{notification.sender}</p>
-        <p className={`text-xs text-${colors.font}`}>{notification.content}</p>
+        <p style={{color: colors.heading1, fontSize: '18px'}} className={`text-sm font-medium`}>{notification.sender}</p>
+        <p style={{color: colors.font, fontSize: '16px'}} className={`text-xs`}>{notification.content}</p>
         <hr className="my-2 border-t-2 border-gray-300" />
       </div>
     ));
@@ -73,11 +73,11 @@ export default function StudentNotification() {
               <BellIcon color={colors.font} boxSize={5} />
             </Button>
           </PopoverTrigger>
-          <PopoverContent>
+          <PopoverContent bg={colors.secondary} minW={'40vw'}>
             <PopoverArrow />
             <PopoverCloseButton />
-            <PopoverHeader textAlign="left" color={colors.font}>Notifications</PopoverHeader>
-            <PopoverBody textAlign="left" color={colors.secondary2}>
+            <PopoverHeader textAlign="left" bg={colors.secondary} color={colors.font}>Notifications</PopoverHeader>
+            <PopoverBody textAlign="left" bg={colors.secondary}>
               {renderNotifications()}
               <div>
                 {renderPageNumbers()}

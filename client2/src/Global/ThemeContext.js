@@ -6,7 +6,8 @@ const darkTheme = {
   secondary2: '#222',
   font: 'white',
   accent: '#ff8800',
-  hover: '#333'
+  hover: '#333',
+  heading1: '#ff4f76'
 };
 
 const initialTheme = {
@@ -15,7 +16,8 @@ const initialTheme = {
   secondary2: '#d6d6d6',
   font: '#000',
   accent: 'black',
-  hover: '#999999'
+  hover: '#999999',
+  heading1: '#c9002c'
 };
 
 const ThemeContext = createContext();
