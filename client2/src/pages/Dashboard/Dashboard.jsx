@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   ChakraProvider,
   Box,
@@ -8,19 +8,55 @@ import {
   StatNumber,
   StatHelpText,
   theme,
+  Skeleton,
+  SkeletonCircle,
+  SkeletonText,
+  Stack
 } from '@chakra-ui/react';
 import { Chart } from 'react-google-charts';
-
+import axios from 'axios';
+import { useQuery } from '@tanstack/react-query';
+import { getUserDetails } from '../../Global/authUtils';
+import { url } from '../../Global/URL';
 const Dashboard = () => {
-  // Data and options for the bar chart
-  const barData = [
-    ['Department', 'Total Students'],
-    ['Comps', 50],
-    ['IT', 45],
-    ['EXTC', 60],
-    ['ETRX', 70],
-    ['Mechanical', 30],
-  ];
+
+  const [user, setUser] = useState(false);
+  const [pieData, setPieData] = useState([['Company', 'Number of Students']]);
+  const [barData, setBarData] = useState([['Department', 'Total Students']]);
+  const { isError, isLoading, data } = useQuery({
+    queryKey: ['/admin/statistics/all'],
+    retryDelay: 1000 * 60 * 2,
+    queryFn: async () => {
+      if (!user) {
+        var current_user = await getUserDetails();
+        setUser(current_user);
+      } else {
+        var current_user = user;
+      }
+
+      const response = await axios.post(url + `/admin/statistics`);
+      const temp = response.data.data;
+
+      console.log(temp);
+      setPieData([['Company', 'Number of Students']]);
+      setBarData([['Department', 'Total Students']]);
+      setPieData((x) => [...x, ...temp.topCompanies.map(company => [company._id, company.count])]);
+      setBarData((x) => [...x, ...temp.departmentWiseDistribution.map(company => [company._id, company.count])]);
+
+
+      return temp;
+    },
+  });
+
+
+  // const barData = [
+  //   ['Department', 'Total Students'],
+  //   ['Comps', 50],
+  //   ['IT', 45],
+  //   ['EXTC', 60],
+  //   ['ETRX', 70],
+  //   ['Mechanical', 30],
+  // ];
 
   const barOptions = {
     chart: {
@@ -29,14 +65,7 @@ const Dashboard = () => {
   };
 
   // Data and options for the pie chart
-  const pieData = [
-    ['Department', 'Number of Students'],
-    ['Comps', 12],
-    ['IT', 19],
-    ['EXTC', 3],
-    ['ETRX', 5],
-    ['Mechanical', 2],
-  ];
+
 
   const pieOptions = {
     title: 'Student Distribution',
@@ -48,7 +77,7 @@ const Dashboard = () => {
     ['C', 8.94, 'light blue'], // RGB value
     ['S', 10.49, 'red'], // English color name
     ['G', 19.3, 'black'],
-    ['P', 21.45, 'color: #e5e4e2' ], // CSS-style declaration
+    ['P', 21.45, 'color: #e5e4e2'], // CSS-style declaration
   ];
 
   const hbarOptions = {
@@ -96,8 +125,20 @@ const Dashboard = () => {
   };
 
 
-  // Data for the Radar Chart
-  
+  if (isLoading) {
+    return (
+      <Stack>
+        <Skeleton height='20px' />
+        <Skeleton height='20px' />
+        <Skeleton height='20px' />
+      </Stack>
+    )
+  }
+
+  if (isError) {
+    return <div>Something Went Wrong, Try Reloading if the problem persists</div>
+  }
+
 
   return (
     <ChakraProvider theme={theme}>
@@ -105,24 +146,24 @@ const Dashboard = () => {
         <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} spacing={5}>
           {/* Stat Cards */}
           <Stat bg="blue.100" p={4} borderRadius="md">
-            <StatLabel>Weekly Review Completed</StatLabel>
-            <StatNumber>245</StatNumber>
-            <StatHelpText>Compared to last week</StatHelpText>
+            <StatLabel>Total Students Interning</StatLabel>
+            <StatNumber>{data.studentsInAllDepartments}</StatNumber>
+            <StatHelpText>Combined count of all Departments</StatHelpText>
           </Stat>
           <Stat bg="green.100" p={4} borderRadius="md">
-            <StatLabel>Weekly Review Submitted</StatLabel>
-            <StatNumber>340</StatNumber>
-            <StatHelpText>Compared to last week</StatHelpText>
+            <StatLabel>Average Internship Duration</StatLabel>
+            <StatNumber>{Number(data.avgInternshipDuration[0].avgDuration).toFixed(2)}</StatNumber>
+            <StatHelpText>Duration displayed is in weeks</StatHelpText>
           </Stat>
           <Stat bg="pink.100" p={4} borderRadius="md">
-            <StatLabel>Internship Completed</StatLabel>
-            <StatNumber>45</StatNumber>
-            <StatHelpText>Since last month</StatHelpText>
+            <StatLabel>Total students having Mentors</StatLabel>
+            <StatNumber>{data.assignedStudents}</StatNumber>
+            <StatHelpText>Students being mentored currently</StatHelpText>
           </Stat>
           <Stat bg="orange.100" p={4} borderRadius="md">
             <StatLabel>Review Completed</StatLabel>
             <StatNumber>35</StatNumber>
-            <StatHelpText>Compared to last week</StatHelpText>
+            <StatHelpText>This is Static for now</StatHelpText>
           </Stat>
         </SimpleGrid>
 
@@ -149,28 +190,28 @@ const Dashboard = () => {
             </Box>
 
             <Box bg="white" p={5} shadow="md" borderRadius="md">
-            <Chart
-        chartType="BarChart"
-        width="100%"
-        height="400px"
-        data={hbarData}
-        options={hbarOptions}
-        chartPackages={['corechart', 'bar']}
-      />
+              <Chart
+                chartType="BarChart"
+                width="100%"
+                height="400px"
+                data={hbarData}
+                options={hbarOptions}
+                chartPackages={['corechart', 'bar']}
+              />
             </Box>
             <Box bg="white" p={5} shadow="md" borderRadius="md">
-            <Chart
-        chartType="LineChart"
-        width="100%"
-        height="400px"
-        data={lineData}
-        options={lineOptions}
-        chartPackages={['corechart', 'line']}
-      />
-      </Box>
+              <Chart
+                chartType="LineChart"
+                width="100%"
+                height="400px"
+                data={lineData}
+                options={lineOptions}
+                chartPackages={['corechart', 'line']}
+              />
+            </Box>
 
 
-            
+
           </SimpleGrid>
         </Box>
       </Box>

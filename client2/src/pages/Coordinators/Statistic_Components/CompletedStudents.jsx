@@ -29,11 +29,11 @@ export default function CompletedStudentsAndVerified({completed, notCompleted}) 
     },
     pieStartAngle: 180,
     colors: ["#5b37b8", "#a6dff7"],
-    backgroundColor: colors.secondary2,
+    backgroundColor: colors.secondary,
     chartArea: {
       left: 10, // Adjust this value to move the pie chart to the left
       // top: 10,
-      width: "90%", // Adjust this value to control the width of the chart
+      width: "95%", // Adjust this value to control the width of the chart
       height: "80%", // Adjust this value to control the height of the chart
     },
     pieSliceTextStyle: {

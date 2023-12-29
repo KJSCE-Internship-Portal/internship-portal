@@ -20,6 +20,7 @@ import MentorHome from './pages/Faculty_mentor/homefac';
 import MentorStudentView from './pages/Faculty_mentor/studentprogress';
 import MentorStudentFeedback from './pages/Faculty_mentor/feedback.jsx';
 import AllStudentsInDepartment from './pages/Coordinators/Mentor/AllStudents/AllStudents.jsx';
+import Dashboard from './pages/Dashboard/Dashboard.jsx';
 
 
 //importing Functions 
@@ -78,6 +79,7 @@ function App() {
               <Routes>
                 <Route path="/login" element={<Login />} />
                 <Route path="/" element={<Login />} />
+                <Route path="/admin/dashboard" element={<Dashboard />} />
                 <Route path="/coordinator/home" element={<PrivateRoute element={<HomePage />} />} />
                 <Route path="/coordinator/mentor/:id/students" element={<PrivateRoute element={<MentorPage />} />} />
                 <Route path='/coordinator/:department/all-students' element={<PrivateRoute element={<AllStudentsInDepartment />} />} />

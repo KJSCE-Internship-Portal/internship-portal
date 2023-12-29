@@ -11,7 +11,8 @@ import {
     AccordionPanel,
     AccordionIcon,
     Box,
-    Badge
+    Badge,
+    SimpleGrid
 } from '@chakra-ui/react';
 import Loader from '../../../../components/loader/Loader';
 import { useTheme } from '../../../../Global/ThemeContext';
@@ -106,11 +107,26 @@ const AllStudentsInDepartment = () => {
     return (
         <div>
             <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'space-evenly'}}>
-                {pie_data  &&
+            <Box mt={10}>
+          <SimpleGrid columns={{ base: 1, md: 1, lg: 2 }} spacing={20} marginBottom={10}>
+            {/* Charts */}
+            <Box bg="white" p={4} shadow="md" borderRadius="md" bgColor={colors.secondary}>
+            {pie_data  &&
+                <AssignedStudentsPie assigned={pie_data.assignedStudents} notAssigned={pie_data.studentsInDepartment-pie_data.assignedStudents}/>}
+            </Box>
+            <Box bg="white" p={4} shadow="md" borderRadius="md" bgColor={colors.secondary}>
+            {pie_data && pie_data.completedStudentsAndVerified!=(pie_data.assignedStudents-pie_data.completedStudentsAndVerified)!=0 && 
+                <CompletedStudentsAndVerified completed={pie_data.completedStudentsAndVerified} notCompleted={pie_data.assignedStudents-pie_data.completedStudentsAndVerified}/>
+                }
+            </Box>
+
+          </SimpleGrid>
+        </Box>
+                {/* {pie_data  &&
                 <AssignedStudentsPie assigned={pie_data.assignedStudents} notAssigned={pie_data.studentsInDepartment-pie_data.assignedStudents}/>}
                 {pie_data && pie_data.completedStudentsAndVerified!=(pie_data.assignedStudents-pie_data.completedStudentsAndVerified)!=0 && 
                 <CompletedStudentsAndVerified completed={pie_data.completedStudentsAndVerified} notCompleted={pie_data.assignedStudents-pie_data.completedStudentsAndVerified}/>
-                }
+                } */}
 
             </div>
             {/* <h1 style={{ color: colors.font, fontSize: '23px', margin: '5px 2.5vw', fontWeight: 'bold', textAlign: 'center' }}>Following Students Belong to your Department</h1> */}
@@ -138,7 +154,7 @@ const AllStudentsInDepartment = () => {
                                 
                                 <AccordionPanel pb={4}>
                                     <div style={{ fontSize: '18px', color: colors.primary }}>  Semester: {student.sem}, Batch: {student.batch} </div>
-                                    <div style={{ fontSize: '17px', color: '#c20010', fontStyle: 'italic', fontWeight: 'bold' }}>{student.email}</div>
+                                    <div style={{ fontSize: '17px', color: colors.heading1, fontStyle: 'italic', fontWeight: 'bold' }}>{student.email}</div>
 
                                     {student.hasMentor && <div style={{ borderRadius: '10px', margin: '5px 0', backgroundColor: colors.hover, padding: '5px 1.5vw', display: 'flex', flexDirection: 'column' }}>
                                         <div style={{ color: colors.font }}>Mentor Details :</div>
