@@ -1,4 +1,6 @@
 const express = require("express");
+const { readFile, writeFile } = require('fs/promises');
+const { PDFDocument, StandardFonts } = require('pdf-lib');
 const Mentor = require('../models/mentor')
 const Student = require('../models/student');
 
@@ -71,6 +73,84 @@ const editPrivateComments = async (req, res) => {
     }
 };
 
+const studentEvaluation = async (req, res) => {
+    try {
+        const evaluateDetails = req.body;
+        var inputFilePath;
+        if(evaluateDetails.evaluation == 'ISE') {
+            inputFilePath = './assets/ISE-Editable-Template.pdf';
+        }
+        else if(evaluateDetails.evaluation == 'ESE') {
+            inputFilePath = './assets/ESE-Editable-Template.pdf';
+        }
+        
+        const pdfBytes = await readFile(inputFilePath);
+        const pdfDoc = await PDFDocument.load(pdfBytes);
+        const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman)
+        const form = pdfDoc.getForm();
+        // form.setFont(timesRomanFont);
+
+        form.getTextField('student_rollno').setText(evaluateDetails.student_rollno);
+        form.getTextField('student_name').setText(evaluateDetails.student_name);
+        form.getTextField('exam_date').setText(evaluateDetails.exam_date);
+        form.getTextField('exam_time').setText(evaluateDetails.exam_time);
+        form.getTextField('exam_venue').setText(evaluateDetails.exam_venue);
+        form.getTextField('project_title').setText(evaluateDetails.project_title);
+        form.getTextField('work_done').setText(evaluateDetails.work_done);
+        form.getTextField('report_quality_marks').setText(evaluateDetails.report_quality_marks);
+        form.getTextField('oral_presentation_marks').setText(evaluateDetails.oral_presentation_marks);
+        form.getTextField('work_quality_marks').setText(evaluateDetails.work_quality_marks);
+        form.getTextField('work_understanding_marks').setText(evaluateDetails.work_understanding_marks);
+        form.getTextField('periodic_interaction_marks').setText(evaluateDetails.periodic_interaction_marks);
+
+        const reportQualityMarks = parseInt(evaluateDetails.report_quality_marks);
+        const oralPresentationMarks = parseInt(evaluateDetails.oral_presentation_marks);
+        const workQualityMarks = parseInt(evaluateDetails.work_quality_marks);
+        const workUnderstandingMarks = parseInt(evaluateDetails.work_understanding_marks);
+        const periodicInteractionMarks = parseInt(evaluateDetails.periodic_interaction_marks);
+
+        const sumOfMarks = reportQualityMarks + oralPresentationMarks + workQualityMarks + workUnderstandingMarks + periodicInteractionMarks;
+        form.getTextField('total_marks').setText(sumOfMarks.toString());
+        const options = form.getRadioGroup('report_quality_radio').getOptions();
+
+        function setRadioSelection(mark, maxValue, radioGroupName) {
+            const percentage = (mark / maxValue) * 100;
+            const radioGroup = form.getRadioGroup(radioGroupName);
+          
+            if (percentage >= 90) {
+              radioGroup.select(options[0]); // >= 90%
+            } else if (percentage >= 70 && percentage <= 89) {
+              radioGroup.select(options[1]); // 70-89%
+            } else if (percentage >= 50 && percentage <= 69) {
+              radioGroup.select(options[2]); // 50-69%
+            } else {
+              radioGroup.select(options[3]); // <= 49%
+            }
+        }
+        
+        setRadioSelection(evaluateDetails.report_quality_marks, 20, 'report_quality_radio');
+        setRadioSelection(evaluateDetails.oral_presentation_marks, 20, 'oral_presentation_radio');
+        setRadioSelection(evaluateDetails.work_quality_marks, 15, 'work_quality_radio');
+        setRadioSelection(evaluateDetails.work_understanding_marks, 15, 'work_understanding_radio');
+        setRadioSelection(evaluateDetails.periodic_interaction_marks, 5, 'periodic_interaction_radio');
+
+        form.getTextField('examiner_specific_remarks').setText(evaluateDetails.examiner_specific_remarks);
+
+        for (const field of form.getFields()) {
+            field.enableReadOnly();
+        }
+        const modifiedPdfBytes = await pdfDoc.save();
+        res.setHeader('Content-Type', 'application/pdf');
+        const filename = `${evaluateDetails.student_rollno}_${evaluateDetails.evaluation}_Evaluation.pdf`;
+        res.setHeader('Content-Disposition', `inline; filename="${filename}"`);
+        res.send(Buffer.from(modifiedPdfBytes));
+
+    } catch (error) {
+        console.error(`Error: ${error.message}`);
+        res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
+    }
+}
+
 const deslugify = (slug) => {
     return slug
         .replace(/-/g, ' ') 
@@ -141,5 +221,6 @@ module.exports = {
     viewAssignedStudents,
     addPrivateComments,
     editPrivateComments,
+    studentEvaluation,
     getAllMentors
 };

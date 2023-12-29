@@ -31,6 +31,7 @@
     "nodemailer": "^6.9.7",
     "nodemailer-express-handlebars": "^6.1.0",
     "path": "^0.12.7",
+    "pdf-lib": "^1.17.1",
     "socket.io": "^4.7.2",
     "uuid": "^9.0.1"
   },

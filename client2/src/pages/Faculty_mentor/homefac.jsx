@@ -159,7 +159,7 @@ const InternshipPlatform = () => {
         <div className="flex flex-row justify-start w-full">
           <Avatar size="md" bg='red.700' color="white" name={mentorName} src={mentor_profile_url} className="h-10 w-10 mr-2"></Avatar>
           <div className="flex flex-1 flex-col items-start justify-start w-full">
-            <h1 className={`text-base text-${colors.font} w-full`}>{mentorName}</h1>
+            <h1 className={`text-base text-${colors.font} w-full font-semibold`}>{mentorName}</h1>
             <p className={`text-${colors.font} text-xs w-full`}>{mentorEmail}</p>
           </div>
         </div>

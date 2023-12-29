@@ -14,7 +14,7 @@ const Progress = () => {
     const [interaction, setInteraction] = useState('');
     const [remarks, setRemarks] = useState('');
     const [file, setFile] = useState('');
-    const { theme:colors } = {useTheme}
+    const { theme: colors } = useTheme();
 
     const handleFileChange = (e) => {
         const selectedFile = e.target.files[0];

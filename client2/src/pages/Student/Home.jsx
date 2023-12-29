@@ -10,6 +10,7 @@ import {
   AvatarBadge,
   Progress,
   Stat,
+  SimpleGrid,
   StatLabel,
   StatNumber,
   StatHelpText,
@@ -209,7 +210,7 @@ const FramePage = () => {
             <Avatar size="md" bg='red.700' color="white" name={name} src={profile_url} className="h-10 w-10 mr-2"></Avatar>
             <div className="flex flex-1 flex-col items-start justify-start w-full">
               <text
-                className={`text-base text-${colors.font} w-full`}
+                className={`text-base text-${colors.font} w-full font-semibold`}
                 size="txtRobotoMedium16"
               >
                 <h1>{name}</h1>
@@ -224,21 +225,24 @@ const FramePage = () => {
           </div>
         </div>
         <div className="md:pl-6 mx-10 md:mt-3 mb:5 md:pr-6 min-w-full">
-          <Progress hasStripe value={progressValue} className="mb-3" />
-          <StatGroup>
-            <Stat className="mr-5">
-              <StatLabel>On time Submissions</StatLabel>
+          <Progress hasStripe value={progressValue} colorScheme='red' className="mb-3" aria-valuenow={progressValue}/>
+          <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6} className="mb-5">
+            <Stat bg="green.100" p={4} borderRadius="md">
+              <StatLabel>On Time Submissions</StatLabel>
               <StatNumber>{onTimeSubmission}</StatNumber>
+              <StatHelpText>Count of OnTime weekly updates</StatHelpText>
             </Stat>
-            <Stat className="mr-5">
+            <Stat bg="red.100" p={4} borderRadius="md">
               <StatLabel>Missed Submissions</StatLabel>
-              <StatNumber>{noSubmission == 0 ? 0 : noSubmission }</StatNumber>
+              <StatNumber>{noSubmission == 0 ? 0 : noSubmission}</StatNumber>
+              <StatHelpText>Count of weekly updates not yet submitted</StatHelpText>
             </Stat>
-            <Stat className="mr-5">
+            <Stat bg="orange.100" p={4} borderRadius="md">
               <StatLabel>Late Submissions</StatLabel>
               <StatNumber>{lateSubmission}</StatNumber>
+              <StatHelpText>Count of weekly updates submitted after week deadline </StatHelpText>
             </Stat>
-          </StatGroup>
+          </SimpleGrid>
         </div>
         <div className="flex flex-col h-[269px] md:h-auto items-center justify-center max-w-[1262px] mt-[13px] mx-auto md:px-5 w-full">
           <div className="flex flex-col items-center justify-center px-3 w-full">

@@ -134,6 +134,7 @@ const Comment = () => {
                                     className={`px-0 w-full text-sm text-${colors.font} border-0 focus:ring-0 focus:outline-none bg-${colors.secondary} dark:text-${colors.font} dark:placeholder-${colors.font} dark:bg-${colors.secondary}`}
                                     placeholder="Write a comment..."
                                     required
+                                    style={{ backgroundColor: colors.secondary2 }}
                                 ></textarea>
                             </div>
                             <button

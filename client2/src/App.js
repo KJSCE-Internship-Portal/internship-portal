@@ -21,6 +21,7 @@ import MentorStudentView from './pages/Faculty_mentor/studentprogress';
 import MentorStudentFeedback from './pages/Faculty_mentor/feedback.jsx';
 import AllStudentsInDepartment from './pages/Coordinators/Mentor/AllStudents/AllStudents.jsx';
 import Dashboard from './pages/Dashboard/Dashboard.jsx';
+import ISEEvaluation from './pages/Faculty_mentor/ise';
 
 
 //importing Functions 
@@ -112,6 +113,10 @@ function App() {
                 <Route
                   path="/mentor/studentprogress/feedback"
                   element={<PrivateRoute element={<MentorStudentFeedback />} />}
+                />
+                <Route
+                  path="/mentor/studentprogress/evaluation/ise"
+                  element={<PrivateRoute element={<ISEEvaluation />} />}
                 />
                 <Route path="/redirection/:accessToken" element={<RedirectionPage />} />
 
