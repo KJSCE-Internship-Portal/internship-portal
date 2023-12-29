@@ -4,6 +4,7 @@ import { useTheme } from '../../Global/ThemeContext';
 import { useParams } from 'react-router-dom';
 import showToast from '../../Global/Toast';
 import { useToast } from '@chakra-ui/react';
+import StudentDrawer from './studentdrawer.jsx';
 import {
   Card,
   CardHeader,
@@ -71,6 +72,20 @@ const Week = () => {
   const [noSubmission, setNoSubmission] = useState(null);
   const [lateSubmission, setLateSubmission] = useState(null);
   const [progressValue, setProgressValue] = useState(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [studentData, setStudentData] = useState([]);
+
+  const viewUser = (studentData) => {
+    setStudentData(studentData);
+    setIsDrawerOpen(true);
+  };
+  const openDrawer = () => {
+    setIsDrawerOpen(true);
+  };
+
+  const closeDrawer = () => {
+    setIsDrawerOpen(false);
+  };
   const toast = useToast();
 
   useEffect(() => {
@@ -86,6 +101,11 @@ const Week = () => {
           const student_id = localStorage.getItem('student');
           const response = await axios
             .get(url + `/students/all?sub_id=${student_id}`);
+          const studentData = response.data.data;
+          const currentstudent = studentData[0]
+          console.log(response)
+          console.log(currentstudent)
+          setStudentData(currentstudent)
           const student = response.data.data[0];
           setStudentName(student.name);
           setStudentEmail(student.email);
@@ -183,10 +203,12 @@ const Week = () => {
       </Card>
     );
   };
+  const isStudentDataAvailable = Object.keys(studentData).length > 0;
+  console.log(isStudentDataAvailable)
 
   return (
     <>
-      <div className={`bg-${colors.secondary2} flex flex-col font-roboto items-center justify-start mx-auto w-full max-h-full py-6 px-4`}>
+    <div className={`bg-${colors.secondary2} flex flex-col font-roboto items-center justify-start mx-auto w-full max-h-full py-6 px-4`}>
         {/* Mentor */}
         <div className={`flex flex-col gap-3 h-[100px] md:h-auto md:items-center max-w-[1262px] mx-auto pt-4 md:px-5 w-full mb-3.5`}>
           <div className="items-start">
@@ -223,25 +245,28 @@ const Week = () => {
           </div>
         </div>
         {/* Mentor */}
-        <div className="flex md:flex-col flex-row gap-3 h-[100px] md:h-auto items-center justify-start max-w-[1262px] mx-auto pt-4 md:px-5 w-full mb-3.5">
-          <div className="flex flex-row justify-start w-full">
-            <Avatar size="md" bg='red.700' color="white" name={studentName} src={student_profile_url} className="h-10 w-10 mr-2"></Avatar>
-            <div className="flex flex-1 flex-col items-start justify-start w-full">
-              <text
-                className={`text-base text-${colors.font} w-full`}
-                size="txtRobotoMedium16"
-              >
-                <h1>{studentName}</h1>
-              </text>
-              <text
-                className={`text-${colors.font} text-xs w-full`}
-                size="txtRobotoRegular12"
-              >
-                {studentEmail}
-              </text>
-            </div>
+        <div className="flex md:flex-col flex-row gap-3 h-[100px] md:h-auto items-center justify-between max-w-[1262px] mx-auto pt-4 md:px-5 w-full mb-3.5">
+        <div className="flex flex-row justify-start w-full">
+          <Avatar size="md" bg='red.700' color="white" name={studentName} src={student_profile_url} className="h-10 w-10 mr-2"></Avatar>
+          <div className="flex flex-1 flex-col items-start justify-start w-full">
+            <text
+              className={`text-base text-${colors.font} w-full`}
+              size="txtRobotoMedium16"
+            >
+              <h1>{studentName}</h1>
+            </text>
+            <text
+              className={`text-${colors.font} text-xs w-full`}
+              size="txtRobotoRegular12"
+            >
+              {studentEmail}
+            </text>
           </div>
-        </div>
+          <button className="bg-red-500 hover hover:bg-red-800 text-white px-4 py-2 rounded-md" onClick={openDrawer}>
+          View Profile</button>
+        </div>     
+        </div>  
+        <StudentDrawer isOpen={isDrawerOpen} onClose={closeDrawer} studentData={studentData} />
         <div className="md:pl-6 mx-10 md:mt-3 mb:5 md:pr-6 min-w-full">
           <Progress hasStripe value={progressValue} className="mb-3" />
           <StatGroup className={`text-${colors.font}`}>
@@ -265,7 +290,7 @@ const Week = () => {
               <div className="sm:flex-col flex-row gap-5 grid sm:grid-cols-2 md:grid-cols-2 grid-cols-1 justify-start w-full">
                 {progressData.map((week) => (
                   <WeekComponent key={week.week} week={week} generateWeekURL={generateWeekURL} />
-                ))}
+                ))}          
               </div>
             </div>
           </div>
