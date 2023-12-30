@@ -26,6 +26,7 @@ import ESEEvaluation from './pages/Faculty_mentor/ese';
 import ViewStudent from './pages/Admin/viewstudent.jsx';
 import ViewMentor from './pages/Admin/viewmentor.jsx';
 import ViewCoord from './pages/Admin/viewcoordinator.jsx';
+import StudentProfile from './pages/Student/Profile.jsx';
 
 //importing Functions 
 import { setAuthToken, isAuthenticated, getUserDetails } from './Global/authUtils';
@@ -106,6 +107,10 @@ function App() {
                 <Route
                   path="/student/progress/view"
                   element={<PrivateRoute element={<StudentProgressView />} />}
+                />
+                <Route
+                  path="/student/profile"
+                  element={<PrivateRoute element={<StudentProfile />} />}
                 />
                 <Route
                   path="/mentor/home"
