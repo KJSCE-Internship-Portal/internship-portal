@@ -66,8 +66,16 @@ const Week = () => {
   };
 
   const handleESEButtonClick = () => {
-    // window.location.href = 'http://localhost:3000/mentor/studentprogress/evaluation/ese';
+    window.location.href = 'http://localhost:3000/mentor/studentprogress/evaluation/ese';
   };
+
+  const getEvaluationSheet = async (evaluation) => {
+    const pdfBuffer = (evaluation == 'ISE' ? isePdfBuffer.data : esePdfBuffer.data);
+    const uint8Array = new Uint8Array(pdfBuffer);
+    const blob = new Blob([uint8Array], { type: 'application/pdf' });
+    const pdfUrl = URL.createObjectURL(blob);
+    window.open(pdfUrl, '_blank');
+}
 
   const [department, setDepartment] = useState('');
   const [mentorName, setMentorName] = useState('');
@@ -83,6 +91,10 @@ const Week = () => {
   const [progressValue, setProgressValue] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [studentData, setStudentData] = useState([]);
+  const [isISESigned, setIsISESigned] = useState(false);
+  const [isESESigned, setIsESESigned] = useState(false);
+  const [isePdfBuffer, setISEPdfBuffer] = useState(null);
+  const [esePdfBuffer, setESEPdfBuffer] = useState(null);
 
   const viewUser = (studentData) => {
     setStudentData(studentData);
@@ -118,6 +130,14 @@ const Week = () => {
         setStudentName(student.name);
         setStudentEmail(student.email);
         setStudentProfilePicture(student.profile_picture_url);
+        if (student?.internships?.[0]?.evaluation?.[0]?.pdf_buffer !== undefined ) {
+          setISEPdfBuffer(student.internships[0].evaluation[0].pdf_buffer);
+        }
+        if (student?.internships?.[0]?.evaluation?.[1]?.pdf_buffer !== undefined ) {
+          setESEPdfBuffer(student.internships[0].evaluation[1].pdf_buffer);
+        }
+        setIsISESigned(student.internships[0].evaluation[0]?.is_signed);
+        setIsESESigned(student.internships[0].evaluation[1]?.is_signed);
         if (student.internships[0].progress && student.internships[0].progress.length > 0) {
           setOnTimeSubmission(0);
           setNoSubmission(0);
@@ -310,12 +330,22 @@ const Week = () => {
         </div>
         <h1 className="mt-10">Evaluation</h1>
         <div class="flex gap-10">
+          {isISESigned ? (
+            <button type="submit" class="flex-1 mt-5 text-white bg-red-400 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm sm:w-auto px-5 py-2.5 text-center" onClick={() => getEvaluationSheet('ISE')}>
+            View ISE Evalutation Sheet
+            </button>
+          ) : (
           <button type="submit" class="flex-1 mt-5 text-white bg-red-400 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm sm:w-auto px-5 py-2.5 text-center" onClick={handleISEButtonClick}>
             ISE
-          </button>
+          </button>)}
+          {isESESigned ? (
+            <button type="submit" class="flex-1 mt-5 text-white bg-red-400 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm sm:w-auto px-5 py-2.5 text-center" onClick={() => getEvaluationSheet('ESE')}>
+            View ESE Evalutation Sheet
+            </button>
+          ) : (
           <button type="submit" class="flex-1 mt-5 text-white bg-red-400 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm sm:w-auto px-5 py-2.5 text-center" onClick={handleESEButtonClick}>
             ESE
-          </button>
+          </button>)}
         </div>
       </div>
     </>

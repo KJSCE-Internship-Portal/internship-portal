@@ -119,23 +119,27 @@ const studentSchema = new mongoose.Schema({
                         type: String,
                         required: [true, "Mentor Name is required"]
                     },
-                    date: {
+                    exam_date: {
                         type: Date,
                         required: [true, "date is required"]
                     },
-                    time: {
+                    exam_time: {
                         type: String,
                         required: [true, 'Time is required']
                     },
-                    venue: {
+                    exam_venue: {
                         type: String,
-                        required: [true, 'Venue is required']
+                        required: false
                     },
-                    job_title: {
+                    project_title: {
                         type: String,
                         required: [true, 'Job title is required']
                     },
-                    quality_of_report: {
+                   work_done: {
+                        type: String,
+                        required: [true, 'Work Done is required']
+                    },
+                    report_quality_marks: {
                         outOf: {
                             type: Number,
                             default: 20
@@ -146,7 +150,7 @@ const studentSchema = new mongoose.Schema({
                             default: 0
                         }
                     },
-                    oral_presentation: {
+                    oral_presentation_marks: {
                         outOf: {
                             type: Number,
                             default: 20
@@ -157,7 +161,7 @@ const studentSchema = new mongoose.Schema({
                             default: 0
                         }
                     },
-                    quality_of_work_done: {
+                    work_quality_marks: {
                         outOf: {
                             type: Number,
                             default: 15,
@@ -168,7 +172,7 @@ const studentSchema = new mongoose.Schema({
                             default: 0
                         }
                     },
-                    understanding_of_work: {
+                    work_understanding_marks: {
                         outOf: {
                             type: Number,
                             default: 15
@@ -179,10 +183,10 @@ const studentSchema = new mongoose.Schema({
                             default: 0
                         }
                     },
-                    periodic_interaction: {
+                    periodic_interaction_marks: {
                         outOf: {
                             type: Number,
-                            default: 15
+                            default: 5
                         },
                         scored: {
                             type: Number,
@@ -190,9 +194,29 @@ const studentSchema = new mongoose.Schema({
                             default: 0
                         }
                     },
-                    remarks: {
+                    total_marks: {
+                        outOf: {
+                            type: Number,
+                            default: 75
+                        },
+                        scored: {
+                            type: Number,
+                            required: true,
+                            default: 0
+                        }
+                    },
+                    examiner_specific_remarks: {
                         type: String,
                         required: false
+                    },
+                    pdf_buffer: {
+                        type: Buffer,
+                        required: true
+                    },
+                    is_signed: {
+                        type: Boolean,
+                        required: false,
+                        default: false
                     }
                 }
             ],

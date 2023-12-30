@@ -22,10 +22,10 @@ import MentorStudentFeedback from './pages/Faculty_mentor/feedback.jsx';
 import AllStudentsInDepartment from './pages/Coordinators/Mentor/AllStudents/AllStudents.jsx';
 import Dashboard from './pages/Dashboard/Dashboard.jsx';
 import ISEEvaluation from './pages/Faculty_mentor/ise';
+import ESEEvaluation from './pages/Faculty_mentor/ese';
 import ViewStudent from './pages/Admin/viewstudent.jsx';
 import ViewMentor from './pages/Admin/viewmentor.jsx';
 import ViewCoord from './pages/Admin/viewcoordinator.jsx';
-import AddCoord from './pages/Admin/addcoord.jsx';
 
 //importing Functions 
 import { setAuthToken, isAuthenticated, getUserDetails } from './Global/authUtils';
@@ -90,7 +90,6 @@ function App() {
                 <Route path='/admin/dashboard/viewstudent' element={<PrivateRoute element={<ViewStudent/>} />}></Route>
                 <Route path='/admin/dashboard/viewmentor' element={<PrivateRoute element={<ViewMentor/>} />}></Route>
                 <Route path='/admin/dashboard/viewcoordinator' element={<PrivateRoute element={<ViewCoord/>} />}></Route>
-                <Route path='/admin/dashboard/addcoordinator' element={<AddCoord/>}></Route>
                 {/* <Route
                   path="/student/details"
                   element={<PrivateRoute element={<StudentDetailsPage />} />}
@@ -123,6 +122,10 @@ function App() {
                 <Route
                   path="/mentor/studentprogress/evaluation/ise"
                   element={<PrivateRoute element={<ISEEvaluation />} />}
+                />
+                <Route
+                  path="/mentor/studentprogress/evaluation/ese"
+                  element={<PrivateRoute element={<ESEEvaluation />} />}
                 />
                 <Route path="/redirection/:accessToken" element={<RedirectionPage />} />
 
