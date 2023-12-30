@@ -11,18 +11,28 @@ import {
   Skeleton,
   SkeletonCircle,
   SkeletonText,
-  Stack
+  Stack,
+  Button,
+  Flex,
+  Avatar
 } from '@chakra-ui/react';
 import { Chart } from 'react-google-charts';
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 import { getUserDetails } from '../../Global/authUtils';
 import { url } from '../../Global/URL';
+import {useTheme} from '../../Global/ThemeContext';
+
 const Dashboard = () => {
 
   const [user, setUser] = useState(false);
   const [pieData, setPieData] = useState([['Company', 'Number of Students']]);
   const [barData, setBarData] = useState([['Department', 'Total Students']]);
+  const [adminName, setAdminName] = useState('');
+  const [adminEmail, setAdminEmail] = useState('');
+  const [admin_profile_url, setAdminProfilePicture] = useState('');
+  const {theme: colors} = useTheme();
+  const accessToken = localStorage.getItem('IMPaccessToken');
   const { isError, isLoading, data } = useQuery({
     queryKey: ['/admin/statistics/all'],
     retryDelay: 1000 * 60 * 2,
@@ -34,6 +44,30 @@ const Dashboard = () => {
         var current_user = user;
       }
 
+      const getUser = async () => {
+        try {
+          const data = await axios.post(url + "/anyuser", { accessToken });
+          const user = data.data.msg._doc;
+          return user;
+        } catch (error) {
+          console.log(error);
+          localStorage.removeItem('IMPaccessToken');
+        }
+      };
+
+      const fetchData = async () => {
+        try{
+        const userInfo = await getUser();
+          setAdminName(userInfo.name);
+          setAdminEmail(userInfo.email);
+          setAdminProfilePicture(userInfo.profile_picture_url);
+        }
+        catch(error){
+          console.log(error)
+        }
+      }
+      fetchData();
+
       const response = await axios.post(url + `/admin/statistics`);
       const temp = response.data.data;
 
@@ -42,7 +76,6 @@ const Dashboard = () => {
       setBarData([['Department', 'Total Students']]);
       setPieData((x) => [...x, ...temp.topCompanies.map(company => [company._id, company.count])]);
       setBarData((x) => [...x, ...temp.departmentWiseDistribution.map(company => [company._id, company.count])]);
-
 
       return temp;
     },
@@ -66,6 +99,18 @@ const Dashboard = () => {
 
   // Data and options for the pie chart
 
+  const viewstudent = async () => {
+    window.location.href="http://localhost:3000/admin/dashboard/viewstudent";
+  }
+  const viewmentor = async () => {
+    window.location.href="http://localhost:3000/admin/dashboard/viewmentor";
+  }
+  const viewcoord = async () => {
+    window.location.href="http://localhost:3000/admin/dashboard/viewcoordinator";
+  }
+  const addcoord = async () => {
+    window.location.href="http://localhost:3000/admin/dashboard/addcoordinator";
+  }
 
   const pieOptions = {
     title: 'Student Distribution',
@@ -142,7 +187,24 @@ const Dashboard = () => {
 
   return (
     <ChakraProvider theme={theme}>
+
       <Box maxW="1200px" mx="auto" py={5} px={2}>
+      <Flex justify="space-between" align="center">
+      <Button colorScheme="teal" ml="auto" onClick={addcoord}>Add Coordinator</Button>
+      </Flex>
+      <Flex align="center">
+            <Avatar size="md" bg='red.700' color="white" name={adminName} src={admin_profile_url} className="h-10 w-10 mr-2"></Avatar>
+            <div>
+              <div className={`text-base text-${colors.font} w-full font-semibold`}>{adminName}</div>
+              <p className={`text-${colors.font} text-xs w-full`}>{adminEmail}</p>
+            </div>
+          </Flex>
+      <SimpleGrid columns={{ base: 1, md: 3 }} spacing={5} mt={5} mb={5}>
+          <Button colorScheme="red" onClick={viewstudent}>View Students</Button>
+          <Button colorScheme="red" onClick={viewmentor}>View Mentors</Button>
+          <Button colorScheme="red" onClick={viewcoord}>View Coordinators</Button>
+        </SimpleGrid>
+
         <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} spacing={5}>
           {/* Stat Cards */}
           <Stat bg="blue.100" p={4} borderRadius="md">

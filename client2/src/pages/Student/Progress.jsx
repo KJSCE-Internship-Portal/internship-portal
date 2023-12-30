@@ -89,21 +89,21 @@ const Progress = () => {
                     <div class="flex justify-between items-center mb-6">
                         <h2 class={`text-lg lg:text-2xl font-bold text-${colors.font}`}>Week Start Date:</h2>
                     </div>
-                    <div class="py-2 px-4 mb-4 text-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-500 dark:border-gray-700">
+                    <div class={`py-2 px-4 mb-4 text-${colors.font} rounded-lg rounded-t-lg border border-${colors.accent}`}>
                         <h1>{startdate}</h1>
                     </div>
 
                     <div class="flex justify-between items-center mb-6">
                         <h2 class={`text-lg lg:text-2xl font-bold text-${colors.font}`}>Week End Date:</h2>
                     </div>
-                    <div class="py-2 px-4 mb-4 text-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-500 dark:border-gray-700">
+                    <div class={`py-2 px-4 mb-4 text-${colors.font} rounded-lg rounded-t-lg border border-${colors.accent}`}>
                         <h1>{enddate}</h1>
                     </div>
 
                     <div class="flex justify-between items-center mb-6">
                         <h2 class={`text-lg lg:text-2xl font-bold text-${colors.font}`}>Task:</h2>
                     </div>
-                    <div class="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-500 dark:border-gray-700">
+                    <div class={`py-2 px-4 mb-4 bg-${colors.secondary} rounded-lg rounded-t-lg border border-${colors.font}`}>
                         <textarea id="comment" rows="6" value={task}
                             onChange={(e) => setTask(e.target.value)}
                             class="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-500"
