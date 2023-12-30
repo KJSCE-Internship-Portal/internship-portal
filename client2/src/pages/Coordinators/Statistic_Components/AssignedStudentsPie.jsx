@@ -22,28 +22,29 @@ export default function AssignedStudentsPie({assigned, notAssigned}) {
     title: "Students In your Department",
     titleTextStyle: {
       fontSize: 21,
-      color: colors.font, // Change this value to set the title color
+      color: colors.font,
       bold: true,
       italic: false,
-      alignment: "center", // Center-align the title
+      alignment: "center",
     },
-    pieStartAngle: 120,
+    pieStartAngle: 0,
     colors: ["#4CAF50", "#91ffba"],
     backgroundColor: colors.secondary,
     chartArea: {
-      left: 10, // Adjust this value to move the pie chart to the left
-      // top: 10,
-      width: "95%", // Adjust this value to control the width of the chart
-      height: "80%", // Adjust this value to control the height of the chart
+      left: 10,
+      width: "95%",
+      height: "80%",
     },
     pieSliceTextStyle: {
       fontSize: 19,
-      color: '#000', // Change this value to set the pie slice label color
+      color: "#000",
       bold: true,
       italic: false,
-      alignment: "center", // Center-align the pie slice labels
+      alignment: "center",
     },
+    is3D: true, // Enable 3D effect
   };
+  
 
   return (
     <Chart

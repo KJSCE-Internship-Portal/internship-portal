@@ -20,18 +20,19 @@ import { Avatar } from '@chakra-ui/react';
 import AssignedStudentsPie from '../../Statistic_Components/AssignedStudentsPie';
 import CompletedStudentsAndVerified from '../../Statistic_Components/CompletedStudents';
 import { CompanyProvidingInternships } from '../../Statistic_Components/CompanyProvidingInternships';
+import { BarChart } from '../../Statistic_Components/BarChart';
 
 const getRandomLightColor = () => {
 
     const r = Math.floor(Math.random() * 128) + 128; // Red component
     const g = Math.floor(Math.random() * 128) + 128; // Green component
     const b = Math.floor(Math.random() * 128) + 128; // Blue component
-  
+
     // Convert RGB values to hexadecimal and concatenate
     const color = `#${r.toString(16)}${g.toString(16)}${b.toString(16)}`;
-  
+
     return color;
-  };
+};
 
 const slugify = (text) => {
     return text
@@ -70,7 +71,7 @@ const AllStudentsInDepartment = () => {
         }
     });
 
-    const {data: pie_data } = useQuery({
+    const { data: pie_data } = useQuery({
         queryKey: ['/statistics/department'],
         retryDelay: 10000,
         queryFn: async () => {
@@ -81,7 +82,7 @@ const AllStudentsInDepartment = () => {
                 var current_user = user;
             }
             var fetched = await axios
-                .post(url + `/coordinator/statistics`, {department: current_user.department})
+                .post(url + `/coordinator/statistics`, { department: current_user.department })
                 .then(response => response.data);
             console.log(fetched.data);
             setStudentsNotHavingMentor(0);
@@ -106,22 +107,25 @@ const AllStudentsInDepartment = () => {
 
     return (
         <div>
-            <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'space-evenly'}}>
-            <Box mt={10}>
-          <SimpleGrid columns={{ base: 1, md: 1, lg: 2 }} spacing={20} marginBottom={10}>
-            {/* Charts */}
-            <Box bg="white" p={4} shadow="md" borderRadius="md" bgColor={colors.secondary}>
-            {pie_data  &&
-                <AssignedStudentsPie assigned={pie_data.assignedStudents} notAssigned={pie_data.studentsInDepartment-pie_data.assignedStudents}/>}
-            </Box>
-            <Box bg="white" p={4} shadow="md" borderRadius="md" bgColor={colors.secondary}>
-            {pie_data && pie_data.completedStudentsAndVerified!=(pie_data.assignedStudents-pie_data.completedStudentsAndVerified)!=0 && 
-                <CompletedStudentsAndVerified completed={pie_data.completedStudentsAndVerified} notCompleted={pie_data.assignedStudents-pie_data.completedStudentsAndVerified}/>
-                }
-            </Box>
+            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-evenly' }}>
+            
+                <Box mt={10}>
+                {pie_data && <BarChart distribution={pie_data.batchWiseDistribution}/>}
+                    <SimpleGrid columns={{ base: 1, md: 1, lg: 2 }} spacing={20} marginBottom={10}>
+                        {/* Charts */}
+                        
+                        <Box bg="white" p={4} shadow="md" borderRadius="md" bgColor={colors.secondary}>
+                            {pie_data &&
+                                <AssignedStudentsPie assigned={pie_data.assignedStudents} notAssigned={pie_data.studentsInDepartment - pie_data.assignedStudents} />}
+                        </Box>
+                        <Box bg="white" p={4} shadow="md" borderRadius="md" bgColor={colors.secondary}>
+                            {pie_data && pie_data.completedStudentsAndVerified != (pie_data.assignedStudents - pie_data.completedStudentsAndVerified) != 0 &&
+                                <CompletedStudentsAndVerified completed={pie_data.completedStudentsAndVerified} notCompleted={pie_data.assignedStudents - pie_data.completedStudentsAndVerified} />
+                            }
+                        </Box>
 
-          </SimpleGrid>
-        </Box>
+                    </SimpleGrid>
+                </Box>
                 {/* {pie_data  &&
                 <AssignedStudentsPie assigned={pie_data.assignedStudents} notAssigned={pie_data.studentsInDepartment-pie_data.assignedStudents}/>}
                 {pie_data && pie_data.completedStudentsAndVerified!=(pie_data.assignedStudents-pie_data.completedStudentsAndVerified)!=0 && 
@@ -143,15 +147,15 @@ const AllStudentsInDepartment = () => {
                                 <h2>
                                     <AccordionButton _expanded={{ bg: colors.secondary, color: 'white' }}>
                                         <Box as="span" flex='1' textAlign='left' style={{ color: colors.font, fontSize: '20px' }}>
-                                        <Avatar h={30} w={30} mr={5} src={student.profile_picture_url} />
-                                        <span style={{marginTop: '10px', height: '100%'}} >{student.name}</span>
-                                        <span style={{display: 'block',marginTop: '10px', height: '100%'}} >{student.rollno} &nbsp;&nbsp; {student.hasMentor && <Badge colorScheme='green'>Assigned</Badge>}</span>
+                                            <Avatar h={30} w={30} mr={5} src={student.profile_picture_url} />
+                                            <span style={{ marginTop: '10px', height: '100%' }} >{student.name}</span>
+                                            <span style={{ display: 'block', marginTop: '10px', height: '100%' }} >{student.rollno} &nbsp;&nbsp; {student.hasMentor && <Badge colorScheme='green'>Assigned</Badge>}</span>
                                         </Box>
 
                                         <AccordionIcon color={colors.font} />
                                     </AccordionButton>
                                 </h2>
-                                
+
                                 <AccordionPanel pb={4}>
                                     <div style={{ fontSize: '18px', color: colors.primary }}>  Semester: {student.sem}, Batch: {student.batch} </div>
                                     <div style={{ fontSize: '17px', color: colors.heading1, fontStyle: 'italic', fontWeight: 'bold' }}>{student.email}</div>

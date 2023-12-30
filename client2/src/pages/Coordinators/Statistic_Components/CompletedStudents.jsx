@@ -27,7 +27,7 @@ export default function CompletedStudentsAndVerified({completed, notCompleted}) 
       italic: false,
       alignment: "center", // Center-align the title
     },
-    pieStartAngle: 180,
+    pieStartAngle: 0,
     colors: ["#5b37b8", "#a6dff7"],
     backgroundColor: colors.secondary,
     chartArea: {
@@ -43,6 +43,8 @@ export default function CompletedStudentsAndVerified({completed, notCompleted}) 
       italic: false,
       alignment: "center", // Center-align the pie slice labels
     },
+    is3D: true,
+  
   };
 
   return (
