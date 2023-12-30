@@ -19,7 +19,7 @@ const RedirectionPage = () => {
             } else if( role === 'COORDINATOR'){
                 window.location.href = '/coordinator/home';
             } else if( role === 'ADMIN'){
-                window.location.href = '/admin/home';
+                window.location.href = '/admin/dashboard';
             } else if( role === 'MENTOR'){
                 window.location.href = '/mentor/home';
             }

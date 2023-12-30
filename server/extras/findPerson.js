@@ -7,6 +7,7 @@ async function findPersonBySubId(email) {
   let person = await Student.findOne({ email }).exec();
 
   if (person){
+    person.role = "STUDENT"
     return {...person, role: 'STUDENT'};
   }
 
@@ -15,6 +16,7 @@ async function findPersonBySubId(email) {
   }
 
   if (person){
+    person.role = "MENTOR"
     return {...person, role: 'MENTOR'};
   }
 
@@ -23,7 +25,7 @@ async function findPersonBySubId(email) {
   }
 
   if (person){
-
+    person.role = "COORDINATOR"
     return {...person, role: 'COORDINATOR'};
   }
 
@@ -32,6 +34,7 @@ async function findPersonBySubId(email) {
   }
 
   if (person){
+    person.role = "ADMIN"
     return {...person, role: 'ADMIN'};
   }
 
