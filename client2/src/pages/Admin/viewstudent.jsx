@@ -47,7 +47,7 @@ const StudentList = () => {
               <Avatar size="md" bg='red.700' color="white" name={student.name} src={student.profile_picture_url} className="h-8 w-8 mr-2 mt-0 mb-2"></Avatar>
               <div className="flex flex-1 flex-col items-start justify-start w-full">
                 <h1 className={`text-base text-${colors.font} w-full font-semibold`}>{student.name}</h1>
-                <p className={`text-${colors.font} text-s w-full`}>{student.email}</p>
+                <p className={`text-${colors.font} text-xs w-full`}>{student.email}</p>
               </div>
             </div>
           </div>

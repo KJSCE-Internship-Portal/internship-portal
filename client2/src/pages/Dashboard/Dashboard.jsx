@@ -9,12 +9,23 @@ import {
   StatHelpText,
   theme,
   Skeleton,
-  SkeletonCircle,
-  SkeletonText,
+  Drawer,
+  DrawerBody,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  FormLabel,
+  Input,
+  InputGroup,
+  Select,
   Stack,
   Button,
   Flex,
-  Avatar
+  Avatar,
+  useDisclosure,
+  useToast,
 } from '@chakra-ui/react';
 import { Chart } from 'react-google-charts';
 import axios from 'axios';
@@ -22,6 +33,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getUserDetails } from '../../Global/authUtils';
 import { url } from '../../Global/URL';
 import {useTheme} from '../../Global/ThemeContext';
+import showToast from '../../Global/Toast';
 
 const Dashboard = () => {
 
@@ -31,8 +43,65 @@ const Dashboard = () => {
   const [adminName, setAdminName] = useState('');
   const [adminEmail, setAdminEmail] = useState('');
   const [admin_profile_url, setAdminProfilePicture] = useState('');
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [contactNo, setContactNo] = useState('');
+  const [department, setDepartment] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [contactNoError, setContactNoError] = useState('');
+  const toast = useToast();
+  const firstField = React.useRef();
   const {theme: colors} = useTheme();
   const accessToken = localStorage.getItem('IMPaccessToken');
+
+  const validateEmail = () => {
+    const emailRegex = /^[^\s@]+@somaiya\.edu$/;
+    if (!emailRegex.test(email)) {
+        setEmailError('Invalid email format');
+        return false;
+    }
+    setEmailError('');
+    return true;
+};
+
+const validateContactNo = () => {
+    const contactNoRegex = /^[0-9]{10}$/;
+    if (!contactNoRegex.test(contactNo)) {
+        setContactNoError('Invalid contact number');
+        return false;
+    }
+    setContactNoError('');
+    return true;
+};
+
+const handleAddCoord = async () => {
+    if (validateEmail() && validateContactNo()) {
+        console.log(name, email, contactNo);
+        onClose();
+        const current_user = await getUserDetails();
+        setUser(current_user)
+        try {
+
+            const response = await axios.post(url + '/admin/add/coordinator', { name, email, contact_no: contactNo.toString(), department});
+            console.log(response.data)
+            if (response.data.success) {
+                showToast(toast, "Success", 'success', "Coordinator Registered Successfully");
+            } else {
+                showToast(toast, "Warning", 'info', "Coordinator Already Exists");
+            }
+        } catch (error) {
+            showToast(toast, "Error", 'error', "Something Went Wrong !");
+        }
+    }
+    else {
+        if (!validateEmail()) {
+            showToast(toast, "Error", 'error', "Provide a valid Somaiya Email");
+        } else if (!validateContactNo()) {
+            showToast(toast, "Error", 'error', "Provide a valid Contact no.");
+        }
+    }
+};
   const { isError, isLoading, data } = useQuery({
     queryKey: ['/admin/statistics/all'],
     retryDelay: 1000 * 60 * 2,
@@ -107,9 +176,6 @@ const Dashboard = () => {
   }
   const viewcoord = async () => {
     window.location.href="http://localhost:3000/admin/dashboard/viewcoordinator";
-  }
-  const addcoord = async () => {
-    window.location.href="http://localhost:3000/admin/dashboard/addcoordinator";
   }
 
   const pieOptions = {
@@ -190,7 +256,7 @@ const Dashboard = () => {
 
       <Box maxW="1200px" mx="auto" py={5} px={2}>
       <Flex justify="space-between" align="center">
-      <Button colorScheme="teal" ml="auto" onClick={addcoord}>Add Coordinator</Button>
+      <Button colorScheme="teal" ml="auto" onClick={onOpen}>Add Coordinator</Button>
       </Flex>
       <Flex align="center">
             <Avatar size="md" bg='red.700' color="white" name={adminName} src={admin_profile_url} className="h-10 w-10 mr-2"></Avatar>
@@ -250,7 +316,6 @@ const Dashboard = () => {
                 options={pieOptions}
               />
             </Box>
-
             <Box bg="white" p={5} shadow="md" borderRadius="md">
               <Chart
                 chartType="BarChart"
@@ -271,14 +336,84 @@ const Dashboard = () => {
                 chartPackages={['corechart', 'line']}
               />
             </Box>
-
-
-
           </SimpleGrid>
         </Box>
       </Box>
+      <Drawer
+                isOpen={isOpen}
+                placement='right'
+                initialFocusRef={firstField}
+                onClose={onClose}
+            >
+        <DrawerOverlay />
+        <DrawerContent color={colors.font} bg={colors.secondary}>
+            <DrawerCloseButton />
+            <DrawerHeader borderBottomWidth='0px'>Add a Coordinator</DrawerHeader>
+            <DrawerBody>
+                <Stack spacing='24px'>
+                    <Box>
+                        <FormLabel htmlFor='username'>Name</FormLabel>
+                        <Input
+                            ref={firstField}
+                            id='username'
+                            placeholder='Name'
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            required
+                            isRequired
+                        />
+                    </Box>
+
+                    <Box>
+                        <FormLabel htmlFor='email'>E-Mail</FormLabel>
+                        <InputGroup>
+                            <Input
+                                type='email'
+                                id='email'
+                                placeholder='Email'
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                            />
+                        </InputGroup>
+                    </Box>
+                    <Box>
+                        <FormLabel htmlFor='contactno'>Contact No.</FormLabel>
+                        <Input
+                            ref={firstField}
+                            type='tel'
+                            id='contactno'
+                            placeholder='Contact no.'
+                            value={contactNo}
+                            onChange={(e) => setContactNo(e.target.value)}
+                        />
+                    </Box>
+                    <Box>
+                        <FormLabel htmlFor='department'>Department</FormLabel>
+                        <Select
+                            id='department'
+                            placeholder='Select Department'
+                            value={department}
+                            onChange={(e) => setDepartment(e.target.value)}>
+                            <option value='Information Technology'>IT</option>
+                            <option value='Computer Engineering'>CS</option>
+                            <option value='Mechanical Engineering'>MECH</option>
+                            <option value='Electronics and Telecommunication'>EXTC</option>
+                            <option value='Electronics'>ETRX</option>
+                        </Select>
+                    </Box>
+                </Stack>
+            </DrawerBody>
+            <DrawerFooter borderTopWidth='0px'>
+                <Button variant='outline' mr={3} onClick={onClose} color={colors.font} bg={colors.hover}>
+                    Cancel
+                </Button>
+                <Button colorScheme='blue' onClick={handleAddCoord} color={colors.secondary} bg={colors.primary}>
+                    Add
+                </Button>
+            </DrawerFooter>
+        </DrawerContent>
+    </Drawer>
     </ChakraProvider>
   );
 };
-
 export default Dashboard;
