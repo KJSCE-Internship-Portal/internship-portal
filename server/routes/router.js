@@ -1,4 +1,5 @@
 const express = require("express");
+const multer = require('multer');
 const router = express.Router();
 const controllerStudent = require("../controllers/students");
 const controllerOAuth = require("../controllers/oauth");
@@ -7,6 +8,8 @@ const controllerCoordinator = require("../controllers/coordinators");
 const controllerAdmin = require("../controllers/admin");
 
 
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage })
 
 // Get Routes
 router.get("/students/all", controllerStudent.getAllStudents);
@@ -29,6 +32,7 @@ router.post("/student/find", controllerStudent.getOneStudent);
 router.post("/student/approve", controllerStudent.approveStudent);
 router.post("/mentor/comment/add", controllerMentor.addPrivateComments);
 router.post("/mentor/student/evaluation", controllerMentor.studentEvaluation);
+router.post("/mentor/student/evaluation/upload", upload.single('file'), controllerMentor.uploadSignedDocument);
 router.post('/coordinator/add/mentor', controllerCoordinator.addMentor);
 router.post("/coordinator/mentor/assign-student", controllerCoordinator.assignStudent);
 router.post("/coordinator/mentor/remove-assigned-student", controllerCoordinator.removeAssignedStudent);
