@@ -62,7 +62,7 @@ const AllStudentsInDepartment = () => {
                 var current_user = user;
             }
             var fetched = await axios
-                .get(url + `/students/all?department=${slugify(current_user.department)}&select=name,mentor,email,isApproved,isActive,hasMentor,div,contact_no,sem,batch,rollno,profile_picture_url`)
+                .get(url + `/students/all?department=${slugify(current_user.department)}&select=name,mentor,email,isApproved,isActive,hasMentor,div,contact_no,sem,batch,rollno,profile_picture_url&sort=-hasMentor,rollno`)
                 .then(response => response.data);
             setStudentsNotHavingMentor(0);
             return (

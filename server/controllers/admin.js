@@ -346,9 +346,7 @@ const getStatisticsAdmin = async (req, res) => {
             departmentProgress,
             // departmentWiseStudentDistribution,
         };
-
-        console.log(data);
-
+        
         return res.status(200).json({ success: true, msg: "Statistics Route", data });
 
     } catch (error) {

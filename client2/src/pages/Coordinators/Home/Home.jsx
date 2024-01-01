@@ -1,15 +1,15 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import Loader from '../../../components/loader/Loader';
 import { useTheme } from '../../../Global/ThemeContext';
 import styles from './Home.module.css';
 import axios from 'axios';
-import { Autoplay, Navigation, Pagination, EffectCoverflow } from 'swiper/modules';
 import { useQuery } from '@tanstack/react-query';
 import { url } from '../../../Global/URL';
 import { Link } from 'react-router-dom';
 import { getUserDetails } from '../../../Global/authUtils';
 import RegisterMentor from '../Mentor/RegisterMentor/RegisterMentor';
-import {LinkIcon} from '@chakra-ui/icons';
+import { LinkIcon } from '@chakra-ui/icons';
+import { Box, Divider, AbsoluteCenter } from "@chakra-ui/react";
 
 const slugify = (text) => {
     return text
@@ -37,9 +37,9 @@ const HomePage = () => {
             } else {
                 var current_user = user;
             }
-            const temp= await axios
-            .get(url + `/mentors/all?department=${slugify(current_user.department)}`)
-            .then(response => response.data);
+            const temp = await axios
+                .get(url + `/mentors/all?department=${slugify(current_user.department)}`)
+                .then(response => response.data);
             console.log(temp);
             return (temp);
         }
@@ -51,16 +51,41 @@ const HomePage = () => {
 
 
     const MentorComponent = ({ name, profile_picture_url, sub_id, students }) => (
-        <Link to={'/coordinator/mentor/' + `${sub_id}` + '/students'}>
+        <Link to={`/coordinator/mentor/${sub_id}/students`}>
             <div className={styles.mentorCard}>
                 <span className={styles.profilePicContainer}>
                     <img src={profile_picture_url} alt={`${name}'s photo`} className={styles.profilePic} />
                 </span>
                 <h1 style={{ color: colors.font, margin: '5px 8px', fontWeight: 'bold', fontSize: '20px', textAlign: 'center' }}>{name}</h1>
-                <h1 style={{ color: colors.primary, margin: '5px 8px', fontWeight: 'bold', fontSize: '16px', textAlign: 'center' }}>Mentoring {students.length} students</h1>
+                <h1 style={{ color: colors.primary, margin: '5px 8px', fontWeight: 'bold', fontSize: '16px', textAlign: 'center' }}>
+                    {students.length > 0 ? `Mentoring ${students.length} students` : 'Faculty'}
+                </h1>
 
             </div>
         </Link>
+    );
+
+    const MentorList = ({ mentors }) => (
+        <>
+            <div className={styles.mentorContainer}>
+                {mentors.filter(mentor => mentor.students.length > 0).map(mentor => (
+                    <MentorComponent key={mentor.sub_id} {...mentor} />
+                ))}
+
+            </div>
+            <Box position='relative' padding='9'>
+                <Divider color={colors.heading1} />
+                <AbsoluteCenter px='10' color={'#fff'} bg={colors.hover} py={'1'} style={{ borderRadius: '10px' }}>
+                    Faculties
+                </AbsoluteCenter>
+            </Box>
+            <div className={styles.mentorContainer}>
+                {mentors.filter(mentor => mentor.students.length === 0).map(mentor => (
+                    <MentorComponent key={mentor.sub_id} {...mentor} />
+                ))}
+
+            </div>
+        </>
     );
 
 
@@ -84,20 +109,15 @@ const HomePage = () => {
 
             <h1 style={{ color: colors.font, fontWeight: 'bold', fontSize: 23, marginLeft: 20, marginBottom: '5px' }}>
                 <span onClick={() => navigateToStudentsList(user && user.department)} style={{ cursor: 'pointer' }}>
-                    {user && user.department} <LinkIcon color={colors.primary}/>
+                    {user && user.department} <LinkIcon color={colors.primary} />
                 </span>
             </h1>
 
             <div style={{ color: colors.font, marginLeft: 20 }}><RegisterMentor /></div>
 
-            <div className={styles.mentorContainer}>
-                {data.data && data.data.map((mentor) => {
-                    if (mentor.sub_id !== 'None') {
-                        return <MentorComponent key={mentor.id} {...mentor} />;
-                    }
-                    return null;
-                })}
 
+            {data.data && <MentorList mentors={data.data.filter(mentor => mentor.sub_id !== 'None')} />}
+            <div className={styles.mentorContainer}>
                 {data.data.length <= 0 && <div style={{ backgroundColor: colors.hover, height: '150px', width: '95%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 15px' }}>
                     <h1 style={{ color: colors.font, textAlign: 'center' }}>No Mentors in your Department</h1>
                 </div>}

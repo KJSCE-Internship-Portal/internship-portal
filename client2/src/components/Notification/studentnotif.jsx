@@ -44,13 +44,21 @@ export default function StudentNotification() {
       else {
         var user = currentUser;
       }
-
-      if (user.role == 'ADMIN' || user.role == 'COORDINATOR') {
+      console.log(user);
+      if (user.role == 'ADMIN') {
         setCanPost(true);
+        const res = await axios.get(`${url}/announcements/all?page=${page}&limit=5&sort=-postedAt`);
+        console.log(res);
+        setNotifications(res.data.data);
+        setTotalPages(Math.min(Math.ceil(res.data.count / 5), 30));
       }
-      const res = await axios.get(`${url}/announcements/all?department=${user.department}&page=${page}&limit=5&sort=-postedAt`);
-      setNotifications(res.data.data);
-      setTotalPages(Math.min(Math.ceil(res.data.count / 5), 30));
+      if (user.role == 'COORDINATOR') {
+        setCanPost(true)
+        const res = await axios.get(`${url}/announcements/all?department=${user.department}&page=${page}&limit=5&sort=-postedAt`);
+        setNotifications(res.data.data);
+        setTotalPages(Math.min(Math.ceil(res.data.count / 5), 30));
+      }
+
     } catch (error) {
       console.log(error);
       localStorage.removeItem('IMPaccessToken');
@@ -140,10 +148,7 @@ export default function StudentNotification() {
             <PopoverBody textAlign="left" bg={colors.secondary}>
               {!loading ?
                 renderNotifications() :
-                // <Box padding='6' boxShadow='lg' bg='white'>
-
-                  <SkeletonText mt='4' noOfLines={3} spacing='4' skeletonHeight='2' mb={7}/>
-                // </Box>
+                <SkeletonText mt='4' noOfLines={3} spacing='4' skeletonHeight='2' mb={7} />
               }
               <div>
                 {renderPageNumbers()}

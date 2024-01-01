@@ -34,12 +34,9 @@ async function findPersonBySubId(email) {
   }
 
   if (person){
-    person.role = "ADMIN"
+    person.role = "ADMIN";
     return {...person, role: 'ADMIN'};
   }
-
-  
-
   return person;
 }
 
