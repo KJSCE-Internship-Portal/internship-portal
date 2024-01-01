@@ -76,7 +76,7 @@ const Details = () => {
                 showToast(toast, 'Success', 'success', 'Data Submitted...Redirecting...');
                 setTimeout(() => {
                     window.location.href = 'http://localhost:3000/login'; 
-                  }, 5000);
+                  }, 500);
             } else {
                 console.error('Failed to submit data to the backend.');
                 showToast(toast, 'Error', 'error', response.data.msg);

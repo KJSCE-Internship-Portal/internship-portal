@@ -12,6 +12,7 @@ import {
   CardFooter,
   Avatar,
   AvatarBadge,
+  Tooltip,
   Progress,
   Stat,
   SimpleGrid,
@@ -88,6 +89,8 @@ const Week = () => {
   const [onTimeSubmission, setOnTimeSubmission] = useState(null);
   const [noSubmission, setNoSubmission] = useState(null);
   const [lateSubmission, setLateSubmission] = useState(null);
+  const [weeksDone, setWeeksDone] = useState(null);
+  const [totalWeeks, setTotalWeeks] = useState(null);
   const [progressValue, setProgressValue] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [studentData, setStudentData] = useState([]);
@@ -172,6 +175,8 @@ const Week = () => {
               };
             });
           setProgressData(updatedProgressData);
+          setWeeksDone(updatedProgressData.length);
+          setTotalWeeks(parseInt(userInfo.internships[0].duration_in_weeks));
           setProgressValue((updatedProgressData.length / parseInt(student.internships[0].duration_in_weeks)) * 100);
         }
         // if (student.internships[0].progress && student.internships[0].progress.length > 0) {
@@ -298,7 +303,7 @@ const Week = () => {
         </div>
         <StudentDrawer isOpen={isDrawerOpen} onClose={closeDrawer} studentData={studentData} />
         <div className="md:pl-6 mx-10 md:mt-3 mb:5 md:pr-6 min-w-full">
-          <Progress hasStripe value={progressValue} colorScheme='red' className="mb-3" aria-valuenow={progressValue}/>
+        <Tooltip hasArrow label={`${weeksDone} out of ${totalWeeks} weeks done : ${progressValue}% Progress`} placement="top-end"><Progress hasStripe value={progressValue} colorScheme='red' isAnimated className="mb-3" aria-valuenow={progressValue}/></Tooltip>
           <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6} className="mb-5">
             <Stat bg="green.100" p={4} borderRadius="md">
               <StatLabel>On Time Submissions</StatLabel>

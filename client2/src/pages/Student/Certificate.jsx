@@ -1,14 +1,38 @@
-import React, { useState } from 'react';
-import {useTheme} from '../../Global/ThemeContext';
+import React, { useState } from "react";
+import { useEffect } from 'react';
+import { useTheme } from '../../Global/ThemeContext';
+import { useParams } from 'react-router-dom';
+import showToast from '../../Global/Toast';
+import { useToast } from '@chakra-ui/react';
+import axios from 'axios';
+import { url } from '../../Global/URL';
 
 const Certificate = () => {
     const [file, setFile] = useState('');
-    const { theme:colors } = {useTheme}
+    const { theme:colors } = useTheme();
+    const toast = useToast();
 
     const handleFileChange = (e) => {
         const selectedFile = e.target.files[0];
         setFile(selectedFile);
     };
+
+    const handleFileSubmit = async (e) => {
+        const id = localStorage.getItem('student');
+        const data = new FormData();
+        data.append('sub_id', id);
+        data.append('file', file);
+
+        // const resp = await axios.post(url + "/mentor/student/evaluation/upload", data);
+        // if(resp.status == 200) {
+        //     showToast(toast, 'Success', 'success', 'File Uploaded Successfully');
+        // } else {
+        //     showToast(toast, 'Error', 'error', 'File Not Uploaded');
+        // }
+        // setTimeout(() => {
+        //     window.location.href = 'http://localhost:3000/mentor/studentprogress'; 
+        //   }, 2000);
+    }
 
     return (
         <section className={`bg-${colors.secondary} py-8 lg:py-16 antialiased`}>
@@ -37,6 +61,7 @@ const Certificate = () => {
                 <button
                     type="submit"
                     className="text-white bg-red-400 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center mt-3"
+                    onClick={handleFileSubmit}
                 >
                     Submit
                 </button>

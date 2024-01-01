@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useEffect } from 'react';
 import { useTheme } from '../../Global/ThemeContext';
+import showToast from '../../Global/Toast';
+import { useToast } from '@chakra-ui/react';
 import {
   Card,
   CardHeader,
@@ -14,6 +16,7 @@ import {
   StatLabel,
   StatNumber,
   StatHelpText,
+  Tooltip,
   StatArrow,
   StatGroup,
 } from '@chakra-ui/react';
@@ -39,7 +42,7 @@ const FramePage = () => {
     }
   }
 
-  function generateWeekURL(week) {
+  const generateWeekURL = async (week) => {
     const currentDate = new Date();
     if (currentDate > new Date(progressData[week.week - 1].startDate) && currentDate < new Date(progressData[week.week - 1].endDate) && progressData[week.week - 1].status == 'Not Submitted') {
       const weekData = {
@@ -70,6 +73,21 @@ const FramePage = () => {
     }
   }
 
+  const handleCompletionSubmission = async () => {
+    if(allWeeksDone) {
+      if(allSubmissionsDone) {
+        window.location.href = 'http://localhost:3000/student/certificate/submission';
+      }
+      else {
+        showToast(toast, 'Error', 'error', 'Week Submissions still pending');
+      }
+    } else {
+      showToast(toast, 'Error', 'error', 'Internship Duration not completed');
+    }
+  }
+
+  const toast = useToast();
+  
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [profile_url, setProfilePicture] = useState('');
@@ -77,71 +95,84 @@ const FramePage = () => {
   const [onTimeSubmission, setOnTimeSubmission] = useState(null);
   const [noSubmission, setNoSubmission] = useState(null);
   const [lateSubmission, setLateSubmission] = useState(null);
+  const [weeksDone, setWeeksDone] = useState(null);
+  const [totalWeeks, setTotalWeeks] = useState(null);
   const [progressValue, setProgressValue] = useState(null);
+  const [allWeeksDone, setAllWeeksDone] = useState(false);
+  const [allSubmissionsDone, setAllSubmissionsDone] = useState(false);
+
+  const fetchData = async () => {
+    try {
+      const userInfo = await getUser();
+      if (userInfo) {
+        // localStorage.removeItem('week');
+        const currentDate = new Date();
+        setName(userInfo.name);
+        setEmail(userInfo.email);
+        setProfilePicture(userInfo.profile_picture_url);
+        if (userInfo.internships[0].progress && userInfo.internships[0].progress.length > 0) {
+          setOnTimeSubmission(0);
+          setNoSubmission(0);
+          setLateSubmission(0);
+          const updatedProgressData = userInfo.internships[0].progress
+            .filter(weekInfo => {
+              const startDate = new Date(weekInfo.startDate);
+              const endDate = new Date(weekInfo.endDate);
+
+              return (currentDate >= startDate && currentDate <= endDate) || endDate < currentDate;
+            })
+            .map((weekInfo, index) => {
+              const isSubmitted = weekInfo.submitted;
+              const isLateSubmission = weekInfo.isLateSubmission;
+              if (isSubmitted && !isLateSubmission) {
+                setOnTimeSubmission(prevValue => (prevValue === null ? 1 : prevValue + 1));
+              }
+              else if (!isSubmitted){
+                setNoSubmission(prevValue => (prevValue === null ? 1 : prevValue + 1));
+              }
+              if (isSubmitted && isLateSubmission) {
+                setLateSubmission(prevValue => (prevValue === null ? 1 : prevValue + 1));
+              }
+              return {
+                week: index + 1,
+                status: weekInfo.submitted ? 'Submitted' : 'Not Submitted',
+                details: `Details for Week ${index + 1}`,
+                startDate: weekInfo.startDate,
+                endDate: weekInfo.endDate,
+                description: weekInfo.description,
+                late: weekInfo.isLateSubmission
+              };
+        });
+          setProgressData(updatedProgressData);
+          setWeeksDone(updatedProgressData.length);
+          setTotalWeeks(parseInt(userInfo.internships[0].duration_in_weeks));
+          setProgressValue((updatedProgressData.length / parseInt(userInfo.internships[0].duration_in_weeks)) * 100);
+          if(currentDate > new Date(userInfo.internships[0].endDate)) {
+            setAllWeeksDone(true);
+          }
+          if(onTimeSubmission + lateSubmission == parseInt(userInfo.internships[0].duration_in_weeks)){
+            setAllSubmissionsDone(true);
+          }
+        }
+        // if (userInfo.internships[0].progress && userInfo.internships[0].progress.length > 0) {
+        //   const updatedProgressData = userInfo.internships[0].progress.map((weekInfo, index) => ({
+        //     week: index + 1,
+        //     status: weekInfo.submitted ? 'Submitted' : 'Not Submitted',
+        //     details: `Details for Week ${index + 1}`,
+        //     startDate: weekInfo.startDate,
+        //     endDate: weekInfo.endDate,
+        //     description: weekInfo.description,
+        //     late: weekInfo.isLateSubmission
+        //   }));
+
+        // }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const userInfo = await getUser();
-        if (userInfo) {
-          // localStorage.removeItem('week');
-          const currentDate = new Date();
-          setName(userInfo.name);
-          setEmail(userInfo.email);
-          setProfilePicture(userInfo.profile_picture_url);
-          if (userInfo.internships[0].progress && userInfo.internships[0].progress.length > 0) {
-            setOnTimeSubmission(0);
-            setNoSubmission(0);
-            setLateSubmission(0);
-            const updatedProgressData = userInfo.internships[0].progress
-              .filter(weekInfo => {
-                const startDate = new Date(weekInfo.startDate);
-                const endDate = new Date(weekInfo.endDate);
-
-                return (currentDate >= startDate && currentDate <= endDate) || endDate < currentDate;
-              })
-              .map((weekInfo, index) => {
-                const isSubmitted = weekInfo.submitted;
-                const isLateSubmission = weekInfo.isLateSubmission;
-                if (isSubmitted && !isLateSubmission) {
-                  setOnTimeSubmission(prevValue => (prevValue === null ? 1 : prevValue + 1));
-                }
-                else if (!isSubmitted){
-                  setNoSubmission(prevValue => (prevValue === null ? 1 : prevValue + 1));
-                }
-                if (isSubmitted && isLateSubmission) {
-                  setLateSubmission(prevValue => (prevValue === null ? 1 : prevValue + 1));
-                }
-                return {
-                  week: index + 1,
-                  status: weekInfo.submitted ? 'Submitted' : 'Not Submitted',
-                  details: `Details for Week ${index + 1}`,
-                  startDate: weekInfo.startDate,
-                  endDate: weekInfo.endDate,
-                  description: weekInfo.description,
-                  late: weekInfo.isLateSubmission
-                };
-          });
-            setProgressData(updatedProgressData);
-            setProgressValue((updatedProgressData.length / parseInt(userInfo.internships[0].duration_in_weeks))*100);
-          }
-          // if (userInfo.internships[0].progress && userInfo.internships[0].progress.length > 0) {
-          //   const updatedProgressData = userInfo.internships[0].progress.map((weekInfo, index) => ({
-          //     week: index + 1,
-          //     status: weekInfo.submitted ? 'Submitted' : 'Not Submitted',
-          //     details: `Details for Week ${index + 1}`,
-          //     startDate: weekInfo.startDate,
-          //     endDate: weekInfo.endDate,
-          //     description: weekInfo.description,
-          //     late: weekInfo.isLateSubmission
-          //   }));
-
-          // }
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
     fetchData();
   }, []);
 
@@ -225,7 +256,7 @@ const FramePage = () => {
           </div>
         </div>
         <div className="md:pl-6 mx-10 md:mt-3 mb:5 md:pr-6 min-w-full">
-          <Progress hasStripe value={progressValue} colorScheme='red' className="mb-3" aria-valuenow={progressValue}/>
+          <Tooltip hasArrow label={`${weeksDone} out of ${totalWeeks} weeks done : ${progressValue}% Progress`} placement="top-end"><Progress hasStripe value={progressValue} colorScheme='red' isAnimated className="mb-3" aria-valuenow={progressValue}/></Tooltip>
           <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6} className="mb-5">
             <Stat bg="green.100" p={4} borderRadius="md">
               <StatLabel>On Time Submissions</StatLabel>
@@ -260,9 +291,9 @@ const FramePage = () => {
             </div>
           </div>
         </div>
-
-        <div className="hidden md:block h-[15vh]"></div>
-        <div className="block md:hidden h-[40vh]"></div>
+        <button type="submit" class="flex-1 mt-5 text-white bg-red-400 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm sm:w-auto px-5 py-2.5 text-center" onClick={handleCompletionSubmission}>
+            Certificate Submission
+        </button>
       </div>
     </>
   );
