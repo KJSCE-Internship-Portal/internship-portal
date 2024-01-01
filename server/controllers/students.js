@@ -273,6 +273,46 @@ const approveStudent = async (req, res) => {
     }
 };
 
+const uploadCertificate = async (req, res) => {
+
+    try {
+        if(!req.file) {
+            return res.status(400).json({ success: false, msg: 'No file uploaded' });
+        }
+        const { sub_id } = req.body;
+        console.log(sub_id);
+        const finalPdfBuffer = req.file.buffer;
+        const data = {
+            pdf_buffer: finalPdfBuffer
+        };
+        const updatedStudent = await Student.findOneAndUpdate(
+            {
+                sub_id
+            },
+            {
+                $push: {
+                    'internships.0.completion': data,
+                },
+                $set: {
+                    'internships.0.isCompleted': true,
+                },
+            },
+            {
+                new: true,
+            }
+        );
+        
+        if (updatedStudent) {
+            return res.status(200).json({ success: true, msg: "Uploaded Student Certificate" });
+        } else{
+            return res.status(400).json({ success: false, msg: `Something Went Wrong` });
+        }  
+    } catch (error) {
+        console.error(`Error: ${error.message}`);
+        return res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
+    }
+};
+
 module.exports = {
     loginStudent,
     addWeeklyProgress,
@@ -280,5 +320,6 @@ module.exports = {
     getAllStudents,
     getOneStudent,
     approveStudent,
-    registerStudent
+    registerStudent,
+    uploadCertificate
 };

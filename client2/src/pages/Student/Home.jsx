@@ -75,9 +75,13 @@ const FramePage = () => {
 
   const handleCompletionSubmission = async () => {
     if(allWeeksDone) {
-      if(allSubmissionsDone) {
+      if(onTimeSubmission + lateSubmission == totalWeeks){
         window.location.href = 'http://localhost:3000/student/certificate/submission';
+        // setAllSubmissionsDone(true);
       }
+      // if(allSubmissionsDone) {
+      //   window.location.href = 'http://localhost:3000/student/certificate/submission';
+      // }
       else {
         showToast(toast, 'Error', 'error', 'Week Submissions still pending');
       }
@@ -149,10 +153,7 @@ const FramePage = () => {
           setProgressValue((updatedProgressData.length / parseInt(userInfo.internships[0].duration_in_weeks)) * 100);
           if(currentDate > new Date(userInfo.internships[0].endDate)) {
             setAllWeeksDone(true);
-          }
-          if(onTimeSubmission + lateSubmission == parseInt(userInfo.internships[0].duration_in_weeks)){
-            setAllSubmissionsDone(true);
-          }
+          }          
         }
         // if (userInfo.internships[0].progress && userInfo.internships[0].progress.length > 0) {
         //   const updatedProgressData = userInfo.internships[0].progress.map((weekInfo, index) => ({

@@ -222,12 +222,8 @@ const studentSchema = new mongoose.Schema({
             ],
             completion: [
                 {
-                    document_type: {
-                        type: String,
-                        required: true
-                    },
-                    url: {
-                        type: String,
+                    pdf_buffer: {
+                        type: Buffer,
                         required: true
                     }
                 }

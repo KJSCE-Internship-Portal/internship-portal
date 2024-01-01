@@ -16,22 +16,33 @@ const Certificate = () => {
         const selectedFile = e.target.files[0];
         setFile(selectedFile);
     };
+    const accessToken = localStorage.getItem('IMPaccessToken');
 
+  const getUser = async () => {
+    try {
+      const data = await axios.post(url + "/anyuser", { accessToken });
+      const user = data.data.msg._doc;
+      return user;
+    } catch (error) {
+      console.log(error);
+      localStorage.removeItem('IMPaccessToken');
+    }
+  }
     const handleFileSubmit = async (e) => {
-        const id = localStorage.getItem('student');
+        const userInfo = await getUser();
         const data = new FormData();
-        data.append('sub_id', id);
+        data.append('sub_id', userInfo.sub_id);
         data.append('file', file);
 
-        // const resp = await axios.post(url + "/mentor/student/evaluation/upload", data);
-        // if(resp.status == 200) {
-        //     showToast(toast, 'Success', 'success', 'File Uploaded Successfully');
-        // } else {
-        //     showToast(toast, 'Error', 'error', 'File Not Uploaded');
-        // }
-        // setTimeout(() => {
-        //     window.location.href = 'http://localhost:3000/mentor/studentprogress'; 
-        //   }, 2000);
+        const resp = await axios.post(url + "/student/certificate/upload", data);
+        if(resp.status == 200) {
+            showToast(toast, 'Success', 'success', 'File Uploaded Successfully');
+        } else {
+            showToast(toast, 'Error', 'error', 'File Not Uploaded');
+        }
+        setTimeout(() => {
+            window.location.href = 'http://localhost:3000/student/home'; 
+          }, 2000);
     }
 
     return (
