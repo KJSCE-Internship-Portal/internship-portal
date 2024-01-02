@@ -90,6 +90,13 @@ const FramePage = () => {
     }
   }
 
+  const getCertificate = async () => {
+    const uint8Array = new Uint8Array(certificatePdfBuffer.data);
+    const blob = new Blob([uint8Array], { type: 'application/pdf' });
+    const pdfUrl = URL.createObjectURL(blob);
+    window.open(pdfUrl, '_blank');
+}
+
   const toast = useToast();
   
   const [name, setName] = useState('');
@@ -103,7 +110,8 @@ const FramePage = () => {
   const [totalWeeks, setTotalWeeks] = useState(null);
   const [progressValue, setProgressValue] = useState(null);
   const [allWeeksDone, setAllWeeksDone] = useState(false);
-  const [allSubmissionsDone, setAllSubmissionsDone] = useState(false);
+  const [isCertificateNotSubmitted, setIsCertificateNotSubmitted] = useState(true);
+  const [certificatePdfBuffer, setCertificatePdfBuffer] = useState(null);
 
   const fetchData = async () => {
     try {
@@ -111,6 +119,7 @@ const FramePage = () => {
       if (userInfo) {
         // localStorage.removeItem('week');
         const currentDate = new Date();
+        // console.log(userInfo);
         setName(userInfo.name);
         setEmail(userInfo.email);
         setProfilePicture(userInfo.profile_picture_url);
@@ -150,9 +159,13 @@ const FramePage = () => {
           setProgressData(updatedProgressData);
           setWeeksDone(updatedProgressData.length);
           setTotalWeeks(parseInt(userInfo.internships[0].duration_in_weeks));
-          setProgressValue((updatedProgressData.length / parseInt(userInfo.internships[0].duration_in_weeks)) * 100);
+          setProgressValue(((updatedProgressData.length / parseInt(userInfo.internships[0].duration_in_weeks)) * 100).toFixed(2));
           if(currentDate > new Date(userInfo.internships[0].endDate)) {
             setAllWeeksDone(true);
+          }
+          if(userInfo.internships[0].isCompleted && userInfo.internships[0].completion[0]?.pdf_buffer) {
+            setIsCertificateNotSubmitted(false);
+            setCertificatePdfBuffer(userInfo.internships[0].completion[0].pdf_buffer);
           }          
         }
         // if (userInfo.internships[0].progress && userInfo.internships[0].progress.length > 0) {
@@ -292,9 +305,12 @@ const FramePage = () => {
             </div>
           </div>
         </div>
-        <button type="submit" class="flex-1 mt-5 text-white bg-red-400 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm sm:w-auto px-5 py-2.5 text-center" onClick={handleCompletionSubmission}>
+        {isCertificateNotSubmitted ? (<button type="submit" class="flex-1 mt-5 text-white bg-red-400 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm sm:w-auto px-5 py-2.5 text-center" onClick={handleCompletionSubmission}>
             Certificate Submission
-        </button>
+        </button>) : 
+        (<button type="submit" class="flex-1 mt-5 text-white bg-red-400 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm sm:w-auto px-5 py-2.5 text-center" onClick={getCertificate}>
+        View Submitted Certificate
+    </button>)}
       </div>
     </>
   );
