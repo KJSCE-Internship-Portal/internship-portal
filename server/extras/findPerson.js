@@ -4,11 +4,15 @@ const Coordinator = require('../models/coordinator');
 const Admin = require('../models/admin');
 
 async function findPersonBySubId(email) {
-  let person = await Student.findOne({ email }).exec();
+  var person = await Student.findOne({ email }).exec();
 
   if (person){
-    person.role = "STUDENT"
-    return {...person, role: 'STUDENT'};
+    try{
+      person._doc.role = "STUDENT";
+    } catch (error) {
+    }
+    person = {...person, role: 'STUDENT'};
+    return person
   }
 
   if (!person) {
@@ -16,6 +20,10 @@ async function findPersonBySubId(email) {
   }
 
   if (person){
+    try{
+      person._doc.role = "MENTOR";
+    } catch (error) {
+    }
     person.role = "MENTOR"
     return {...person, role: 'MENTOR'};
   }
@@ -25,6 +33,10 @@ async function findPersonBySubId(email) {
   }
 
   if (person){
+    try{
+      person._doc.role = "COORDINATOR";
+    } catch (error) {
+    }
     person.role = "COORDINATOR"
     return {...person, role: 'COORDINATOR'};
   }
@@ -34,6 +46,10 @@ async function findPersonBySubId(email) {
   }
 
   if (person){
+    try{
+      person._doc.role = "ADMIN";
+    } catch (error) {
+    }
     person.role = "ADMIN";
     return {...person, role: 'ADMIN'};
   }

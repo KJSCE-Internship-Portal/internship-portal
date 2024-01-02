@@ -112,14 +112,13 @@ const AllStudentsInDepartment = () => {
                 <Box mt={10}>
                 {pie_data && <BarChart distribution={pie_data.batchWiseDistribution}/>}
                     <SimpleGrid columns={{ base: 1, md: 1, lg: 2 }} spacing={20} marginBottom={10}>
-                        {/* Charts */}
-                        
+                       
                         <Box bg="white" p={4} shadow="md" borderRadius="md" bgColor={colors.secondary}>
                             {pie_data &&
                                 <AssignedStudentsPie assigned={pie_data.assignedStudents} notAssigned={pie_data.studentsInDepartment - pie_data.assignedStudents} />}
                         </Box>
                         <Box bg="white" p={4} shadow="md" borderRadius="md" bgColor={colors.secondary}>
-                            {pie_data && pie_data.completedStudentsAndVerified != (pie_data.assignedStudents - pie_data.completedStudentsAndVerified) != 0 &&
+                            {pie_data  &&  pie_data.assignedStudents != 0 &&
                                 <CompletedStudentsAndVerified completed={pie_data.completedStudentsAndVerified} notCompleted={pie_data.assignedStudents - pie_data.completedStudentsAndVerified} />
                             }
                         </Box>
