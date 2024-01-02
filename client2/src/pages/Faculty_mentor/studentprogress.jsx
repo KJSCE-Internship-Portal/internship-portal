@@ -76,7 +76,7 @@ const Week = () => {
     const blob = new Blob([uint8Array], { type: 'application/pdf' });
     const pdfUrl = URL.createObjectURL(blob);
     window.open(pdfUrl, '_blank');
-}
+  }
 
   const [department, setDepartment] = useState('');
   const [mentorName, setMentorName] = useState('');
@@ -98,6 +98,8 @@ const Week = () => {
   const [isESESigned, setIsESESigned] = useState(false);
   const [isePdfBuffer, setISEPdfBuffer] = useState(null);
   const [esePdfBuffer, setESEPdfBuffer] = useState(null);
+  const [isCertificateSubmitted, setIsCertificateSubmitted] = useState(false);
+  const [certificatePdfBuffer, setCertificatePdfBuffer] = useState(null);
 
   const viewUser = (studentData) => {
     setStudentData(studentData);
@@ -133,10 +135,10 @@ const Week = () => {
         setStudentName(student.name);
         setStudentEmail(student.email);
         setStudentProfilePicture(student.profile_picture_url);
-        if (student?.internships?.[0]?.evaluation?.[0]?.pdf_buffer !== undefined ) {
+        if (student?.internships?.[0]?.evaluation?.[0]?.pdf_buffer !== undefined) {
           setISEPdfBuffer(student.internships[0].evaluation[0].pdf_buffer);
         }
-        if (student?.internships?.[0]?.evaluation?.[1]?.pdf_buffer !== undefined ) {
+        if (student?.internships?.[0]?.evaluation?.[1]?.pdf_buffer !== undefined) {
           setESEPdfBuffer(student.internships[0].evaluation[1].pdf_buffer);
         }
         setIsISESigned(student.internships[0].evaluation[0]?.is_signed);
@@ -178,6 +180,10 @@ const Week = () => {
           setWeeksDone(updatedProgressData.length);
           setTotalWeeks(parseInt(student.internships[0].duration_in_weeks));
           setProgressValue(((updatedProgressData.length / parseInt(student.internships[0].duration_in_weeks)) * 100).toFixed(2));
+          if (student.internships[0].isCompleted && student.internships[0].completion[0]?.pdf_buffer) {
+            setIsCertificateSubmitted(true);
+            setCertificatePdfBuffer(student.internships[0].completion[0].pdf_buffer);
+          }
         }
         // if (student.internships[0].progress && student.internships[0].progress.length > 0) {
         //   const updatedProgressData = student.internships[0].progress.map((weekInfo, index) => ({
@@ -196,6 +202,13 @@ const Week = () => {
       console.log(error);
     }
   };
+
+  const getCertificate = async () => {
+    const uint8Array = new Uint8Array(certificatePdfBuffer.data);
+    const blob = new Blob([uint8Array], { type: 'application/pdf' });
+    const pdfUrl = URL.createObjectURL(blob);
+    window.open(pdfUrl, '_blank');
+  }
 
   useEffect(() => {
     fetchData();
@@ -303,7 +316,7 @@ const Week = () => {
         </div>
         <StudentDrawer isOpen={isDrawerOpen} onClose={closeDrawer} studentData={studentData} />
         <div className="md:pl-6 mx-10 md:mt-3 mb:5 md:pr-6 min-w-full">
-        <Tooltip hasArrow label={`${weeksDone} out of ${totalWeeks} weeks done : ${progressValue}% Progress`} placement="bottom-end"><Progress hasStripe value={progressValue} colorScheme='red' isAnimated className="mb-3" aria-valuenow={progressValue}/></Tooltip>
+          <Tooltip hasArrow label={`${weeksDone} out of ${totalWeeks} weeks done : ${progressValue}% Progress`} placement="bottom-end"><Progress hasStripe value={progressValue} colorScheme='red' isAnimated className="mb-3" aria-valuenow={progressValue} /></Tooltip>
           <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6} className="mb-5">
             <Stat bg="green.100" p={4} borderRadius="md">
               <StatLabel>On Time Submissions</StatLabel>
@@ -337,21 +350,29 @@ const Week = () => {
         <div class="flex gap-10">
           {isISESigned ? (
             <button type="submit" class="flex-1 mt-5 text-white bg-red-400 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm sm:w-auto px-5 py-2.5 text-center" onClick={() => getEvaluationSheet('ISE')}>
-            View ISE Evalutation Sheet
+              View ISE Evalutation Sheet
             </button>
           ) : (
-          <button type="submit" class="flex-1 mt-5 text-white bg-red-400 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm sm:w-auto px-5 py-2.5 text-center" onClick={handleISEButtonClick}>
-            ISE
-          </button>)}
+            <button type="submit" class="flex-1 mt-5 text-white bg-red-400 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm sm:w-auto px-5 py-2.5 text-center" onClick={handleISEButtonClick}>
+              ISE
+            </button>)}
           {isESESigned ? (
             <button type="submit" class="flex-1 mt-5 text-white bg-red-400 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm sm:w-auto px-5 py-2.5 text-center" onClick={() => getEvaluationSheet('ESE')}>
-            View ESE Evalutation Sheet
+              View ESE Evalutation Sheet
             </button>
           ) : (
-          <button type="submit" class="flex-1 mt-5 text-white bg-red-400 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm sm:w-auto px-5 py-2.5 text-center" onClick={handleESEButtonClick}>
-            ESE
-          </button>)}
+            <button type="submit" class="flex-1 mt-5 text-white bg-red-400 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm sm:w-auto px-5 py-2.5 text-center" onClick={handleESEButtonClick}>
+              ESE
+            </button>)}
         </div>
+        {isCertificateSubmitted ? (<div>
+          <h1 className="mt-10">Internship Completion Certificate</h1>
+          <div class="flex gap-10">
+            <button type="submit" class="flex-1 mt-5 text-white bg-red-400 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm sm:w-auto px-5 py-2.5 text-center" onClick={getCertificate}>
+              View Submitted Certificate
+            </button>
+          </div>
+        </div>) : (<div></div>)}
       </div>
     </>
   );
