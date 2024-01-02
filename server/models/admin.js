@@ -19,6 +19,10 @@ const adminSchema = new mongoose.Schema({
             message: "Email must be from @somaiya.edu domain"
         }
     },
+    role: {
+        type: String,
+        default: "ADMIN"
+    },
     sub_id: {
         type: String,
         required: true
