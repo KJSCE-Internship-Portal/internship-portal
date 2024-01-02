@@ -93,7 +93,7 @@ const Comment = () => {
                         <div className="flex items-center">
                             <p className={`inline-flex items-center mr-3 text-sm text-${colors.font} font-semibold`}>
                                 {mentorProfilePicture && (
-                                    <Avatar size="xs" bg='red.700' color="white" name={mentorName} src={mentorProfilePicture} className="h-10 w-10 mr-2"></Avatar>
+                                    <Avatar size="xs" bg='red.700' color="white" name={mentorName} className="h-10 w-10 mr-2"></Avatar>
                                 )}
                                 {mentorName}
                             </p>
