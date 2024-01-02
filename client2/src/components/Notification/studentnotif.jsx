@@ -58,6 +58,11 @@ export default function StudentNotification() {
         setNotifications(res.data.data);
         setTotalPages(Math.min(Math.ceil(res.data.count / 5), 30));
       }
+      if (user.role == 'STUDENT') {
+        const res = await axios.get(`${url}/announcements/all?department=${user.department}&page=${page}&limit=5&sort=-postedAt`);
+        setNotifications(res.data.data);
+        setTotalPages(Math.min(Math.ceil(res.data.count / 5), 30));
+      }
 
     } catch (error) {
       console.log(error);
