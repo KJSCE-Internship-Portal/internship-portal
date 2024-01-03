@@ -24,6 +24,7 @@ import {
 } from '@chakra-ui/react'
 import axios from 'axios';
 import { url } from '../../Global/URL';
+import StatWeek from './statweek.jsx';
 
 const Week = () => {
   const { theme: colors } = useTheme();
@@ -89,6 +90,9 @@ const Week = () => {
   const [onTimeSubmission, setOnTimeSubmission] = useState(null);
   const [noSubmission, setNoSubmission] = useState(null);
   const [lateSubmission, setLateSubmission] = useState(null);
+  const [onTimeSubmissionData, setOnTimeSubmissionData] = useState([]);
+  const [noSubmissionData, setNoSubmissionData] = useState([]);
+  const [lateSubmissionData, setLateSubmissionData] = useState([]);
   const [weeksDone, setWeeksDone] = useState(null);
   const [totalWeeks, setTotalWeeks] = useState(null);
   const [progressValue, setProgressValue] = useState(null);
@@ -147,6 +151,9 @@ const Week = () => {
           setOnTimeSubmission(0);
           setNoSubmission(0);
           setLateSubmission(0);
+          setOnTimeSubmissionData([]);
+          setNoSubmissionData([]);
+          setLateSubmissionData([]);
           const updatedProgressData = student.internships[0].progress
             .filter(weekInfo => {
               const startDate = new Date(weekInfo.startDate);
@@ -158,12 +165,15 @@ const Week = () => {
               const isSubmitted = weekInfo.submitted;
               const isLateSubmission = weekInfo.isLateSubmission;
               if (isSubmitted && !isLateSubmission) {
+                setOnTimeSubmissionData(prevData => [...prevData, weekInfo]);
                 setOnTimeSubmission(prevValue => (prevValue === null ? 1 : prevValue + 1));
               }
               else if (!isSubmitted) {
+                setNoSubmissionData(prevData => [...prevData, weekInfo]);
                 setNoSubmission(prevValue => (prevValue === null ? 1 : prevValue + 1));
               }
               if (isSubmitted && isLateSubmission) {
+                setLateSubmissionData(prevData => [...prevData, weekInfo]);
                 setLateSubmission(prevValue => (prevValue === null ? 1 : prevValue + 1));
               }
               return {
@@ -202,6 +212,18 @@ const Week = () => {
       console.log(error);
     }
   };
+
+  const getStatSubmission = async (weekData) => {
+    if(weekData.length == 0) {
+      showToast(toast, 'Error', 'error', 'No weeks are currently to be shown');
+    } else {
+      console.log('entered');
+      console.log(weekData);
+      // localStorage.setItem('weekData', weekData);
+      // window.location.href = 'http://localhost:3000/student/progress/stat/weeks';
+    }
+    // console.log(weekData);
+  }
 
   const getCertificate = async () => {
     const uint8Array = new Uint8Array(certificatePdfBuffer.data);
@@ -318,17 +340,17 @@ const Week = () => {
         <div className="md:pl-6 mx-10 md:mt-3 mb:5 md:pr-6 min-w-full">
           <Tooltip hasArrow label={`${weeksDone} out of ${totalWeeks} weeks done : ${progressValue}% Progress`} placement="bottom-end"><Progress hasStripe value={progressValue} colorScheme='red' isAnimated className="mb-3" aria-valuenow={progressValue} /></Tooltip>
           <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6} className="mb-5">
-            <Stat bg="green.100" p={4} borderRadius="md">
+            <Stat bg="green.100" p={4} borderRadius="md" onClick={() => getStatSubmission(onTimeSubmissionData)}>
               <StatLabel>On Time Submissions</StatLabel>
               <StatNumber>{onTimeSubmission}</StatNumber>
               <StatHelpText>Count of OnTime weekly updates</StatHelpText>
             </Stat>
-            <Stat bg="red.100" p={4} borderRadius="md">
+            <Stat bg="red.100" p={4} borderRadius="md" onClick={() => getStatSubmission(noSubmissionData)}>
               <StatLabel>Missed Submissions</StatLabel>
               <StatNumber>{noSubmission == 0 ? 0 : noSubmission}</StatNumber>
               <StatHelpText>Count of weekly updates not yet submitted</StatHelpText>
             </Stat>
-            <Stat bg="orange.100" p={4} borderRadius="md">
+            <Stat bg="orange.100" p={4} borderRadius="md" onClick={() => getStatSubmission(lateSubmissionData)}>
               <StatLabel>Late Submissions</StatLabel>
               <StatNumber>{lateSubmission}</StatNumber>
               <StatHelpText>Count of weekly updates submitted after week deadline </StatHelpText>

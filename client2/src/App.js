@@ -28,6 +28,7 @@ import ViewMentor from './pages/Admin/viewmentor.jsx';
 import ViewCoord from './pages/Admin/viewcoordinator.jsx';
 import StudentProfile from './pages/Student/Profile.jsx';
 import CertificateSubmission from './pages/Student/Certificate.jsx';
+import StatWeek from './pages/Faculty_mentor/statweek.jsx';
 
 //importing Functions 
 import { setAuthToken, isAuthenticated, getUserDetails } from './Global/authUtils';
@@ -116,6 +117,10 @@ function App() {
                 <Route
                   path="/student/profile"
                   element={<PrivateRoute element={<StudentProfile />} />}
+                />
+                <Route
+                  path="/student/progress/stat/weeks"
+                  element={<PrivateRoute element={<StatWeek />} />}
                 />
                 <Route
                   path="/mentor/home"
