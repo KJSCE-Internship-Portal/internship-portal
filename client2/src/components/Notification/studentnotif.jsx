@@ -54,12 +54,12 @@ export default function StudentNotification() {
       }
       else if (user.role == 'COORDINATOR') {
         setCanPost(true)
-        const res = await axios.get(`${url}/announcements/all?department=${user.department}&page=${page}&limit=5&sort=-postedAt`);
+        const res = await axios.get(`${url}/announcements/all?department=${user.department},All&page=${page}&limit=5&sort=-postedAt`);
         setNotifications(res.data.data);
         setTotalPages(Math.min(Math.ceil(res.data.count / 5), 30));
       }
       else {
-        const res = await axios.get(`${url}/announcements/all?department=${user.department}&page=${page}&limit=5&sort=-postedAt`);
+        const res = await axios.get(`${url}/announcements/all?department=${user.department},All&page=${page}&limit=5&sort=-postedAt`);
         setNotifications(res.data.data);
         setTotalPages(Math.min(Math.ceil(res.data.count / 5), 30));
       }
