@@ -22,8 +22,12 @@ const CoordinatorList = () => {
 
   const renderCoordinatorList = (coordinators, department, openDrawer, colors) => {
     const filteredCoordinators = coordinators.filter((coordinator) => coordinator.department === department);
-
+    const number = filteredCoordinators.length;
     return (
+      <div>
+        <p className='mb-4'>
+        Number of Coordinators in {department} : {number}
+        </p>
       <ul>
         {filteredCoordinators.map((coordinator) => (
           <li key={coordinator.id}>
@@ -42,6 +46,7 @@ const CoordinatorList = () => {
           </li>
         ))}
       </ul>
+      </div>
     );
   };
 

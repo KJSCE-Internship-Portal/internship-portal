@@ -22,8 +22,12 @@ const MentorList = () => {
 
   const renderMentorList = (mentors, department, openDrawer, colors) => {
     const filteredMentors = mentors.filter((mentor) => mentor.department === department);
-
+    const number = filteredMentors.length;
     return (
+      <div>
+        <p className='mb-4'>
+        Number of mentors in {department} : {number}
+        </p>
       <ul>
         {filteredMentors.map((mentor) => (
           <li key={mentor.id}>
@@ -42,6 +46,7 @@ const MentorList = () => {
           </li>
         ))}
       </ul>
+      </div>
     );
   };
 
