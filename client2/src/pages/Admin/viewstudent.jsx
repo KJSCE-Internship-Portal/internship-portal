@@ -22,8 +22,12 @@ const StudentList = () => {
 
   const renderStudentList = (students, department, openDrawer, colors) => {
     const filteredStudents = students.filter((student) => student.department === department);
-
+    const number = filteredStudents.length;
     return (
+      <div>
+      <p className='mb-4'>
+        Number of students in {department} : {number}
+      </p>
       <ul>
         {filteredStudents.map((student) => (
           <li key={student.id}>
@@ -42,6 +46,7 @@ const StudentList = () => {
           </li>
         ))}
       </ul>
+      </div>
     );
   };
 
