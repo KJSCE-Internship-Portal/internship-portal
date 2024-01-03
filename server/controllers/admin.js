@@ -41,7 +41,7 @@ const addCoordinator = async (req, res) => {
 
     try {
 
-        const coordinator = new Coordinator({...req.body, createdAt: new Date()});
+        const coordinator = new Coordinator({ ...req.body, createdAt: new Date() });
         var existing_coordinator = await Coordinator.findOne({ email: req.body.email }).exec();
         var existing_mentor = await Mentor.findOneAndUpdate({ email: req.body.email }, { isActive: false, isApproved: false }, { new: true });
         if (existing_coordinator) {
@@ -61,13 +61,15 @@ const addCoordinator = async (req, res) => {
 };
 
 const getAllAnnouncements = async (req, res) => {
-
     try {
-
         const reqQuery = { ...req.query };
+
         if (reqQuery.department) {
-            reqQuery.department = deslugify(reqQuery.department);
+            reqQuery.department = reqQuery.department.split(',');
+            reqQuery.department = reqQuery.department.map(dep => deslugify(dep));
         }
+        console.log(reqQuery)
+
         const removeFields = ['select', 'sort', 'limit', 'page'];
         removeFields.forEach(param => delete reqQuery[param]);
 
@@ -93,31 +95,35 @@ const getAllAnnouncements = async (req, res) => {
 
         query = query.skip(startIndex).limit(limit);
         const pagination = {};
+
         if (endIndex < total) {
             pagination.next = {
                 page: page + 1,
-                limit
-            }
+                limit,
+            };
         }
+
         if (startIndex > 0) {
             pagination.prev = {
                 page: page - 1,
-                limit
-            }
+                limit,
+            };
         }
 
         const announcements = await query;
+
         if (!announcements) {
             return res.status(401).json({ success: false, msg: "There are no Announcements" });
         }
+
         return res.status(200).json({ success: true, count: total, pagination, data: announcements });
 
     } catch (error) {
         console.log(`${error.message} (error)`.red);
         return res.status(400).json({ success: false, msg: error.message });
     }
-
 };
+
 
 const getStatisticsAdmin = async (req, res) => {
 
@@ -266,7 +272,7 @@ const getStatisticsAdmin = async (req, res) => {
         const departmentProgress = await Students.aggregate([
             {
                 $project: {
-                    department: 1, // Assuming 'department' is a field in the Student schema
+                    department: 1, 
                     totalProgress: { $size: '$internships.progress' },
                     submittedProgress: {
                         $size: {
@@ -346,7 +352,7 @@ const getStatisticsAdmin = async (req, res) => {
             departmentProgress,
             // departmentWiseStudentDistribution,
         };
-        
+
         return res.status(200).json({ success: true, msg: "Statistics Route", data });
 
     } catch (error) {

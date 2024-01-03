@@ -112,11 +112,11 @@ export default function StudentNotification() {
         var user = currentUser;
       }
       const response = await axios.post(url + '/announcement/add', {
-        department: user.role == 'COORDINATOR' ? user.department : "all",
+        department: user.role == 'COORDINATOR' ? user.department : "All",
         sender: user.name,
         content: task,
         received_by: {
-          department: user.role == 'COORDINATOR' ? user.department : "all",
+          department: user.role == 'COORDINATOR' ? user.department : "All",
           only_for_faculties: false
         }
       });
