@@ -14,11 +14,21 @@ import {
     Badge,
     SimpleGrid,
     Divider,
-    AbsoluteCenter
+    AbsoluteCenter,
+    Table,
+    Tbody,
+    Tr,
+    Td,
+    Avatar,
+    Thead,
+    Th,
+    chakra,
+    Tabs,
+    TabPanel
+
 } from '@chakra-ui/react';
 import Loader from '../../../../components/loader/Loader';
 import { useTheme } from '../../../../Global/ThemeContext';
-import { Avatar } from '@chakra-ui/react';
 import AssignedStudentsPie from '../../Statistic_Components/AssignedStudentsPie';
 import CompletedStudentsAndVerified from '../../Statistic_Components/CompletedStudents';
 import { CompanyProvidingInternships } from '../../Statistic_Components/CompanyProvidingInternships';
@@ -47,11 +57,30 @@ const slugify = (text) => {
         .replace(/-+$/, '');     // Trim - from end of text
 };
 
+
+
 const AllStudentsInDepartment = () => {
+
     const { department } = useParams();
     const [user, setUser] = useState(false);
     const { theme: colors } = useTheme();
     const [studentsnothavingmentor, setStudentsNotHavingMentor] = useState(0);
+    const [selectedStudent, setSelectedStudent] = React.useState(null);
+
+    const handleRowClick = (student) => {
+        setSelectedStudent(student === selectedStudent ? null : student);
+    };
+
+    const HoverableTr = chakra('tr', {
+        baseStyle: {
+            transition: 'transform 0.3s',
+            '&:hover': {
+                // transform: 'scale(1.01)',
+                backgroundColor: colors.hover,
+                cursor: 'pointer'
+            },
+        },
+    });
 
     const { isError, isLoading, data } = useQuery({
         queryKey: ['/students/all'],
@@ -106,23 +135,23 @@ const AllStudentsInDepartment = () => {
         );
     }
 
-
+    
     return (
         <div>
             <h1 style={{ color: colors.primary, fontSize: '23px', margin: '15px 3vw 0 3vw', fontWeight: 'bold', textAlign: 'center' }}>Department Stats</h1>
 
             <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-evenly' }}>
-            
+
                 <Box mt={10}>
-                {/* {pie_data && <BarChart distribution={pie_data.batchWiseDistribution}/>} */}
+                    {/* {pie_data && <BarChart distribution={pie_data.batchWiseDistribution}/>} */}
                     <SimpleGrid columns={{ base: 1, md: 1, lg: 2 }} spacing={20} marginBottom={10}>
-                       
+
                         <Box bg="white" p={4} shadow="md" borderRadius="md" bgColor={colors.secondary}>
                             {pie_data &&
                                 <AssignedStudentsPie assigned={pie_data.assignedStudents} notAssigned={pie_data.studentsInDepartment - pie_data.assignedStudents} />}
                         </Box>
                         <Box bg="white" p={4} shadow="md" borderRadius="md" bgColor={colors.secondary}>
-                            {pie_data  &&  pie_data.assignedStudents != 0 &&
+                            {pie_data && pie_data.assignedStudents != 0 &&
                                 <CompletedStudentsAndVerified completed={pie_data.completedStudentsAndVerified} notCompleted={pie_data.assignedStudents - pie_data.completedStudentsAndVerified} />
                             }
                         </Box>
@@ -136,60 +165,82 @@ const AllStudentsInDepartment = () => {
                 } */}
 
             </div>
-            {/* <h1 style={{ color: colors.font, fontSize: '23px', margin: '5px 2.5vw', fontWeight: 'bold', textAlign: 'center' }}>Following Students Belong to your Department</h1> */}
-            {/* {JSON.stringify(data.data)} */}
-
             <Box position='relative' padding='9'>
                 <Divider color={colors.heading1} />
                 <AbsoluteCenter px='10' color={'#fff'} bg={colors.hover} py={'1'} style={{ borderRadius: '10px' }}>
                     Students
                 </AbsoluteCenter>
             </Box>
+            <div style={{ maxWidth: '100%', overflowY: 'auto' }}>
+                <Table variant="simple">
+                    <Thead>
+                        <Tr>
+                            <Th style={{ color: colors.font }}>Roll no.</Th>
+                            <Th style={{ color: colors.font }}>Name</Th>
+                            <Th style={{ color: colors.font }}>Batch</Th>
+                            <Th style={{ color: colors.font }}>E-mail</Th>
+                            <Th style={{ color: colors.font }} isNumeric>
+                                Contact
+                            </Th>
+                        </Tr>
+                    </Thead>
+                    <Tbody>
+                        {data.success &&
+                            data.data.map((student) => {
+                                if (student.isActive) {
+                                    return (
+                                        <React.Fragment key={student.email}>
+                                            <HoverableTr
+                                                onClick={() => handleRowClick(student)}
+                                                style={{ cursor: 'pointer' }}
+                                            >
+                                                <Td style={{ color: colors.font }}>{student.rollno}</Td>
+                                                <Td style={{ color: colors.font }}>{student.name}</Td>
+                                                <Td style={{ color: colors.font }}>{student.batch}</Td>
+                                                <Td style={{ color: colors.font }}>{student.email}</Td>
+                                                <Td style={{ color: colors.font }} isNumeric>
+                                                    {student.contact_no}
+                                                </Td>
+                                            </HoverableTr>
+                                            {selectedStudent === student && (
+                                                <Tr>
+                                                    <Td colSpan="5">
+                                                        <Box
+                                                            width="100%"
+                                                            mt="2"
+                                                            p="4"
+                                                            bg={colors.secondary}
+                                                            style={{ overflow: 'hidden', whiteSpace: 'nowrap', height: 'auto' }}
+                                                        >
+                                                            <div style={{ marginBottom: '10px' }}>
+                                                                {student.hasMentor && <Badge mb={2} colorScheme='green'>Assigned</Badge>}
 
-            <Accordion allowToggle padding={'1.5vw'}>
+                                                                <div style={{ fontSize: '17px', color: colors.heading1, fontStyle: 'italic', fontWeight: 'bold', marginBottom: '5px' }}><Avatar h={5} w={5} mr={2} src={student.profile_picture_url} />{student.email}</div>
+                                                                <div style={{ fontSize: '18px', color: colors.primary, fontWeight: 'bold' }}>  Semester: {student.sem}, Batch: {student.batch} </div>
+                                                                {student.hasMentor && <div style={{ borderRadius: '10px', margin: '5px 0', backgroundColor: colors.secondary2, padding: '5px 1.5vw', display: 'flex', flexDirection: 'column' }}>
+                                                                    <div style={{ color: colors.font }}>Mentor Details :</div>
+                                                                    <div style={{ height: '10px' }}></div>
+                                                                    <div style={{ fontSize: '17px', color: colors.font, fontWeight: 'bold' }}><span style={{ color: colors.primary }}>Name:</span> {student.mentor.name}</div>
 
-                {data.success && data.data.map((student) => {
-                    if (student.isActive) {
-                        return (
-                            <AccordionItem border='none' key={student.email}>
-                                <h2>
-                                    <AccordionButton _expanded={{ bg: colors.secondary, color: 'white' }}>
-                                        <Box as="span" flex='1' textAlign='left' style={{ color: colors.font, fontSize: '20px' }}>
-                                            <Avatar h={30} w={30} mr={5} src={student.profile_picture_url} />
-                                            <span style={{ marginTop: '10px', height: '100%' }} >{student.name}</span>
-                                            <span style={{ display: 'block', marginTop: '10px', height: '100%' }} >{student.rollno} &nbsp;&nbsp; {student.hasMentor && <Badge colorScheme='green'>Assigned</Badge>}</span>
-                                        </Box>
+                                                                    <div style={{ fontSize: '17px', color: colors.font, fontWeight: 'bold' }}><span style={{ color: colors.primary }}>Email:</span> {student.mentor.email}</div>
+                                                                    <div style={{ fontSize: '17px', color: colors.font, fontWeight: 'bold' }}><span style={{ color: colors.primary }}>Contact No. :</span> {student.mentor.contact_no}</div>
 
-                                        <AccordionIcon color={colors.font} />
-                                    </AccordionButton>
-                                </h2>
+                                                                </div>}
+                                                            </div>
+                                                        </Box>
+                                                    </Td>
+                                                </Tr>
+                                            )}
 
-                                <AccordionPanel pb={4}>
-                                    <div style={{ fontSize: '18px', color: colors.primary }}>  Semester: {student.sem}, Batch: {student.batch} </div>
-                                    <div style={{ fontSize: '17px', color: colors.heading1, fontStyle: 'italic', fontWeight: 'bold' }}>{student.email}</div>
+                                        </React.Fragment>
 
-                                    {student.hasMentor && <div style={{ borderRadius: '10px', margin: '5px 0', backgroundColor: colors.secondary, padding: '5px 1.5vw', display: 'flex', flexDirection: 'column' }}>
-                                        <div style={{ color: colors.font }}>Mentor Details :</div>
-                                        <div style={{ height: '10px' }}></div>
-                                        <div style={{ fontSize: '17px', color: colors.font, fontWeight: 'bold' }}><span style={{ color: colors.primary }}>Name:</span> {student.mentor.name}</div>
-
-                                        <div style={{ fontSize: '17px', color: colors.font, fontWeight: 'bold' }}><span style={{ color: colors.primary }}>Email:</span> {student.mentor.email}</div>
-                                        <div style={{ fontSize: '17px', color: colors.font, fontWeight: 'bold' }}><span style={{ color: colors.primary }}>Contact No. :</span> {student.mentor.contact_no}</div>
-
-                                    </div>}
-
-                                </AccordionPanel>
-                            </AccordionItem>
-                        )
-                    }
-                })}
-                {data.data.length <= 0 && <div style={{ backgroundColor: colors.hover, height: '150px', width: '95%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 15px' }}>
-                    <h1 style={{ color: colors.font, textAlign: 'center' }}>No Students Here</h1>
-                </div>}
-            </Accordion>
-
-           
-
+                                    );
+                                }
+                                return null;
+                            })}
+                    </Tbody>
+                </Table>
+            </div>
         </div>
     )
 }
