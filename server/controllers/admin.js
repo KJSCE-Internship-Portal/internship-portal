@@ -181,7 +181,7 @@ const getStatisticsAdmin = async (req, res) => {
                 $sort: { count: -1 }
             },
             {
-                $limit: 5
+                $limit: 50
             }
         ]);
 

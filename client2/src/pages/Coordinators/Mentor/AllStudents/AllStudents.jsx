@@ -12,7 +12,9 @@ import {
     AccordionIcon,
     Box,
     Badge,
-    SimpleGrid
+    SimpleGrid,
+    Divider,
+    AbsoluteCenter
 } from '@chakra-ui/react';
 import Loader from '../../../../components/loader/Loader';
 import { useTheme } from '../../../../Global/ThemeContext';
@@ -107,10 +109,12 @@ const AllStudentsInDepartment = () => {
 
     return (
         <div>
+            <h1 style={{ color: colors.primary, fontSize: '23px', margin: '15px 3vw 0 3vw', fontWeight: 'bold', textAlign: 'center' }}>Department Stats</h1>
+
             <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-evenly' }}>
             
                 <Box mt={10}>
-                {pie_data && <BarChart distribution={pie_data.batchWiseDistribution}/>}
+                {/* {pie_data && <BarChart distribution={pie_data.batchWiseDistribution}/>} */}
                     <SimpleGrid columns={{ base: 1, md: 1, lg: 2 }} spacing={20} marginBottom={10}>
                        
                         <Box bg="white" p={4} shadow="md" borderRadius="md" bgColor={colors.secondary}>
@@ -135,7 +139,12 @@ const AllStudentsInDepartment = () => {
             {/* <h1 style={{ color: colors.font, fontSize: '23px', margin: '5px 2.5vw', fontWeight: 'bold', textAlign: 'center' }}>Following Students Belong to your Department</h1> */}
             {/* {JSON.stringify(data.data)} */}
 
-            <h2 style={{ color: colors.primary, fontSize: '20px', margin: '5px 3vw', fontWeight: 'bold' }}>Students</h2>
+            <Box position='relative' padding='9'>
+                <Divider color={colors.heading1} />
+                <AbsoluteCenter px='10' color={'#fff'} bg={colors.hover} py={'1'} style={{ borderRadius: '10px' }}>
+                    Students
+                </AbsoluteCenter>
+            </Box>
 
             <Accordion allowToggle padding={'1.5vw'}>
 
@@ -179,52 +188,7 @@ const AllStudentsInDepartment = () => {
                 </div>}
             </Accordion>
 
-            {/* <h2 style={{ color: colors.primary, fontSize: '20px', margin: '5px 3vw', fontWeight: 'bold' }}>Students having no Mentors</h2>
-
-            <Accordion allowToggle padding={'1.5vw'}>
-
-                {data.success && data.data.map((student) => {
-                    if (student.isActive && !student.hasMentor) {
-                        setStudentsNotHavingMentor((studentsnothavingmentor) => studentsnothavingmentor + 1)
-                        return (
-                            <AccordionItem border='none' key={student.email}>
-                                <h2>
-                                    <AccordionButton _expanded={{ bg: colors.hover, color: 'white' }}>
-                                        <Box as="span" flex='1' textAlign='left' style={{ color: colors.font, fontSize: '20px' }}>
-                                            <span>{student.rollno}</span>
-                                        </Box>
-
-                                        <AccordionIcon color={colors.font} />
-                                    </AccordionButton>
-                                </h2>
-                                <AccordionPanel pb={4}>
-                                    <div style={{ fontSize: '18px', color: colors.font }}>  {student.name} <Badge colorScheme='green'>Approved</Badge> </div>
-                                    <div style={{ fontSize: '17px', color: '#c20010', fontStyle: 'italic', fontWeight: 'bold' }}>{student.email}</div>
-
-                                    <div style={{ borderRadius: '10px', margin: '5px 0', backgroundColor: colors.hover, padding: '5px 1.5vw', display: 'flex', flexDirection: 'column' }}>
-                                        <div style={{ color: colors.font }}>Mentor Details :</div>
-                                        <div style={{ height: '10px' }}></div>
-                                        <div style={{ fontSize: '17px', color: colors.font, fontWeight: 'bold' }}><span style={{ color: colors.primary }}>Name:</span> {student.mentor.name}</div>
-
-                                        <div style={{ fontSize: '17px', color: colors.font, fontWeight: 'bold' }}><span style={{ color: colors.primary }}>Email:</span> {student.mentor.email}</div>
-                                        <div style={{ fontSize: '17px', color: colors.font, fontWeight: 'bold' }}><span style={{ color: colors.primary }}>Contact No. :</span> {student.mentor.contact_no}</div>
-
-                                    </div>
-
-                                </AccordionPanel>
-                            </AccordionItem>
-                        )
-                    }
-                })
-                }
-                {
-                    studentsnothavingmentor <= 0 &&
-                    <div style={{ backgroundColor: colors.hover, height: '150px', width: '95%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 15px' }}>
-                        <h1 style={{ color: colors.font, textAlign: 'center' }}>No Students Here</h1>
-                    </div>
-                }
-
-            </Accordion> */}
+           
 
         </div>
     )
