@@ -175,7 +175,7 @@ const getUserWithAccessToken = async (req, res) => {
 
     try {
         const accessToken = req.body.accessToken;
-        const redirectUrl = 'http://localhost:5000/api/callback';
+        const redirectUrl = process.env.SERVER_URL + '/api/callback';
         const oAuth2Client = new OAuth2Client(
             process.env.CLIENT_ID,
             process.env.CLIENT_SECRET,
@@ -211,7 +211,6 @@ const logoutUser = async (req, res) => {
             overwrite: true
         });
         res.redirect(process.env.CLIENT_URL + '/login');    
-        // return res.status(200).json({ success: true, msg: 'Successfully Logged Out' });
 
     } catch (error) {
         console.log(`${error.message} (error)`.red);
