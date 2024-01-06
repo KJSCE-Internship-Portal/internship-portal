@@ -50,7 +50,7 @@ const Progress = () => {
             }
             setTimeout(() => {
                 window.location.href = 'http://localhost:3000/student/progress/view'; 
-              }, 5000);
+              }, 2000);
             if (response.ok) {
                 console.log('Data successfully submitted to the backend!');
             } else {

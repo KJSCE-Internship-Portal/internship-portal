@@ -3,23 +3,6 @@ import { useEffect } from 'react';
 import { useTheme } from '../../Global/ThemeContext';
 import showToast from '../../Global/Toast';
 import { useToast } from '@chakra-ui/react';
-import {
-    Card,
-    CardHeader,
-    CardBody,
-    CardFooter,
-    Avatar,
-    AvatarBadge,
-    Progress,
-    Stat,
-    SimpleGrid,
-    StatLabel,
-    StatNumber,
-    StatHelpText,
-    Tooltip,
-    StatArrow,
-    StatGroup,
-  } from '@chakra-ui/react';
 import axios from 'axios';
 import { url } from '../../Global/URL';
 
@@ -57,6 +40,9 @@ const Work = () => {
             } else {
                 showToast(toast, 'Error', 'error', response.data.msg);
             }
+            setTimeout(() => {
+                window.location.href = 'http://localhost:3000/student/ese/view'; 
+              }, 2000);
         } catch(error){
             console.log(error);
         }
@@ -67,9 +53,7 @@ const Work = () => {
             const userInfo = await getUser();
             if(userInfo){
                 setSubID(userInfo.sub_id);
-            }
-            // console.log(userInfo.internships[0].evaluation[0].work_done);
-            
+            }            
         } catch (error) {
             console.log(error)
         }
@@ -87,6 +71,16 @@ const Work = () => {
         </div>
         <form class="mb-6">
             <div class="flex justify-between items-center mb-3">
+                <h2 class={`text-lg lg:text-2xl font-bold text-${colors.font}`}>Work Done:</h2>
+            </div>
+            <div class={`py-2 px-4 mb-4 bg-${colors.secondary} rounded-lg rounded-t-lg border border-${colors.accent} text-${colors.font}`}>
+                <textarea id="comment" rows="6" value={workDone}
+                    style={{ backgroundColor: colors.secondary2, color: colors.font}}
+                    onChange={(e) => setWorkDone(e.target.value)}
+                    class="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-500"
+                    placeholder="Write you work done..." required></textarea>
+            </div>
+            <div class="flex justify-between items-center mb-3">
                 <h2 class={`text-lg lg:text-2xl font-bold text-${colors.font}`}>Enter your full name as your Signature for attendance:</h2>
             </div>
             <div class={`py-2 px-4 mb-6 bg-${colors.secondary} rounded-lg rounded-t-lg border border-${colors.accent} text-${colors.font}`}>
@@ -99,16 +93,6 @@ const Work = () => {
                 onChange={(e) => setName(e.target.value)}
                 required
                 />    
-            </div>
-            <div class="flex justify-between items-center mb-3">
-                <h2 class={`text-lg lg:text-2xl font-bold text-${colors.font}`}>Work Done:</h2>
-            </div>
-            <div class={`py-2 px-4 mb-4 bg-${colors.secondary} rounded-lg rounded-t-lg border border-${colors.accent} text-${colors.font}`}>
-                <textarea id="comment" rows="6" value={workDone}
-                    style={{ backgroundColor: colors.secondary2, color: colors.font}}
-                    onChange={(e) => setWorkDone(e.target.value)}
-                    class="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-500"
-                    placeholder="Write you work done..." required></textarea>
             </div>
             <button type="submit" class="text-white bg-red-400 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
             onClick={handleSubmit}>

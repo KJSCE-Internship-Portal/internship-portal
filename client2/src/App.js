@@ -31,6 +31,8 @@ import CertificateSubmission from './pages/Student/Certificate.jsx';
 import StatWeek from './pages/Faculty_mentor/statweek.jsx';
 import WorkDoneISE from './pages/Student/WorkDoneISE.jsx';
 import WorkDoneESE from './pages/Student/WorkDoneESE.jsx';
+import ISEView from './pages/Student/ISEView.jsx';
+import ESEView from './pages/Student/ESEView.jsx';
 
 //importing Functions 
 import { setAuthToken, isAuthenticated, getUserDetails } from './Global/authUtils';
@@ -131,6 +133,14 @@ function App() {
                 <Route
                   path="/student/ese/workdone"
                   element={<PrivateRoute element={<WorkDoneESE />} />}
+                />
+                <Route
+                  path="/student/ise/view"
+                  element={<PrivateRoute element={<ISEView />} />}
+                />
+                <Route
+                  path="/student/ese/view"
+                  element={<PrivateRoute element={<ESEView />} />}
                 />
                 <Route
                   path="/mentor/home"

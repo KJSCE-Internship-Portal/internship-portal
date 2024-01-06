@@ -20,9 +20,6 @@ import {
   StatArrow,
   StatGroup,
 } from '@chakra-ui/react';
-// import Slider from 'react-slick';
-// import 'slick-carousel/slick/slick.css';
-// import 'slick-carousel/slick/slick-theme.css';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { url } from '../../Global/URL';
@@ -44,32 +41,37 @@ const FramePage = () => {
 
   const generateWeekURL = async (week) => {
     const currentDate = new Date();
-    if (currentDate > new Date(progressData[week.week - 1].startDate) && currentDate < new Date(progressData[week.week - 1].endDate) && progressData[week.week - 1].status == 'Not Submitted') {
-      const weekData = {
-        week: week.week,
-        late: false
+    const currentWeekIndex = week.week - 1;
+      const allPreviousWeeksSubmitted = progressData
+      .slice(0, currentWeekIndex)
+      .every((previousWeek) => previousWeek.status === 'Submitted');
+  
+    if (allPreviousWeeksSubmitted) {
+      if (
+        (currentDate >= new Date(progressData[currentWeekIndex].startDate) &&
+          currentDate <= new Date(progressData[currentWeekIndex].endDate) &&
+          progressData[currentWeekIndex].status === 'Not Submitted') ||
+        (currentDate > new Date(progressData[currentWeekIndex].endDate) &&
+          progressData[currentWeekIndex].status === 'Not Submitted')
+      ) {
+        const weekData = {
+          week: week.week,
+          late: currentDate > new Date(progressData[currentWeekIndex].endDate),
+        };
+        localStorage.setItem('week', JSON.stringify(weekData));
+        const weekURL = 'http://localhost:3000/student/progress';
+        window.location.href = weekURL;
+      } else if (progressData[currentWeekIndex].status === 'Submitted') {
+        const weekData = {
+          week: week.week,
+          late: false,
+        };
+        localStorage.setItem('week', JSON.stringify(weekData));
+        const weekURL = 'http://localhost:3000/student/progress/view';
+        window.location.href = weekURL;
       }
-      localStorage.setItem('week', JSON.stringify(weekData));
-      const weekURL = 'http://localhost:3000/student/progress';
-      window.location.href = weekURL;
-    }
-    if (currentDate > new Date(progressData[week.week - 1].endDate) && progressData[week.week - 1].status == 'Not Submitted') {
-      const weekData = {
-        week: week.week,
-        late: true
-      }
-      localStorage.setItem('week', JSON.stringify(weekData));
-      const weekURL = 'http://localhost:3000/student/progress';
-      window.location.href = weekURL;
-    }
-    else if (progressData[week.week - 1].status == 'Submitted') {
-      const weekData = {
-        week: week.week,
-        late: false
-      }
-      localStorage.setItem('week', JSON.stringify(weekData));
-      const weekURL = 'http://localhost:3000/student/progress/view';
-      window.location.href = weekURL;
+    } else {
+      showToast(toast, 'Error', 'error', 'Previous Weeks Not Submitted');
     }
   }
 
@@ -109,28 +111,40 @@ const FramePage = () => {
   const [weeksDone, setWeeksDone] = useState(null);
   const [totalWeeks, setTotalWeeks] = useState(null);
   const [progressValue, setProgressValue] = useState(null);
-  const [progressValue2, setProgressValue2] = useState(null);
   const [allWeeksDone, setAllWeeksDone] = useState(false);
   const [isCertificateNotSubmitted, setIsCertificateNotSubmitted] = useState(true);
   const [certificatePdfBuffer, setCertificatePdfBuffer] = useState(null);
+  const [sign1, setSign1] = useState(null);
+  const [sign2, setSign2] = useState(null);
 
   const handleSubmit1 = async () => {
+    if(sign1==true){
+      window.location.href="http://localhost:3000/student/ise/view";
+    }
+    else{
     window.location.href="http://localhost:3000/student/ise/workdone";
+    }
   }
+
   const handleSubmit2 = async () => {
+    if(sign2==true){
+      window.location.href="http://localhost:3000/student/ese/view";
+    }
+    else{
     window.location.href="http://localhost:3000/student/ese/workdone";
+    }  
   }
 
   const fetchData = async () => {
     try {
       const userInfo = await getUser();
       if (userInfo) {
-        // localStorage.removeItem('week');
         const currentDate = new Date();
-        // console.log(userInfo);
         setName(userInfo.name);
         setEmail(userInfo.email);
         setProfilePicture(userInfo.profile_picture_url);
+        setSign1(userInfo.internships[0].evaluation[0].is_signed)
+        setSign2(userInfo.internships[0].evaluation[1].is_signed)
         if (userInfo.internships[0].progress && userInfo.internships[0].progress.length > 0) {
           setOnTimeSubmission(0);
           setNoSubmission(0);
@@ -169,7 +183,7 @@ const FramePage = () => {
           setTotalWeeks(parseInt(userInfo.internships[0].duration_in_weeks));
           setProgressValue(((updatedProgressData.length / parseInt(userInfo.internships[0].duration_in_weeks)) * 100).toFixed(2));
           console.log(onTimeSubmission+lateSubmission)
-          setProgressValue2((((onTimeSubmission+lateSubmission)/parseInt(userInfo.internships[0].duration_in_weeks)) * 100).toFixed(2));
+          // setProgressValue2((((onTimeSubmission+lateSubmission)/parseInt(userInfo.internships[0].duration_in_weeks)) * 100).toFixed(2));
           console.log((((onTimeSubmission+lateSubmission)/parseInt(userInfo.internships[0].duration_in_weeks)) * 100).toFixed(2));
           if(currentDate > new Date(userInfo.internships[0].endDate)) {
             setAllWeeksDone(true);
@@ -236,26 +250,6 @@ const FramePage = () => {
         </button></Card>
     );
   };
-
-  // const WeekCarousel = ({ weeks, generateWeekURL }) => {
-  //   const settings = {
-  //     dots: false,
-  //     infinite: true,
-  //     speed: 500,
-  //     slidesToShow: 3,
-  //     slidesToScroll: 1,
-  //   };
-  
-  //   return (
-  //     <Slider {...settings}>
-  //       {weeks.map((week, index) => (
-  //         <div key={index}>
-  //           <WeekComponent week={week} generateWeekURL={generateWeekURL} />
-  //         </div>
-  //       ))}
-  //     </Slider>
-  //   );
-  // };
 
   return (
     <>
