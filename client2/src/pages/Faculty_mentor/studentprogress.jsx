@@ -338,7 +338,12 @@ const Week = () => {
         </div>
         <StudentDrawer isOpen={isDrawerOpen} onClose={closeDrawer} studentData={studentData} />
         <div className="md:pl-6 mx-10 md:mt-3 mb:5 md:pr-6 min-w-full">
-          <Tooltip hasArrow label={`${weeksDone} out of ${totalWeeks} weeks done : ${progressValue}% Progress`} placement="bottom-end"><Progress hasStripe value={progressValue} colorScheme='red' isAnimated className="mb-3" aria-valuenow={progressValue} /></Tooltip>
+          <Tooltip hasArrow label={`${weeksDone} out of ${totalWeeks} weeks done : ${progressValue}% Progress`} placement="bottom-end">
+            <Progress hasStripe value={progressValue} colorScheme='red' isAnimated aria-valuenow={progressValue} />
+          </Tooltip>
+          <Tooltip hasArrow label={`${onTimeSubmission+lateSubmission} out of ${totalWeeks} weeks submitted : ${(((onTimeSubmission+lateSubmission)/totalWeeks)*100).toFixed(2)}% Progress`} placement="top-end">
+            <Progress hasStripe value={(((onTimeSubmission+lateSubmission)/totalWeeks)*100).toFixed(2)} colorScheme='green' isAnimated className="mb-3" aria-valuenow={(((onTimeSubmission+lateSubmission)/totalWeeks)*100).toFixed(2)}/>
+          </Tooltip>
           <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6} className="mb-5">
             <Stat bg="green.100" p={4} borderRadius="md" onClick={() => getStatSubmission(onTimeSubmissionData)}>
               <StatLabel>On Time Submissions</StatLabel>
