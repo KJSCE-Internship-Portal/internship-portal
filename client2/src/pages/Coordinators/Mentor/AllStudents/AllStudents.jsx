@@ -5,11 +5,6 @@ import axios from 'axios';
 import { url } from '../../../../Global/URL';
 import { getUserDetails } from '../../../../Global/authUtils';
 import {
-    Accordion,
-    AccordionItem,
-    AccordionButton,
-    AccordionPanel,
-    AccordionIcon,
     Box,
     Badge,
     SimpleGrid,
@@ -33,6 +28,7 @@ import AssignedStudentsPie from '../../Statistic_Components/AssignedStudentsPie'
 import CompletedStudentsAndVerified from '../../Statistic_Components/CompletedStudents';
 import { CompanyProvidingInternships } from '../../Statistic_Components/CompanyProvidingInternships';
 import { BarChart } from '../../Statistic_Components/BarChart';
+import ExportToExcelButton from './ExportToExcelButton';
 
 const getRandomLightColor = () => {
 
@@ -57,7 +53,14 @@ const slugify = (text) => {
         .replace(/-+$/, '');     // Trim - from end of text
 };
 
-
+function formatDate(inputDate) {
+    const date = new Date(inputDate);
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
+    const year = date.getFullYear();
+  
+    return `${day}/${month}/${year}`;
+  }
 
 const AllStudentsInDepartment = () => {
 
@@ -65,7 +68,8 @@ const AllStudentsInDepartment = () => {
     const [user, setUser] = useState(false);
     const { theme: colors } = useTheme();
     const [studentsnothavingmentor, setStudentsNotHavingMentor] = useState(0);
-    const [selectedStudent, setSelectedStudent] = React.useState(null);
+    const [selectedStudent, setSelectedStudent] = useState(null);
+    const [excel_data, setExcelData] = useState([]);
 
     const handleRowClick = (student) => {
         setSelectedStudent(student === selectedStudent ? null : student);
@@ -85,22 +89,56 @@ const AllStudentsInDepartment = () => {
     const { isError, isLoading, data } = useQuery({
         queryKey: ['/students/all'],
         retryDelay: 10000,
+        retry: false,
         queryFn: async () => {
-            if (!user) {
-                var current_user = await getUserDetails();
-                setUser(current_user);
-            } else {
-                var current_user = user;
+          if (!user) {
+            var current_user = await getUserDetails();
+            setUser(current_user);
+          } else {
+            var current_user = user;
+          }
+          var fetched = await axios
+            .get(url + `/students/all?department=${slugify(current_user.department)}&sort=-hasMentor,rollno`)
+            .then(response => response.data);
+          setStudentsNotHavingMentor(0);
+          console.log(fetched.data[0]);
+          var complete_data = [];
+      
+          for (let z = 0; z < fetched.data.length; z++) {
+            var student = fetched.data[z];
+            if (student.isActive) {
+              var c = 0;
+              for (let i = 0; i < student.internships[0].progress.length; i++) {
+                if (student.internships[0].progress[i].submitted) {
+                  c++;
+                }
+              }
+              var excel_obj = {
+                Roll_no: student.rollno,
+                Name: student.name,
+                Batch: student.batch,
+                Email: student.email,
+                Contact_no: student.contact_no,
+                Mentor: student.hasMentor ? student.mentor.name : "-",
+                Company: student.internships[0].company,
+                Job_Description: student.internships[0].job_description,
+                Company_Mentor: student.internships[0].company_mentor,
+                Start_Date: formatDate(student.internships[0].startDate),
+                End_Date: formatDate(student.internships[0].endDate),
+                Total_Weeks: (student.internships[0].duration_in_weeks).toString(),
+                Submitted_Weeks: c.toString() + "/" + (student.internships[0].duration_in_weeks).toString(),
+                ISE_evaluation_status: student.internships[0].completion.length === 1 ? 'Completed' : 'Pending',
+                ESE_evaluation_status: student.internships[0].completion.length === 2 ? 'Completed' : 'Pending',
+              }
+              complete_data.push(excel_obj);
             }
-            var fetched = await axios
-                .get(url + `/students/all?department=${slugify(current_user.department)}&select=name,mentor,email,isApproved,isActive,hasMentor,div,contact_no,sem,batch,rollno,profile_picture_url&sort=-hasMentor,rollno`)
-                .then(response => response.data);
-            setStudentsNotHavingMentor(0);
-            return (
-                fetched
-            );
-        }
-    });
+          }
+    
+            setExcelData(complete_data);
+          return fetched;
+        },
+      });
+      
 
     const { data: pie_data } = useQuery({
         queryKey: ['/statistics/department'],
@@ -135,7 +173,7 @@ const AllStudentsInDepartment = () => {
         );
     }
 
-    
+
     return (
         <div>
             <h1 style={{ color: colors.primary, fontSize: '23px', margin: '15px 3vw 0 3vw', fontWeight: 'bold', textAlign: 'center' }}>Department Stats</h1>
@@ -158,11 +196,7 @@ const AllStudentsInDepartment = () => {
 
                     </SimpleGrid>
                 </Box>
-                {/* {pie_data  &&
-                <AssignedStudentsPie assigned={pie_data.assignedStudents} notAssigned={pie_data.studentsInDepartment-pie_data.assignedStudents}/>}
-                {pie_data && pie_data.completedStudentsAndVerified!=(pie_data.assignedStudents-pie_data.completedStudentsAndVerified)!=0 && 
-                <CompletedStudentsAndVerified completed={pie_data.completedStudentsAndVerified} notCompleted={pie_data.assignedStudents-pie_data.completedStudentsAndVerified}/>
-                } */}
+
 
             </div>
             <Box position='relative' padding='9'>
@@ -171,7 +205,10 @@ const AllStudentsInDepartment = () => {
                     Students
                 </AbsoluteCenter>
             </Box>
+            <ExportToExcelButton excelData={excel_data} department={user ? slugify(user.department) : "data"}/>
+
             <div style={{ maxWidth: '100%', overflowY: 'auto' }}>
+
                 <Table variant="simple">
                     <Thead>
                         <Tr>
@@ -182,12 +219,35 @@ const AllStudentsInDepartment = () => {
                             <Th style={{ color: colors.font }} isNumeric>
                                 Contact
                             </Th>
+                            <Th style={{ color: colors.font }} isNumeric>Submission Status</Th>
+                            <Th style={{ color: colors.font }} >ISE</Th>
+                            <Th style={{ color: colors.font }} >ESE</Th>
                         </Tr>
                     </Thead>
                     <Tbody>
                         {data.success &&
                             data.data.map((student) => {
+                                
                                 if (student.isActive) {
+                                    var c = 0;
+                                    for (let i = 0; i<student.internships[0].progress.length; i++){
+                                        if (student.internships[0].progress[i].submitted){
+                                            c++;
+                                        }
+                                    }
+                                    // var excel_obj = 
+                                    //     {
+                                    //         Roll_no: student.rollno,
+                                    //         Name: student.name,
+                                    //         Batch: student.batch,
+                                    //         Email: student.email,
+                                    //         Contact_no: student.contact_no,
+                                    //         Weekly_Submissions: c.toString() + "/" + (student.internships[0].duration_in_weeks).toString(),
+                                    //         ISE_evaluation_status: student.internships[0].completion.length === 1 ? 'Completed' : 'Pending',
+                                    //         ESE_evaluation_status: student.internships[0].completion.length === 2 ? 'Completed' : 'Pending',
+                                    //     }
+                                    // setExcelData((x)=> [...x, excel_obj]);
+                                    
                                     return (
                                         <React.Fragment key={student.email}>
                                             <HoverableTr
@@ -201,6 +261,17 @@ const AllStudentsInDepartment = () => {
                                                 <Td style={{ color: colors.font }} isNumeric>
                                                     {student.contact_no}
                                                 </Td>
+                                                <Td style={{ color: colors.font }} isNumeric>
+                                                    {c}/{student.internships[0].duration_in_weeks}
+                                                </Td>
+                                                <Td style={{ color: student.internships[0].completion.length === 1 ? colors.primary : colors.heading1 }}>
+                                                    {student.internships[0].completion.length === 1 ? 'Completed' : 'Pending'}
+                                                </Td>
+
+                                                <Td style={{ color: student.internships[0].completion.length === 2 ? colors.primary : colors.heading1 }}>
+                                                    {student.internships[0].completion.length === 2 ? 'Completed' : 'Pending'}
+                                                </Td>
+
                                             </HoverableTr>
                                             {selectedStudent === student && (
                                                 <Tr>

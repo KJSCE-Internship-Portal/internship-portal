@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { FaMoon, FaSun, FaAngleDoubleLeft, FaAngleDoubleRight, FaHome, FaRocket, FaSignOutAlt, FaThLarge } from 'react-icons/fa';
 import styles from "./SideBar.module.css";
 import {Link} from 'react-router-dom';
-// import { colors } from '../../Global/colors';
 import { useTheme } from '../../Global/ThemeContext';
 import { logout } from '../../Global/authUtils';
 
@@ -38,21 +37,21 @@ const SideBar = () => {
             name: "Home",
             link: "/"
         },
-        {
-            icon: <FaRocket/>,
-            name: "Explore",
-            link: "/explore"
-        },
-        {
-            icon: <FaThLarge/>,
-            name: "Application",
-            link: "/my-internships"
-        },
-        {
-            icon: <FaRocket/>,
-            name: "Profile",
-            link: '/my-profile-settings'
-        }
+        // {
+        //     icon: <FaRocket/>,
+        //     name: "Explore",
+        //     link: "/explore"
+        // },
+        // {
+        //     icon: <FaThLarge/>,
+        //     name: "Application",
+        //     link: "/my-internships"
+        // },
+        // {
+        //     icon: <FaRocket/>,
+        //     name: "Profile",
+        //     link: '/my-profile-settings'
+        // }
        
         
     ]
