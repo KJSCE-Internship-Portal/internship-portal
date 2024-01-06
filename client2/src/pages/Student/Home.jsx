@@ -109,9 +109,17 @@ const FramePage = () => {
   const [weeksDone, setWeeksDone] = useState(null);
   const [totalWeeks, setTotalWeeks] = useState(null);
   const [progressValue, setProgressValue] = useState(null);
+  const [progressValue2, setProgressValue2] = useState(null);
   const [allWeeksDone, setAllWeeksDone] = useState(false);
   const [isCertificateNotSubmitted, setIsCertificateNotSubmitted] = useState(true);
   const [certificatePdfBuffer, setCertificatePdfBuffer] = useState(null);
+
+  const handleSubmit1 = async () => {
+    window.location.href="http://localhost:3000/student/ise/workdone";
+  }
+  const handleSubmit2 = async () => {
+    window.location.href="http://localhost:3000/student/ese/workdone";
+  }
 
   const fetchData = async () => {
     try {
@@ -160,6 +168,9 @@ const FramePage = () => {
           setWeeksDone(updatedProgressData.length);
           setTotalWeeks(parseInt(userInfo.internships[0].duration_in_weeks));
           setProgressValue(((updatedProgressData.length / parseInt(userInfo.internships[0].duration_in_weeks)) * 100).toFixed(2));
+          console.log(onTimeSubmission+lateSubmission)
+          setProgressValue2((((onTimeSubmission+lateSubmission)/parseInt(userInfo.internships[0].duration_in_weeks)) * 100).toFixed(2));
+          console.log((((onTimeSubmission+lateSubmission)/parseInt(userInfo.internships[0].duration_in_weeks)) * 100).toFixed(2));
           if(currentDate > new Date(userInfo.internships[0].endDate)) {
             setAllWeeksDone(true);
           }
@@ -270,7 +281,12 @@ const FramePage = () => {
           </div>
         </div>
         <div className="md:pl-6 mx-10 md:mt-3 mb:5 md:pr-6 min-w-full">
-          <Tooltip hasArrow label={`${weeksDone} out of ${totalWeeks} weeks done : ${progressValue}% Progress`} placement="top-end"><Progress hasStripe value={progressValue} colorScheme='red' isAnimated className="mb-3" aria-valuenow={progressValue}/></Tooltip>
+          <Tooltip hasArrow label={`${weeksDone} out of ${totalWeeks} weeks done : ${progressValue}% Progress`} placement="top-end">
+            <Progress hasStripe value={progressValue} colorScheme='red' isAnimated aria-valuenow={progressValue}/>
+            </Tooltip>
+            <Tooltip hasArrow label={`${onTimeSubmission+lateSubmission} out of ${totalWeeks} weeks submitted : ${(((onTimeSubmission+lateSubmission)/totalWeeks)*100).toFixed(2)}% Progress`} placement="top-end">
+            <Progress hasStripe value={(((onTimeSubmission+lateSubmission)/totalWeeks)*100).toFixed(2)} colorScheme='green' isAnimated className="mb-3" aria-valuenow={(((onTimeSubmission+lateSubmission)/totalWeeks)*100).toFixed(2)}/>
+            </Tooltip>
           <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6} className="mb-5">
             <Stat bg="green.100" p={4} borderRadius="md">
               <StatLabel>On Time Submissions</StatLabel>
@@ -304,7 +320,41 @@ const FramePage = () => {
               </div>
             </div>
           </div>
-        </div>
+        </div><hr className={`mt-5 border-${colors.accent} w-full`} />
+        <div className="mt-5 font-bold text-lg">Evaluation Details</div>
+        <div className="flex flex-col h-[269px] md:h-auto items-center justify-center max-w-[1262px] mt-[13px] mx-auto md:px-5 w-full">
+          <div className="flex flex-col items-center justify-center px-3 w-full">
+            <div className="overflow-y-auto max-h-[230px] md:max-h-[none] w-full">
+              <div className="sm:flex-col flex-row gap-5 grid sm:grid-cols-2 md:grid-cols-2 grid-cols-1 justify-start w-full">
+                <Card>
+                  <button
+                    className="border border-black-900_19 border-solid flex flex-1 flex-col items-center justify-start rounded-md w-full relative transform transition-transform hover:translate-y-[-2px] hover:shadow-md"
+                    onClick={handleSubmit1}
+                  >
+                    <div className="flex flex-col gap-1 items-start justify-start p-2 w-full">
+                      <text className={`text-${colors.font} font-semibold text-md w-full`} size="txtRobotoRegular12Black900">
+                        ISE Work Done
+                      </text>
+                    </div>
+                  </button>
+                </Card>
+                <Card>
+                  <button
+                    className="border border-black-900_19 border-solid flex flex-1 flex-col items-center justify-start rounded-md w-full relative transform transition-transform hover:translate-y-[-2px] hover:shadow-md"
+                    onClick={handleSubmit2}
+                  >
+                    <div className="flex flex-col gap-1 items-start justify-start p-2 w-full">
+                      <text className={`text-${colors.font} font-semibold text-md w-full`} size="txtRobotoRegular12Black900">
+                        ESE Work Done
+                      </text>
+                    </div>
+                  </button>
+                </Card>
+              </div>
+            </div>
+          </div>
+        </div>  
+        <hr className={`mt-5 border-${colors.accent} w-full`} /> 
         {isCertificateNotSubmitted ? (<button type="submit" class="flex-1 mt-5 text-white bg-red-400 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm sm:w-auto px-5 py-2.5 text-center" onClick={handleCompletionSubmission}>
             Certificate Submission
         </button>) : 

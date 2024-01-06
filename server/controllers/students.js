@@ -64,9 +64,33 @@ const registerStudent = async (req, res) => {
             email: '',
             contact_no: '',
             sub_id: ''
-        }
-        student = {...student, mentor, role: 'STUDENT'}
-
+        };
+        const evaluationStructure = () => ({
+            mentor_name: '',
+            exam_date: '',
+            exam_time: '',
+            exam_venue: '',
+            project_title: '',
+            work_done: '',
+            report_quality_marks: { outOf: 20, scored: 0 },
+            oral_presentation_marks: { outOf: 20, scored: 0 },
+            work_quality_marks: { outOf: 15, scored: 0 },
+            work_understanding_marks: { outOf: 15, scored: 0 },
+            periodic_interaction_marks: { outOf: 5, scored: 0 },
+            total_marks: { outOf: 75, scored: 0 },
+            examiner_specific_remarks: '',
+            pdf_buffer: Buffer.from(''), // Example of an empty buffer
+            student_sign: '',
+            is_signed: false
+        });
+        student = {...student, mentor, role: 'STUDENT',internships: student.internships.map(internship => ({
+            ...internship,
+            evaluation: [ 
+                {...evaluationStructure()}, // First evaluation
+                {...evaluationStructure()}  // Second evaluation
+            ]
+        }))}
+        
         const dates = calculateWeeks(student.internships[0].startDate, student.internships[0].endDate);
         student.internships[0].duration_in_weeks = dates.numberOfWeeks.toString();
         for(let i = 1; i<=dates.numberOfWeeks; i++){
@@ -273,6 +297,66 @@ const approveStudent = async (req, res) => {
     }
 };
 
+const addWorkDone = async (req, res) => {
+    try {
+
+        var taskUpdate = req.body;
+        const { sub_id, work_done, student_sign, evaluation } = taskUpdate;
+        try{
+            if(evaluation=="ISE"){
+            const updatedStudent = await Student.findOneAndUpdate(
+                {
+                  sub_id,
+                },
+                {
+                  $set: {
+                    'internships.0.evaluation.0.work_done': work_done.trim(),
+                    'internships.0.evaluation.0.student_sign': student_sign.trim(),
+                    'internships.0.evaluation.0.is_signed': true
+                  },
+                },
+                {
+                  new: true,
+                }
+            );
+            if(updatedStudent){
+                res.status(200).json({ success: true, msg: "Add Progress Route" });
+            } else{
+                res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}`});
+            }}
+            else if(evaluation=="ESE"){
+                const updatedStudent = await Student.findOneAndUpdate(
+                    {
+                      sub_id,
+                    },
+                    {
+                      $set: {
+                        'internships.0.evaluation.1.work_done': work_done.trim(),
+                        'internships.0.evaluation.1.student_sign': student_sign.trim(),
+                        'internships.0.evaluation.1.is_signed': true
+                      },
+                    },
+                    {
+                      new: true,
+                    }
+                );
+                if(updatedStudent){
+                    res.status(200).json({ success: true, msg: "Add Progress Route" });
+                } else{
+                    res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}`});
+                }}
+        } catch (error) {
+            console.error(`Error: ${error.message}`);
+            res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message} `});
+        }
+
+    } catch (error) {
+        console.error(`Error: ${error.message}`);
+        res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}`});
+    }
+
+};
+
 const uploadCertificate = async (req, res) => {
 
     try {
@@ -321,5 +405,6 @@ module.exports = {
     getOneStudent,
     approveStudent,
     registerStudent,
+    addWorkDone,
     uploadCertificate
 };

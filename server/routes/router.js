@@ -30,6 +30,7 @@ router.post("/student/progress/add", controllerStudent.addWeeklyProgress);
 router.post("/anyuser", controllerOAuth.getUserWithAccessToken);
 router.post("/student/find", controllerStudent.getOneStudent);
 router.post("/student/approve", controllerStudent.approveStudent);
+router.post("/student/evaluation/add", controllerStudent.addWorkDone);
 router.post("/student/certificate/upload", upload.single('file'), controllerStudent.uploadCertificate);
 router.post("/mentor/comment/add", controllerMentor.addPrivateComments);
 router.post("/mentor/student/evaluation", controllerMentor.studentEvaluation);

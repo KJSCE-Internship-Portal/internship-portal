@@ -6,6 +6,7 @@ import axios from 'axios';
 import { url } from '../../Global/URL';
 import showToast from '../../Global/Toast';
 import { useToast } from '@chakra-ui/react';
+import { color } from "framer-motion";
 
 const Progress = () => {
     const [startdate, setStartDate] = useState('');
@@ -103,15 +104,14 @@ const Progress = () => {
                     <div class="flex justify-between items-center mb-6">
                         <h2 class={`text-lg lg:text-2xl font-bold text-${colors.font}`}>Task:</h2>
                     </div>
-                    <div class={`py-2 px-4 mb-4 bg-${colors.secondary} rounded-lg rounded-t-lg border border-${colors.font}`}>
+                    <div class={`py-2 px-4 mb-4 bg-${colors.secondary} rounded-lg rounded-t-lg border border-${colors.accent} text-${colors.font}`}>
                         <textarea id="comment" rows="6" value={task}
-                            style={{ backgroundColor: colors.secondary2 }}
+                            style={{ backgroundColor: colors.secondary2, color: colors.font}}
                             onChange={(e) => setTask(e.target.value)}
                             class="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-500"
                             placeholder="Write a comment..." required></textarea>
                     </div>
                     <button type="submit" class="text-white bg-red-400 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Submit Data</button>
-
                 </form>
             </div>
         </section>

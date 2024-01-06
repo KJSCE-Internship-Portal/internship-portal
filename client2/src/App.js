@@ -29,6 +29,8 @@ import ViewCoord from './pages/Admin/viewcoordinator.jsx';
 import StudentProfile from './pages/Student/Profile.jsx';
 import CertificateSubmission from './pages/Student/Certificate.jsx';
 import StatWeek from './pages/Faculty_mentor/statweek.jsx';
+import WorkDoneISE from './pages/Student/WorkDoneISE.jsx';
+import WorkDoneESE from './pages/Student/WorkDoneESE.jsx';
 
 //importing Functions 
 import { setAuthToken, isAuthenticated, getUserDetails } from './Global/authUtils';
@@ -121,6 +123,14 @@ function App() {
                 <Route
                   path="/student/progress/stat/weeks"
                   element={<PrivateRoute element={<StatWeek />} />}
+                />
+                <Route
+                  path="/student/ise/workdone"
+                  element={<PrivateRoute element={<WorkDoneISE />} />}
+                />
+                <Route
+                  path="/student/ese/workdone"
+                  element={<PrivateRoute element={<WorkDoneESE />} />}
                 />
                 <Route
                   path="/mentor/home"

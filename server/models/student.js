@@ -45,8 +45,7 @@ const studentSchema = new mongoose.Schema({
     },
     sem: {
         type: String,
-        default: '8',
-        required: false
+        required: [true, "Semester is required"]
     },
     contact_no: {
         type: String,
@@ -75,6 +74,10 @@ const studentSchema = new mongoose.Schema({
     internships: [
         {   
             company: {
+                type: String,
+                required: true
+            },
+            job_title: {
                 type: String,
                 required: true
             },
@@ -117,15 +120,15 @@ const studentSchema = new mongoose.Schema({
                 {
                     mentor_name: {
                         type: String,
-                        required: [true, "Mentor Name is required"]
+                        required: false
                     },
                     exam_date: {
                         type: Date,
-                        required: [true, "date is required"]
+                        required: false
                     },
                     exam_time: {
                         type: String,
-                        required: [true, 'Time is required']
+                        required: false
                     },
                     exam_venue: {
                         type: String,
@@ -133,11 +136,11 @@ const studentSchema = new mongoose.Schema({
                     },
                     project_title: {
                         type: String,
-                        required: [true, 'Job title is required']
+                        required: false
                     },
                    work_done: {
                         type: String,
-                        required: [true, 'Work Done is required']
+                        required: false
                     },
                     report_quality_marks: {
                         outOf: {
@@ -211,7 +214,11 @@ const studentSchema = new mongoose.Schema({
                     },
                     pdf_buffer: {
                         type: Buffer,
-                        required: true
+                        required: false
+                    },
+                    student_sign: {
+                        type: String,
+                        required: false
                     },
                     is_signed: {
                         type: Boolean,

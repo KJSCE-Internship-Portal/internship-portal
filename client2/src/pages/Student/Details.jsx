@@ -19,7 +19,8 @@ const Details = () => {
     const [division, setDivision] = useState('');
     const [rollno, setRollNo] = useState('');
     const [batch, setBatch] = useState('');
-    // const [facultyMentor, setFacultyMentor] = useState('');
+    const [sem, setSem] = useState('');
+    const [jobTitle, setJobTitle] = useState('');
     const [jobDescription, setJobDescription] = useState('');
     const [stipend, setStipend] = useState('');
     const toast = useToast();
@@ -51,9 +52,11 @@ const Details = () => {
                 department,
                 rollno,
                 batch,
+                sem,
                 contact_no: phone,
                 internships:[{
                     company,
+                    job_title: jobTitle,
                     job_description: jobDescription,
                     startDate: startdate,
                     endDate: enddate,
@@ -136,7 +139,8 @@ const Details = () => {
                                 required
                             />
                         </div>
-                        <div className="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
+                        <div className="flex flex-wrap justify-between">
+                        <div className="mr-4 flex-1 py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
                             <label for="dept" class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-black">Department<span class="text-red-500">*</span></label>
                             <select class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 name="department"
@@ -145,7 +149,7 @@ const Details = () => {
                                 required
                             >
                                 <option value="" disabled>Select Department</option>
-                                <option value="Computer Engineering">CS</option>
+                                <option value="Computer Engineering">COMPS</option>
                                 <option value="Information Technology">IT</option>
                                 <option value="Mechanical Engineering">MECH</option>
                                 <option value="Electronics & Telecommunication Engineering">EXTC</option>
@@ -155,6 +159,20 @@ const Details = () => {
                                 <option value="Artificial Intelligence & Data Science" hidden>AIDS</option>
                                 <option value="Computer & Communication Engineering" hidden>CCE</option>
                             </select>
+                        </div>
+                        <div className="flex-1 py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
+                                <label for="batch" className="text-lg lg:text-2xl font-bold text-gray-900 dark:text-black">Semester<span className="text-red-500">*</span></label>
+                                <select class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                name="sem"
+                                value={sem}
+                                onChange={(e) => setSem(e.target.value)}
+                                required
+                            >
+                                <option value="" disabled>Select Semester</option>
+                                <option value="7" hidden>7</option>
+                                <option value="8">8</option>
+                            </select>
+                            </div>
                         </div>
                         <div className="flex flex-wrap justify-between">
                             <div className="mr-4 flex-1 py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
@@ -236,16 +254,6 @@ const Details = () => {
                                 </div>
                             </div>
                         </div>
-                        {/* <div class="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-800 dark:border-gray-700">
-                            <label for="fmentor" class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-white">Faculty Mentor<span class="text-red-500">*</span></label>
-                            <input class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                type="text"
-                                name="fmentor"
-                                value={facultyMentor}
-                                onChange={(e) => setFacultyMentor(e.target.value)}
-                                required
-                            />
-                        </div> */}
                         <div class="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
                             <label for="cmentor" class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-black">Company Mentor<span class="text-red-500">*</span></label>
                             <input class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -253,6 +261,16 @@ const Details = () => {
                                 name="mentor"
                                 value={mentor}
                                 onChange={(e) => setMentor(e.target.value)}
+                                required
+                            />
+                        </div>
+                        <div class="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
+                        <label for="jobtitle" class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-black">Job Title<span class="text-red-500">*</span></label>
+                        <input class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                type="text"
+                                name="jobTitle"
+                                value={jobTitle}
+                                onChange={(e) => setJobTitle(e.target.value)}
                                 required
                             />
                         </div>
