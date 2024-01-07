@@ -25,7 +25,8 @@ import { url } from '../../Global/URL';
 const Progress = () => {
     const [name, setName] = useState('');
     const [mentorName, setMentorName] = useState('');
-    const [rollNo, setRollNo] = useState('')
+    const [rollNo, setRollNo] = useState('');
+    const [department, setDepartment] = useState('');
     const [date, setDate] = useState('');
     const [time, setTime] = useState('');
     const [venue, setVenue] = useState('');
@@ -94,14 +95,17 @@ const Progress = () => {
             const response = await axios
                 .get(url + `/students/all?sub_id=${student_id}`);
             const student = response.data.data[0];
-            if (student.internships[0].evaluation.length > 0) {
+            if (student.internships[0].evaluation[0].total_marks > 0) {
                 setToFill(false);
             }
             if (student?.internships?.[0]?.evaluation?.[0]?.pdf_buffer !== undefined ) {
                 setPdfBuffer(student.internships[0].evaluation[0].pdf_buffer);
             }
+            setDepartment(student.department);
             setRollNo(student.rollno);
             setName(student.name);
+            setTitle(student.internships[0].job_title);
+            setWorkdone(student.internships[0].evaluation[0].work_done);
         } catch (error) {
             console.log(error);
         }
@@ -118,8 +122,8 @@ const Progress = () => {
             !validateMarks(qreport, 20) ||
             !validateMarks(oral, 20) ||
             !validateMarks(qwork, 15) ||
-            !validateMarks(understanding, 15) ||
-            !validateMarks(interaction, 5)
+            !validateMarks(understanding, 10) ||
+            !validateMarks(interaction, 10)
         ) {
             showToast(
                 toast,
@@ -131,7 +135,8 @@ const Progress = () => {
         }
         try {
             const data = {
-                evaluation: 'ISE',
+                department_name: department,
+                evaluation_name: 'ISE',
                 student_rollno: rollNo,
                 student_name: name,
                 mentor_name: mentorName,
@@ -251,7 +256,7 @@ const Progress = () => {
                             type="text"
                             name="title"
                             value={title}
-                            onChange={(e) => setTitle(e.target.value)}
+                            disabled
                             required
                         />
                     </div>
@@ -260,7 +265,7 @@ const Progress = () => {
                     </div>
                     <div class="py-2 px-4 mb-4 text-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-500 dark:border-gray-700">
                         <textarea id="comment" rows="6" value={workdone}
-                            onChange={(e) => setWorkdone(e.target.value)}
+                            disabled
                             class="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-500"
                             placeholder="Work done..." required></textarea>
                     </div>
@@ -305,7 +310,7 @@ const Progress = () => {
                         />
                     </div>
                     <div class="flex justify-between items-center mb-2">
-                        <h2 class={`text-md md:text-xl text-${colors.font}`}>Understanding of Work(15)</h2>
+                        <h2 class={`text-md md:text-xl text-${colors.font}`}>Understanding of Work(10)</h2>
                     </div>
                     <div class="py-2 px-4 mb-4 text-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-500 dark:border-gray-700">
                         <input class="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-500"
@@ -317,7 +322,7 @@ const Progress = () => {
                         />
                     </div>
                     <div class="flex justify-between items-center mb-2">
-                        <h2 class={`text-md md:text-xl text-${colors.font}`}>Periodic Interaction with mentor(05)</h2>
+                        <h2 class={`text-md md:text-xl text-${colors.font}`}>Periodic Interaction with mentor(10)</h2>
                     </div>
                     <div class="py-2 px-4 mb-4 text-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-500 dark:border-gray-700">
                         <input class="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-500"

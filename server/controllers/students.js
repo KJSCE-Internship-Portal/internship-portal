@@ -75,8 +75,8 @@ const registerStudent = async (req, res) => {
             report_quality_marks: { outOf: 20, scored: 0 },
             oral_presentation_marks: { outOf: 20, scored: 0 },
             work_quality_marks: { outOf: 15, scored: 0 },
-            work_understanding_marks: { outOf: 15, scored: 0 },
-            periodic_interaction_marks: { outOf: 5, scored: 0 },
+            work_understanding_marks: { outOf: 10, scored: 0 },
+            periodic_interaction_marks: { outOf: 10, scored: 0 },
             total_marks: { outOf: 75, scored: 0 },
             examiner_specific_remarks: '',
             pdf_buffer: Buffer.from(''), // Example of an empty buffer
@@ -311,8 +311,7 @@ const addWorkDone = async (req, res) => {
                 {
                   $set: {
                     'internships.0.evaluation.0.work_done': work_done.trim(),
-                    'internships.0.evaluation.0.student_sign': student_sign.trim(),
-                    'internships.0.evaluation.0.is_signed': true
+                    'internships.0.evaluation.0.student_sign': student_sign.trim()
                   },
                 },
                 {

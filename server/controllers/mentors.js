@@ -76,26 +76,28 @@ const editPrivateComments = async (req, res) => {
 const studentEvaluation = async (req, res) => {
     try {
         const evaluateDetails = req.body;
-        // console.log(evaluateDetails);
-        var inputFilePath;
-        if(evaluateDetails.evaluation == 'ISE') {
-            inputFilePath = './assets/ISE-Editable-Template.pdf';
-        }
-        else if(evaluateDetails.evaluation == 'ESE') {
-            inputFilePath = './assets/ESE-Editable-Template.pdf';
-        }
+        console.log(evaluateDetails);
+        inputFilePath='./assets/SVU Sem Long Evaluation Scheme.pdf';
+        // if(evaluateDetails.evaluation == 'ISE') {
+        //     inputFilePath = './assets/ISE-Editable-Template.pdf';
+        // }
+        // else if(evaluateDetails.evaluation == 'ESE') {
+        //     inputFilePath = './assets/ESE-Editable-Template.pdf';
+        // }
         
         const pdfBytes = await readFile(inputFilePath);
         const pdfDoc = await PDFDocument.load(pdfBytes);
-        const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
+        // const calibri = await pdfDoc.embedFont(StandardFonts.Calibri);
         const form = pdfDoc.getForm();
 
+        form.getTextField('department_name').setText(evaluateDetails.department_name);
+        form.getTextField('evaluation_name').setText(evaluateDetails.evaluation_name);
         form.getTextField('student_rollno').setText(evaluateDetails.student_rollno);
         form.getTextField('student_name').setText(evaluateDetails.student_name);
         form.getTextField('exam_date').setText(evaluateDetails.exam_date);
         form.getTextField('exam_time').setText(evaluateDetails.exam_time);
         form.getTextField('exam_venue').setText(evaluateDetails.exam_venue);
-        form.getTextField('project_title').setText(evaluateDetails.project_title);
+        form.getTextField('internship_title').setText(evaluateDetails.project_title);
         form.getTextField('work_done').setText(evaluateDetails.work_done);
         form.getTextField('report_quality_marks').setText(evaluateDetails.report_quality_marks.scored);
         form.getTextField('oral_presentation_marks').setText(evaluateDetails.oral_presentation_marks.scored);
@@ -131,8 +133,8 @@ const studentEvaluation = async (req, res) => {
         setRadioSelection(reportQualityMarks, 20, 'report_quality_radio');
         setRadioSelection(oralPresentationMarks, 20, 'oral_presentation_radio');
         setRadioSelection(workQualityMarks, 15, 'work_quality_radio');
-        setRadioSelection(workUnderstandingMarks, 15, 'work_understanding_radio');
-        setRadioSelection(periodicInteractionMarks, 5, 'periodic_interaction_radio');
+        setRadioSelection(workUnderstandingMarks, 10, 'work_understanding_radio');
+        setRadioSelection(periodicInteractionMarks, 10, 'periodic_interaction_radio');
 
         form.getTextField('examiner_specific_remarks').setText(evaluateDetails.examiner_specific_remarks);
 
@@ -140,44 +142,45 @@ const studentEvaluation = async (req, res) => {
             field.enableReadOnly();
         }
 
-        delete evaluateDetails.evaluation;
+        delete evaluateDetails.evaluation_name;
+        delete evaluateDetails.department_name;
         const rollno = evaluateDetails.student_rollno;
         delete evaluateDetails.student_rollno;
         delete evaluateDetails.student_name;
 
         evaluateDetails.total_marks = sumOfMarks;
 
-        form.updateFieldAppearances(timesRomanFont);
+        // form.updateFieldAppearances(calibri);
         const modifiedPdfBytes = await pdfDoc.save();
         const finalPdfBuffer = Buffer.from(modifiedPdfBytes);
         evaluateDetails.pdf_buffer = finalPdfBuffer;
 
-        try {
-            const updatedStudent = await Student.findOneAndUpdate(
-                {
-                  rollno
-                },
-                {
-                  $push: {
-                    'internships.0.evaluation': evaluateDetails,
-                  },
-                },
-                {
-                  new: true,
-                }
-            );
-            if (updatedStudent) {
+        // try {
+        //     const updatedStudent = await Student.findOneAndUpdate(
+        //         {
+        //           rollno
+        //         },
+        //         {
+        //           $push: {
+        //             'internships.0.evaluation': evaluateDetails,
+        //           },
+        //         },
+        //         {
+        //           new: true,
+        //         }
+        //     );
+        //     if (updatedStudent) {
                 res.setHeader('Content-Type', 'application/pdf');
                 const filename = `${evaluateDetails.student_rollno}_${evaluateDetails.evaluation}_Evaluation.pdf`;
                 res.setHeader('Content-Disposition', `inline; filename="${filename}"`);
                 res.send(finalPdfBuffer);
-            } else{
-                return res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
-            }
-        } catch (error) {
-            console.error(`Error: ${error.message}`);
-            return res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
-        }
+        //     } else{
+        //         return res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
+        //     }
+        // } catch (error) {
+        //     console.error(`Error: ${error.message}`);
+        //     return res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
+        // }
 
     } catch (error) {
         console.error(`Error: ${error.message}`);
