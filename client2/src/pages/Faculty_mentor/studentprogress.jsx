@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useEffect } from 'react';
 import { useTheme } from '../../Global/ThemeContext';
 import { useParams } from 'react-router-dom';
+import {useDisclosure, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton } from "@chakra-ui/react";
 import showToast from '../../Global/Toast';
 import { useToast } from '@chakra-ui/react';
 import StudentDrawer from './studentdrawer.jsx';
@@ -104,6 +105,9 @@ const Week = () => {
   const [esePdfBuffer, setESEPdfBuffer] = useState(null);
   const [isCertificateSubmitted, setIsCertificateSubmitted] = useState(false);
   const [certificatePdfBuffer, setCertificatePdfBuffer] = useState(null);
+  const [modalData, setModalData] = useState([]);
+  const [modalType, setModalType] = useState('');
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const viewUser = (studentData) => {
     setStudentData(studentData);
@@ -214,11 +218,16 @@ const Week = () => {
   };
 
   const getStatSubmission = async (weekData) => {
+    
     if(weekData.length == 0) {
       showToast(toast, 'Error', 'error', 'No weeks are currently to be shown');
     } else {
       console.log('entered');
       console.log(weekData);
+      setModalData(weekData);
+      // setModalType(submissionType);
+      onOpen();
+      
       // localStorage.setItem('weekData', weekData);
       // window.location.href = 'http://localhost:3000/student/progress/stat/weeks';
     }
@@ -278,6 +287,27 @@ const Week = () => {
 
   return (
     <>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Week Details</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            {modalData.map((week, index) => (
+              <div key={index} className={`mb-4 p-3 border border-${colors.accent}`}>
+                <h2>Week: {week.week}</h2>
+                <p>Start Date: {(week.startDate).substring(0, 10)}</p>
+                <p>End Date: {(week.endDate).substring(0, 10)}</p>
+              </div>
+            ))}
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={onClose}>
+              Close
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
       <div className={`bg-${colors.secondary2} flex flex-col font-roboto items-center justify-start mx-auto w-full max-h-full py-6 px-4`}>
         {/* Mentor */}
         <div className={`flex flex-col gap-3 h-[100px] md:h-auto md:items-center max-w-[1262px] mx-auto pt-4 md:px-5 w-full mb-3.5`}>
