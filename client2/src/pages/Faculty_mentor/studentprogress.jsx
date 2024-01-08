@@ -43,7 +43,13 @@ const Week = () => {
   }
 
   function generateWeekURL(week) {
-    if (week.status == 'Submitted') {
+    console.log(week);
+    if (week.submitted == true) {
+      localStorage.setItem('week', week.week);
+      const weekURL = 'http://localhost:3000/mentor/studentprogress/feedback';
+      window.location.href = weekURL;
+    }
+    else if (week.status == 'Submitted') {
       localStorage.setItem('week', week.week);
       const weekURL = 'http://localhost:3000/mentor/studentprogress/feedback';
       window.location.href = weekURL;
@@ -294,11 +300,14 @@ const Week = () => {
           <ModalCloseButton />
           <ModalBody>
             {modalData.map((week, index) => (
-              <div key={index} className={`mb-4 p-3 border border-${colors.accent}`}>
+              <Card key={index} className="mb-3">
+              <button className={`p-3 border border-${colors.accent} rounded-md w-full relative transform transition-transform hover:translate-y-[-2px] hover:shadow-md`}
+              onClick={() => generateWeekURL(week)}>
                 <h2>Week: {week.week}</h2>
                 <p>Start Date: {(week.startDate).substring(0, 10)}</p>
                 <p>End Date: {(week.endDate).substring(0, 10)}</p>
-              </div>
+                </button>
+              </Card>
             ))}
           </ModalBody>
           <ModalFooter>
@@ -309,7 +318,6 @@ const Week = () => {
         </ModalContent>
       </Modal>
       <div className={`bg-${colors.secondary2} flex flex-col font-roboto items-center justify-start mx-auto w-full max-h-full py-6 px-4`}>
-        {/* Mentor */}
         <div className={`flex flex-col gap-3 h-[100px] md:h-auto md:items-center max-w-[1262px] mx-auto pt-4 md:px-5 w-full mb-3.5`}>
           <div className="items-start">
             <text
@@ -344,7 +352,6 @@ const Week = () => {
             </text>
           </div>
         </div>
-        {/* Mentor */}
         <div className="flex md:flex-col flex-row gap-3 h-[100px] md:h-auto items-center justify-between max-w-[1262px] mx-auto pt-4 md:px-5 w-full mb-3.5">
           <div className="flex flex-row justify-start w-full">
             <Avatar size="md" bg='red.700' color="white" name={studentName} src={student_profile_url} className="h-10 w-10 mr-2"></Avatar>
