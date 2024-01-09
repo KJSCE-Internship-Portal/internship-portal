@@ -127,8 +127,8 @@ const AllStudentsInDepartment = () => {
                 End_Date: formatDate(student.internships[0].endDate),
                 Total_Weeks: (student.internships[0].duration_in_weeks).toString(),
                 Submitted_Weeks: c.toString() + "/" + (student.internships[0].duration_in_weeks).toString(),
-                ISE_evaluation_status: student.internships[0].completion.length === 1 ? 'Completed' : 'Pending',
-                ESE_evaluation_status: student.internships[0].completion.length === 2 ? 'Completed' : 'Pending',
+                ISE_evaluation_status: (student.internships[0].completion.length === 1 && student.internships[0].completion[0].is_signed) ? 'Completed' : 'Pending',
+                ESE_evaluation_status: (student.internships[0].completion.length === 2 && student.internships[0].completion[1].is_signed) ? 'Completed' : 'Pending',
               }
               complete_data.push(excel_obj);
             }
