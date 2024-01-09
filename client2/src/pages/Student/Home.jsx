@@ -118,7 +118,7 @@ const FramePage = () => {
   const [sign2, setSign2] = useState(null);
 
   const handleSubmit1 = async () => {
-    if(sign1==true){
+    if(sign1!=''){
       window.location.href="http://localhost:3000/student/ise/view";
     }
     else{
@@ -127,7 +127,7 @@ const FramePage = () => {
   }
 
   const handleSubmit2 = async () => {
-    if(sign2==true){
+    if(sign2!=''){
       window.location.href="http://localhost:3000/student/ese/view";
     }
     else{
@@ -143,8 +143,8 @@ const FramePage = () => {
         setName(userInfo.name);
         setEmail(userInfo.email);
         setProfilePicture(userInfo.profile_picture_url);
-        setSign1(userInfo.internships[0].evaluation[0].is_signed)
-        setSign2(userInfo.internships[0].evaluation[1].is_signed)
+        setSign1(userInfo.internships[0].evaluation[0].student_sign)
+        setSign2(userInfo.internships[0].evaluation[1].student_sign)
         if (userInfo.internships[0].progress && userInfo.internships[0].progress.length > 0) {
           setOnTimeSubmission(0);
           setNoSubmission(0);

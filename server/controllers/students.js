@@ -332,7 +332,6 @@ const addWorkDone = async (req, res) => {
                       $set: {
                         'internships.0.evaluation.1.work_done': work_done.trim(),
                         'internships.0.evaluation.1.student_sign': student_sign.trim(),
-                        'internships.0.evaluation.1.is_signed': true
                       },
                     },
                     {
