@@ -121,7 +121,7 @@ const addMentor = async (req, res) => {
     try {
         const mentor = new Mentor(req.body);
         var existing_mentor = await Mentor.findOne({ email: req.body.email }).exec();
-        var stu = await Student.findOneAndUpdate({email: req.body.email}, {isActive: false, isApproved: false},{ new: true });
+        var stu = await Student.findOne({email: req.body.email}).exec();
         if (existing_mentor) {
             return res.status(201).json({ success: false, msg: `Mentor Already Exists` });
         } else if (!stu && !existing_mentor){
@@ -137,6 +137,31 @@ const addMentor = async (req, res) => {
     }
 
 };
+
+const addMentors = async (req, res) => {
+
+  try {
+      const mentors = req.body;
+      var count = 0;
+      for (const mentorData of mentors) {
+          
+          const existing_mentor = await Mentor.findOne({ email: mentorData.email }).exec();
+          // const stu = await Student.findOneAndUpdate({ email: mentorData.email }, { isActive: false, isApproved: false }, { new: true });
+          var stu = await Student.findOne({email: req.body.email}).exec();
+
+          if (!stu && !existing_mentor) {
+              const mentor = new Mentor(mentorData);
+              await mentor.save();
+              count++;
+          } 
+      }
+      return res.status(200).json({ success: true, msg: `${count} Mentors registered !` });
+  } catch (error) {
+      console.error(`Error: ${error.message}`);
+      res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
+  }
+};
+
 
 const getStatisticsCoordinator = async (req,res) => {
     try {
@@ -411,6 +436,7 @@ module.exports = {
     loginCoordinator,
     getAllCoordinators,
     addMentor,
+    addMentors,
     assignStudent,
     removeAssignedStudent,
     getStatisticsCoordinator

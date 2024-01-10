@@ -73,18 +73,12 @@ const callbackCheck = async (req, res) => {
         if (found) {
             if (found._doc.isApproved) {
                 var updatedUser = await Student.findOneAndUpdate(
-                    {
-                    email
-                    },
-                    {
-                    $set: {
+                    {email},
+                    { $set: {
                         'sub_id': sub_id,
                         'profile_picture_url': picture,
-                    },
-                    },
-                    {
-                    new: true,
-                    }
+                    },},
+                    {new: true,}
                 );
                 if(!updatedUser){
                     updatedUser = await Mentor.findOneAndUpdate(
@@ -183,6 +177,15 @@ const getUserWithAccessToken = async (req, res) => {
         );
         const ticket = await oAuth2Client.verifyIdToken({ idToken: accessToken, audience: process.env.CLIENT_ID });
         const payload = ticket.getPayload();
+        console.log(payload);
+
+        const currentTimestamp = Date.now(); // current timestamp in milliseconds
+        const givenTimestampInSeconds = payload.exp; // the timestamp to compare in seconds
+        const givenTimestampInMilliseconds = givenTimestampInSeconds * 1000; // Convert given timestamp to milliseconds
+
+        if (currentTimestamp > givenTimestampInMilliseconds) {
+            return res.status(500).json({ success: false, msg: "Your Session Has Expired" });
+        }
 
         const sub_id = payload['sub'];
         const email = payload['email'];
@@ -190,6 +193,11 @@ const getUserWithAccessToken = async (req, res) => {
 
         if (!user) {
             return res.status(200).json({ success: false, msg: `User Doesn't Exist` });
+        }
+
+        const flag = user._doc.isActive;
+        if (!flag){
+            return res.status(500).json({ success: false, msg: "Account is Deactivated" });
         }
 
         return res.status(200).json({ success: true, msg: user });
