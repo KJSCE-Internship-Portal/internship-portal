@@ -23,6 +23,7 @@ import { useToast } from '@chakra-ui/react';
 import { url } from '../../../../Global/URL';
 import axios from 'axios';
 import { getUserDetails } from '../../../../Global/authUtils';
+import AddMentors from './MentorCSV/AddMentors';
 
 const RegisterMentor = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -156,6 +157,9 @@ const RegisterMentor = () => {
                                     value={contactNo}
                                     onChange={(e) => setContactNo(e.target.value)}
                                 />
+                            </Box>
+                            <Box>
+                                <AddMentors/>
                             </Box>
 
                         </Stack>

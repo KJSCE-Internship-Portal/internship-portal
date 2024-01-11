@@ -141,7 +141,8 @@ const addMentor = async (req, res) => {
 const addMentors = async (req, res) => {
 
   try {
-      const mentors = req.body;
+      const mentors = req.body.csvData;
+      const department = req.body.department;
       var count = 0;
       for (const mentorData of mentors) {
           
@@ -150,12 +151,12 @@ const addMentors = async (req, res) => {
           var stu = await Student.findOne({email: req.body.email}).exec();
 
           if (!stu && !existing_mentor) {
-              const mentor = new Mentor(mentorData);
+              const mentor = new Mentor({...mentorData, department});
               await mentor.save();
               count++;
           } 
       }
-      return res.status(200).json({ success: true, msg: `${count} Mentors registered !` });
+      return res.status(200).json({ success: count>0 ? true : false, msg: `${count} Mentors registered !` });
   } catch (error) {
       console.error(`Error: ${error.message}`);
       res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
