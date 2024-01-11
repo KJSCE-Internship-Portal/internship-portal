@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { useTheme } from '../../Global/ThemeContext';
 import showToast from '../../Global/Toast';
 import { useToast } from '@chakra-ui/react';
+import StudentDrawer from "../Faculty_mentor/studentdrawer";
 import {
   Card,
   CardHeader,
@@ -27,6 +28,14 @@ import { url } from '../../Global/URL';
 const FramePage = () => {
   const { theme: colors } = useTheme();
   const accessToken = localStorage.getItem('IMPaccessToken');
+
+  const openDrawer = () => {
+    setIsDrawerOpen(true);
+  };
+
+  const closeDrawer = () => {
+    setIsDrawerOpen(false);
+  };
 
   const getUser = async () => {
     try {
@@ -116,6 +125,8 @@ const FramePage = () => {
   const [certificatePdfBuffer, setCertificatePdfBuffer] = useState(null);
   const [sign1, setSign1] = useState(null);
   const [sign2, setSign2] = useState(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [studentData, setStudentData] = useState([]);
 
   const handleSubmit1 = async () => {
     if(sign1!=''){
@@ -145,6 +156,7 @@ const FramePage = () => {
         setProfilePicture(userInfo.profile_picture_url);
         setSign1(userInfo.internships[0].evaluation[0].student_sign)
         setSign2(userInfo.internships[0].evaluation[1].student_sign)
+        setStudentData(userInfo)
         if (userInfo.internships[0].progress && userInfo.internships[0].progress.length > 0) {
           setOnTimeSubmission(0);
           setNoSubmission(0);
@@ -272,8 +284,11 @@ const FramePage = () => {
                 {email}
               </text>
             </div>
+            <button className="bg-red-500 hover hover:bg-red-800 text-white px-4 py-2 rounded-md" onClick={openDrawer}>
+              View Profile</button>
           </div>
         </div>
+        <StudentDrawer isOpen={isDrawerOpen} onClose={closeDrawer} studentData={studentData} />
         <div className="md:pl-6 mx-10 md:mt-3 mb:5 md:pr-6 min-w-full">
           <Tooltip hasArrow label={`${weeksDone} out of ${totalWeeks} weeks done : ${progressValue}% Progress`} placement="top-end">
             <Progress hasStripe value={progressValue} colorScheme='red' isAnimated aria-valuenow={progressValue}/>

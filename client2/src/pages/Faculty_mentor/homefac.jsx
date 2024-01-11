@@ -7,6 +7,7 @@ import axios from 'axios';
 import { Card, CardHeader, CardBody, CardFooter, Avatar, AvatarBadge } from '@chakra-ui/react'
 import { url } from '../../Global/URL';
 import StudentDrawer from './studentdrawer.jsx';
+import MentorDrawer from '../Admin/mentordrawer.jsx';
 
 const InternshipPlatform = () => {
   const approveStudent = async (studentID, approval, mentorEmail) => {
@@ -55,6 +56,14 @@ const InternshipPlatform = () => {
     setIsDrawerOpen(false);
   };
 
+  const openDrawer2 = () => {
+    setIsDrawerOpen2(true);
+  };
+
+  const closeDrawer2 = () => {
+    setIsDrawerOpen2(false);
+  };
+
   const [mentorName, setMentorName] = useState('');
   const [mentorEmail, setMentorEmail] = useState('');
   const [mentor_profile_url, setMentorProfilePicture] = useState('');
@@ -64,6 +73,9 @@ const InternshipPlatform = () => {
   const [studentsForApproval, setStudentsForApproval] = useState([]);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [studentData, setStudentData] = useState([]);
+  const [isDrawerOpen2, setIsDrawerOpen2] = useState(false);
+  const [mentorData, setMentorData] = useState([]);
+
   const toast = useToast();
 
   const fetchData = async () => {
@@ -75,10 +87,10 @@ const InternshipPlatform = () => {
         setMentorEmail(userInfo.email);
         setMentorProfilePicture(userInfo.profile_picture_url);
         setMentorDepartment(userInfo.department);
+        setMentorData(userInfo);
         const response = await axios
           .get(url + `/students/all?mentor.email=${userInfo.email}`);
         const studentData = response.data.data;
-        console.log(studentData);
         setCurrentStudents([]);
         setStudentsForApproval([]);
         studentData.forEach((student) => {
@@ -162,9 +174,11 @@ const InternshipPlatform = () => {
             <h1 className={`text-base text-${colors.font} w-full font-semibold`}>{mentorName}</h1>
             <p className={`text-${colors.font} text-xs w-full`}>{mentorEmail}</p>
           </div>
+          <button className="bg-red-500 hover hover:bg-red-800 text-white px-4 py-2 rounded-md" onClick={openDrawer2}>
+              View Profile</button>
         </div>
       </div>
-
+      <MentorDrawer isOpen={isDrawerOpen2} onClose={closeDrawer2} mentorData={mentorData} />
       <h1 className={`text-base text-${colors.font} w-full text-center font-bold`}>{mentorDepartment}</h1>
       {/* <h1>{currentStudents[0]}</h1> */}
       <div className="flex-grow p-4 min-w-full">

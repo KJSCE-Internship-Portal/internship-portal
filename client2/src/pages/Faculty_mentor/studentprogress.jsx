@@ -142,8 +142,6 @@ const Week = () => {
           .get(url + `/students/all?sub_id=${student_id}`);
         const studentData = response.data.data;
         const currentstudent = studentData[0]
-        console.log(response)
-        console.log(currentstudent)
         setStudentData(currentstudent)
         const student = response.data.data[0];
         setStudentName(student.name);
