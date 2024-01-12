@@ -80,8 +80,17 @@ export default function StudentNotification() {
   const renderNotifications = () => {
     return notifications.map((notification) => (
       <div key={notification._id} className="my-3">
+        <div className="flex justify-between">
+        <div>
         <p style={{ color: colors.heading1, fontSize: '18px' }} className={`text-sm font-medium`}>{notification.sender}</p>
         <p style={{ color: colors.font, fontSize: '16px' }} className={`text-xs`}>{notification.content}</p>
+        </div>
+        <div>
+          <p style={{ color: colors.font, fontSize: '14px' }} className={`text-xs`}>
+            {new Date(notification.postedAt).toLocaleString()}
+          </p>
+        </div>
+        </div>
         <hr className="my-2 border-t-2 border-gray-300" />
       </div>
     ));
