@@ -21,6 +21,7 @@ const Progress = () => {
     const { theme: colors } = useTheme();
 
     const accessToken = localStorage.getItem('IMPaccessToken');
+    const [charCount, setCharCount] = useState(0);
 
     const getUser = async () => {
         try {
@@ -60,6 +61,10 @@ const Progress = () => {
             console.error('Error occurred while submitting data:', error);
         }
     };
+
+
+
+
     const fetchData = async () => {
         try {
             const userInfo = await getUser();
@@ -107,9 +112,13 @@ const Progress = () => {
                     <div class={`py-2 px-4 mb-4 bg-${colors.secondary} rounded-lg rounded-t-lg border border-${colors.accent} text-${colors.font}`}>
                         <textarea id="comment" rows="6" value={task}
                             style={{ backgroundColor: colors.secondary2, color: colors.font}}
-                            onChange={(e) => setTask(e.target.value)}
+                            onChange={(e) => {setTask(e.target.value);
+                            setCharCount(e.target.value.length);}}
+                            maxLength={1000}
+
                             class="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-500"
                             placeholder="Write a comment..." required></textarea>
+                            <p>Character count: {charCount}/1000</p>
                     </div>
                     <button type="submit" class="text-white bg-red-400 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Submit Data</button>
                 </form>

@@ -13,6 +13,7 @@ const Work = () => {
     const {theme:colors} = useTheme();
     const accessToken = localStorage.getItem('IMPaccessToken');
     const toast = useToast();
+    const [charCount, setCharCount] = useState(0);
 
     const getUser = async () => {
         try {
@@ -58,6 +59,7 @@ const Work = () => {
             console.log(error)
         }
     }
+    
 
     useEffect(() => {
         fetchData();
@@ -76,9 +78,12 @@ const Work = () => {
             <div class={`py-2 px-4 mb-4 bg-${colors.secondary} rounded-lg rounded-t-lg border border-${colors.accent} text-${colors.font}`}>
                 <textarea id="comment" rows="6" value={workDone}
                     style={{ backgroundColor: colors.secondary2, color: colors.font}}
-                    onChange={(e) => setWorkDone(e.target.value)}
+                    onChange={(e) => {setWorkDone(e.target.value);
+                        setCharCount(e.target.value.length);}}
+                        maxLength={5000}
                     class="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-500"
                     placeholder="Write you work done..." required></textarea>
+                    <p>Character count: {charCount}/5000</p>
             </div>
             <div class="flex justify-between items-center mb-3">
                 <h2 class={`text-lg lg:text-2xl font-bold text-${colors.font}`}>Enter your full name as your Signature for attendance:</h2>
