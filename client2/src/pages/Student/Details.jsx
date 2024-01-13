@@ -5,6 +5,7 @@ import { Avatar, AvatarBadge } from '@chakra-ui/react';
 import {url} from '../../Global/URL';
 import showToast from '../../Global/Toast';
 import { useToast } from '@chakra-ui/react';
+import Alert from '../../components/Alert/alert';
 
 
 const Details = () => {
@@ -23,6 +24,7 @@ const Details = () => {
     const [jobTitle, setJobTitle] = useState('');
     const [jobDescription, setJobDescription] = useState('');
     const [stipend, setStipend] = useState('');
+    const [showDataModal, setshowDataModal] = useState(false);
     const toast = useToast();
 
     const location = useLocation();
@@ -93,7 +95,10 @@ const Details = () => {
         <section class="bg-white dark:bg-gray-300 py-8 lg:py-16 antialiased">
             <div class="max-w-3xl mx-auto px-10">
                 <div className="max-w-2xl mx-auto">
-                    <form className="w-full max-w-2xl mx-auto" onSubmit={handleSubmit}>
+                    <form className="w-full max-w-2xl mx-auto" onSubmit={(e) => {
+                                                            e.preventDefault();
+                                                            setshowDataModal(true);
+                                                        }}>
                         <div className="text-left mb-6 pb-5">
                             <h2 className="text-5xl font-bold text-gray-900 dark:text-black">
                                 Welcome
@@ -290,6 +295,14 @@ const Details = () => {
                                 onChange={(e) => setStipend(e.target.value)}
                             />
                         </div>
+                        {showDataModal && (
+                        <Alert
+                        onConfirm={handleSubmit}
+                        text={'Data Submission'}
+                        onClosec={() => setshowDataModal(false)}
+
+                        />)
+                        }
                         <button type="submit" className="text-white bg-red-400 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center mt-3">Submit Data</button>
                     </form>
                 </div>

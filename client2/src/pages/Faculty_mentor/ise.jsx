@@ -21,6 +21,8 @@ import {
 } from '@chakra-ui/react'
 import axios from 'axios';
 import { url } from '../../Global/URL';
+import Alert from '../../components/Alert/alert';
+
 
 const Progress = () => {
     const [name, setName] = useState('');
@@ -43,6 +45,8 @@ const Progress = () => {
     const [pdfBuffer, setPdfBuffer] = useState(null);
     const [scheduledDate, setScheduledDate] = useState('');
     const [studentSignature, setStudentSignature] = useState('');
+    const [showFileModal, setshowFileModal] = useState(false);
+    const [showDataModal, setshowDataModal] = useState(false);
     // const [studentData, setStudentData] = useState('');
     const { theme: colors } = useTheme();
     const toast = useToast();
@@ -85,6 +89,7 @@ const Progress = () => {
     }
 
     const handleFileSubmit = async (e) => {
+        e.preventDefault();
         const data = new FormData();
         data.append('rollno', rollNo);
         data.append('evaluation', 'ISE');
@@ -236,7 +241,10 @@ const Progress = () => {
                 <div class="flex justify-between items-center mb-6">
                     <h2 class={`text-xl lg:text-3xl font-bold text-${colors.font}`}>In Semester Evaluation:</h2>
                 </div>
-                <form class="mb-6" onSubmit={handleSubmit}>
+                <form class="mb-6" onSubmit={(e) => {
+    e.preventDefault();
+    setshowDataModal(true);
+}}>
                     <div class="flex justify-between items-center mb-6">
                         <h2 class={`text-lg lg:text-2xl font-bold text-${colors.font}`}>Name of Student:</h2>
                     </div>
@@ -392,6 +400,14 @@ const Progress = () => {
                             class="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-500"
                             placeholder="Write a remark..."></textarea>
                     </div>
+                    {showDataModal && (
+                        <Alert
+                        onConfirm={handleSubmit}
+                        text={'Data Submission'}
+                        onClosec={() => setshowDataModal(false)}
+
+                        />)
+                        }
                     <button type="submit" class="mt-5 text-white bg-red-400 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">
                         Submit Data
                     </button>
@@ -420,10 +436,19 @@ const Progress = () => {
                             type="file"
                             onChange={handleFileChange}
                             className="hidden"
+
                         />
                     </label>
                 </div>
-                <button type="submit" class="mt-5 text-white bg-red-400 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center" onClick={handleFileSubmit}>
+                {showFileModal && (
+                <Alert
+                onConfirm={handleFileSubmit}
+                text={'File Upload'}
+                onClosec={() => setshowFileModal(false)}
+
+                />
+      )}
+                <button type="submit" class="mt-5 text-white bg-red-400 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"onClick={()=>setshowFileModal(true)}>
                     Submit Data
                 </button>
             </div>
