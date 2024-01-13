@@ -126,6 +126,10 @@ const studentSchema = new mongoose.Schema({
                         type: Date,
                         required: false
                     },
+                    scheduled_date: {
+                        type: Date,
+                        required: false
+                    },
                     exam_time: {
                         type: String,
                         required: false
@@ -178,7 +182,7 @@ const studentSchema = new mongoose.Schema({
                     work_understanding_marks: {
                         outOf: {
                             type: Number,
-                            default: 15
+                            default: 10
                         },
                         scored: {
                             type: Number,
@@ -189,7 +193,7 @@ const studentSchema = new mongoose.Schema({
                     periodic_interaction_marks: {
                         outOf: {
                             type: Number,
-                            default: 5
+                            default: 10
                         },
                         scored: {
                             type: Number,

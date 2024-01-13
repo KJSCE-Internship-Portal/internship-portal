@@ -34,6 +34,7 @@ router.post("/student/evaluation/add", controllerStudent.addWorkDone);
 router.post("/student/certificate/upload", upload.single('file'), controllerStudent.uploadCertificate);
 router.post("/mentor/comment/add", controllerMentor.addPrivateComments);
 router.post("/mentor/student/evaluation", controllerMentor.studentEvaluation);
+router.post("/mentor/student/evaluation/setdate", controllerMentor.scheduleEvaluation);
 router.post("/remove/mentor", controllerMentor.removeMentor);
 router.post("/mentor/student/evaluation/upload", upload.single('file'), controllerMentor.uploadSignedDocument);
 router.post('/coordinator/add/mentor', controllerCoordinator.addMentor);

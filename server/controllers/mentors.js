@@ -142,7 +142,6 @@ const studentEvaluation = async (req, res) => {
             field.enableReadOnly();
         }
 
-        delete evaluateDetails.evaluation_name;
         delete evaluateDetails.department_name;
         const rollno = evaluateDetails.student_rollno;
         delete evaluateDetails.student_rollno;
@@ -155,32 +154,53 @@ const studentEvaluation = async (req, res) => {
         const finalPdfBuffer = Buffer.from(modifiedPdfBytes);
         evaluateDetails.pdf_buffer = finalPdfBuffer;
 
-        // try {
-        //     const updatedStudent = await Student.findOneAndUpdate(
-        //         {
-        //           rollno
-        //         },
-        //         {
-        //           $push: {
-        //             'internships.0.evaluation': evaluateDetails,
-        //           },
-        //         },
-        //         {
-        //           new: true,
-        //         }
-        //     );
-        //     if (updatedStudent) {
-                res.setHeader('Content-Type', 'application/pdf');
-                const filename = `${evaluateDetails.student_rollno}_${evaluateDetails.evaluation}_Evaluation.pdf`;
-                res.setHeader('Content-Disposition', `inline; filename="${filename}"`);
-                res.send(finalPdfBuffer);
-        //     } else{
-        //         return res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
-        //     }
-        // } catch (error) {
-        //     console.error(`Error: ${error.message}`);
-        //     return res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
-        // }
+        try {
+            if (evaluateDetails.evaluation_name == 'ISE'){
+                delete evaluateDetails.evaluation_name;
+                console.log('ise entered');
+                const updatedStudent = await Student.findOneAndUpdate(
+                    {
+                    rollno
+                    },
+                    {
+                    $set: {
+                        'internships.0.evaluation.0': evaluateDetails,
+                    },
+                    },
+                );
+                if (updatedStudent) {
+                    res.setHeader('Content-Type', 'application/pdf');
+                    const filename = `${evaluateDetails.student_rollno}_${evaluateDetails.evaluation}_Evaluation.pdf`;
+                    res.setHeader('Content-Disposition', `inline; filename="${filename}"`);
+                    res.send(finalPdfBuffer);
+                } else{
+                    return res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
+                }
+            } else if (evaluateDetails.evaluation_name == 'ESE') {
+                delete evaluateDetails.evaluation_name;
+                const updatedStudent = await Student.findOneAndUpdate(
+                    {
+                    rollno
+                    },
+                    {
+                    $set: {
+                        'internships.0.evaluation.1': evaluateDetails,
+                    },
+                    },
+                );
+                if (updatedStudent) {
+                    res.setHeader('Content-Type', 'application/pdf');
+                    const filename = `${evaluateDetails.student_rollno}_${evaluateDetails.evaluation}_Evaluation.pdf`;
+                    res.setHeader('Content-Disposition', `inline; filename="${filename}"`);
+                    res.send(finalPdfBuffer);
+                } else{
+                    return res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
+                }
+            }
+        } catch (error) {
+            console.error(`Error: ${error.message}`);
+            return res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
+        }
 
     } catch (error) {
         console.error(`Error: ${error.message}`);
@@ -331,6 +351,58 @@ const removeMentor = async (req, res) => {
 
 };
 
+const scheduleEvaluation = async (req, res) => {  
+    const data = req.body;
+    const { sub_id, date, evaluation } = data;
+    // console.log(data);
+    try {
+        if(evaluation == 'ISE'){
+            const updatedStudent = await Student.findOneAndUpdate(
+                {
+                sub_id
+                },
+                {
+                $set: {
+                    'internships.0.evaluation.0.scheduled_date': date,
+                },
+                },
+                {
+                new: true,
+                }
+            );
+            if (updatedStudent) {
+                return res.status(200).json({ success: true, msg: "Uploaded Student Evaluation" });
+            } else{
+                return res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
+            }
+        }
+        else if(evaluation == 'ESE') {
+            const updatedStudent = await Student.findOneAndUpdate(
+                {
+                sub_id
+                },
+                {
+                $set: {
+                    'internships.0.evaluation.1.scheduled_date': date,
+                },
+                },
+                {
+                new: true,
+                }
+            );
+            if (updatedStudent) {
+                return res.status(200).json({ success: true, msg: "Uploaded Student Evaluation" });
+            } else{
+                return res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
+            }
+        }
+    } catch (error) {
+        console.error(`Error: ${error.message}`);
+        return res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
+    }
+
+};
+
 module.exports = {
     loginMentor,
     viewAssignedStudents,
@@ -339,5 +411,6 @@ module.exports = {
     studentEvaluation,
     uploadSignedDocument,
     getAllMentors,
-    removeMentor
+    removeMentor,
+    scheduleEvaluation
 };

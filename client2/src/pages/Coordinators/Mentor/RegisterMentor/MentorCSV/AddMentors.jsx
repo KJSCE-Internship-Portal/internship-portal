@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
-import Papa from 'papaparse';
+// import Papa from 'papaparse';
 import * as XLSX from 'xlsx';
 import { url } from '../../../../../Global/URL';
 import axios from 'axios';

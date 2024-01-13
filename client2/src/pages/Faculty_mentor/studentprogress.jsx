@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { useEffect } from 'react';
+import { useRef } from 'react';
 import { useTheme } from '../../Global/ThemeContext';
 import { useParams } from 'react-router-dom';
-import {useDisclosure, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton } from "@chakra-ui/react";
+import { useDisclosure, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton } from "@chakra-ui/react";
 import showToast from '../../Global/Toast';
 import { useToast } from '@chakra-ui/react';
 import StudentDrawer from './studentdrawer.jsx';
@@ -26,6 +27,8 @@ import {
 import axios from 'axios';
 import { url } from '../../Global/URL';
 import StatWeek from './statweek.jsx';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 const Week = () => {
   const { theme: colors } = useTheme();
@@ -43,11 +46,14 @@ const Week = () => {
   }
 
   function generateWeekURL(week) {
-    console.log(week);
+    // console.log(week.submitted);
     if (week.submitted == true) {
       localStorage.setItem('week', week.week);
       const weekURL = 'http://localhost:3000/mentor/studentprogress/feedback';
       window.location.href = weekURL;
+    }
+    else if (week.submitted == false) {
+      showToast(toast, 'Error', 'error', 'Update Not yet Submitted');
     }
     else if (week.status == 'Submitted') {
       localStorage.setItem('week', week.week);
@@ -114,6 +120,9 @@ const Week = () => {
   const [modalData, setModalData] = useState([]);
   const [modalType, setModalType] = useState('');
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [iseDate, setISEDate] = useState('');
+  const [eseDate, setESEDate] = useState('');
+  // const dateInputRef = useRef(null);
 
   const viewUser = (studentData) => {
     setStudentData(studentData);
@@ -202,6 +211,9 @@ const Week = () => {
             setIsCertificateSubmitted(true);
             setCertificatePdfBuffer(student.internships[0].completion[0].pdf_buffer);
           }
+          // console.log(new Date(student.internships[0].evaluation[1].scheduled_date).toISOString().split('T')[0] == '1970-01-01' ? 'Yes' : 'No');
+          setISEDate(new Date(student.internships[0].evaluation[0].scheduled_date).toISOString().split('T')[0] === '1970-01-01' ? null : new Date(student.internships[0].evaluation[0].scheduled_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }));
+          setESEDate(new Date(student.internships[0].evaluation[1].scheduled_date).toISOString().split('T')[0] === '1970-01-01' ? null : new Date(student.internships[0].evaluation[1].scheduled_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }));
         }
         // if (student.internships[0].progress && student.internships[0].progress.length > 0) {
         //   const updatedProgressData = student.internships[0].progress.map((weekInfo, index) => ({
@@ -222,8 +234,8 @@ const Week = () => {
   };
 
   const getStatSubmission = async (weekData) => {
-    
-    if(weekData.length == 0) {
+
+    if (weekData.length == 0) {
       showToast(toast, 'Error', 'error', 'No weeks are currently to be shown');
     } else {
       console.log('entered');
@@ -231,12 +243,44 @@ const Week = () => {
       setModalData(weekData);
       // setModalType(submissionType);
       onOpen();
-      
+
       // localStorage.setItem('weekData', weekData);
       // window.location.href = 'http://localhost:3000/student/progress/stat/weeks';
     }
     // console.log(weekData);
   }
+
+  const handleISEDateChange = async (date) => {
+    const student_id = localStorage.getItem('student');
+    const utcDate = date ? new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())) : null;
+    const iseDate = utcDate.toISOString().split('T')[0];
+    const data = {
+      sub_id: student_id,
+      date: iseDate,
+      evaluation: 'ISE'
+    };
+    const response = await axios.post(url + `/mentor/student/evaluation/setdate`, data);
+    if (response.status === 200) {
+      showToast(toast, 'Success', 'success', 'ISE Date set successfully');
+      fetchData();
+    }
+  };
+
+  const handleESEDateChange = async (date) => {
+    const student_id = localStorage.getItem('student');
+    const utcDate = date ? new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())) : null;
+    const eseDate = utcDate.toISOString().split('T')[0];
+    const data = {
+      sub_id: student_id,
+      date: eseDate,
+      evaluation: 'ESE'
+    };
+    const response = await axios.post(url + `/mentor/student/evaluation/setdate`, data);
+    if (response.status === 200) {
+      showToast(toast, 'Success', 'success', 'ESE Date set successfully');
+      fetchData();
+    }
+  };
 
   const getCertificate = async () => {
     const uint8Array = new Uint8Array(certificatePdfBuffer.data);
@@ -299,11 +343,11 @@ const Week = () => {
           <ModalBody>
             {modalData.map((week, index) => (
               <Card key={index} className="mb-3">
-              <button className={`p-3 border border-${colors.accent} rounded-md w-full relative transform transition-transform hover:translate-y-[-2px] hover:shadow-md`}
-              onClick={() => generateWeekURL(week)}>
-                <h2>Week: {week.week}</h2>
-                <p>Start Date: {(week.startDate).substring(0, 10)}</p>
-                <p>End Date: {(week.endDate).substring(0, 10)}</p>
+                <button className={`p-3 border border-${colors.accent} rounded-md w-full relative transform transition-transform hover:translate-y-[-2px] hover:shadow-md`}
+                  onClick={() => generateWeekURL(week)}>
+                  <h2>Week: {week.week}</h2>
+                  <p>Start Date: {(week.startDate).substring(0, 10)}</p>
+                  <p>End Date: {(week.endDate).substring(0, 10)}</p>
                 </button>
               </Card>
             ))}
@@ -376,8 +420,8 @@ const Week = () => {
           <Tooltip hasArrow label={`${weeksDone} out of ${totalWeeks} weeks done : ${progressValue}% Progress`} placement="bottom-end">
             <Progress hasStripe value={progressValue} colorScheme='red' isAnimated aria-valuenow={progressValue} />
           </Tooltip>
-          <Tooltip hasArrow label={`${onTimeSubmission+lateSubmission} out of ${totalWeeks} weeks submitted : ${(((onTimeSubmission+lateSubmission)/totalWeeks)*100).toFixed(2)}% Progress`} placement="top-end">
-            <Progress hasStripe value={(((onTimeSubmission+lateSubmission)/totalWeeks)*100).toFixed(2)} colorScheme='green' isAnimated className="mb-3" aria-valuenow={(((onTimeSubmission+lateSubmission)/totalWeeks)*100).toFixed(2)}/>
+          <Tooltip hasArrow label={`${onTimeSubmission + lateSubmission} out of ${totalWeeks} weeks submitted : ${(((onTimeSubmission + lateSubmission) / totalWeeks) * 100).toFixed(2)}% Progress`} placement="top-end">
+            <Progress hasStripe value={(((onTimeSubmission + lateSubmission) / totalWeeks) * 100).toFixed(2)} colorScheme='green' isAnimated className="mb-3" aria-valuenow={(((onTimeSubmission + lateSubmission) / totalWeeks) * 100).toFixed(2)} />
           </Tooltip>
           <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6} className="mb-5">
             <Stat bg="green.100" p={4} borderRadius="md" onClick={() => getStatSubmission(onTimeSubmissionData)}>
@@ -409,6 +453,18 @@ const Week = () => {
           </div>
         </div>
         <h1 className="mt-10">Evaluation</h1>
+        <div className="flex flex-col sm:flex-row gap-5">
+          <DatePicker
+            onChange={handleISEDateChange}
+            placeholderText={`${iseDate ? `ISE Date: ${iseDate}` : 'Set ISE Date'}`}
+            className={`flex-1 mt-5 placeholder-white bg-blue-500 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm sm:w-auto px-5 py-2.5 text-center`}
+          />
+          <DatePicker
+            onChange={handleESEDateChange}
+            placeholderText={`${eseDate ? `ESE Date: ${eseDate}` : 'Set ESE Date'}`}
+            className={`flex-1 mt-5 placeholder-white bg-blue-500 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm sm:w-auto px-5 py-2.5 text-center`}
+          />
+        </div>
         <div class="flex gap-10">
           {isISESigned ? (
             <button type="submit" class="flex-1 mt-5 text-white bg-red-400 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm sm:w-auto px-5 py-2.5 text-center" onClick={() => getEvaluationSheet('ISE')}>

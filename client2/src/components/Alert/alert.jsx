@@ -7,6 +7,8 @@ import {
     AlertDialogContent,
     AlertDialogOverlay,
     AlertDialogCloseButton,
+    Button,
+    useDisclosure,
   } from '@chakra-ui/react'
 
   const Alert = () => {

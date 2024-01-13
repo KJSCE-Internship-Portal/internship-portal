@@ -68,6 +68,7 @@ const registerStudent = async (req, res) => {
         const evaluationStructure = () => ({
             mentor_name: '',
             exam_date: '',
+            scheduled_date: '',
             exam_time: '',
             exam_venue: '',
             project_title: '',

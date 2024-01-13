@@ -25,7 +25,8 @@ import { url } from '../../Global/URL';
 const Progress = () => {
     const [name, setName] = useState('');
     const [mentorName, setMentorName] = useState('');
-    const [rollNo, setRollNo] = useState('')
+    const [rollNo, setRollNo] = useState('');
+    const [department, setDepartment] = useState('');
     const [date, setDate] = useState('');
     const [time, setTime] = useState('');
     const [venue, setVenue] = useState('');
@@ -40,6 +41,8 @@ const Progress = () => {
     const [file, setFile] = useState('');
     const [toFill, setToFill] = useState(true);
     const [pdfBuffer, setPdfBuffer] = useState(null);
+    const [scheduledDate, setScheduledDate] = useState('');
+    const [studentSignature, setStudentSignature] = useState('');
     // const [studentData, setStudentData] = useState('');
     const { theme: colors } = useTheme();
     const toast = useToast();
@@ -49,6 +52,38 @@ const Progress = () => {
         setFile(selectedFile);
     };
 
+    const calcPeriodicMarks = async (weeks, buffer) => {
+        const onTimeWeeks = Math.min(buffer, weeks.length);
+
+        const onTimeSubmissions = (weeks.slice(onTimeWeeks, weeks.length).filter(submission => {
+            return !submission.isLateSubmission && submission.submitted;
+        })).length + onTimeWeeks;
+
+        // const onTimeSubmissions = (weeks.filter(submission => !submission.isLateSubmission && submission.submitted)).length;
+        const percentageMarks = (onTimeSubmissions/weeks.length * 100).toFixed(2);
+        const percentageMarksTable = [
+            { percentage: 100, marks: 10 },
+            { percentage: 92.86, marks: 9 },
+            { percentage: 85.71, marks: 8 },
+            { percentage: 78.57, marks: 8 },
+            { percentage: 71.43, marks: 7 },
+            { percentage: 64.29, marks: 6 },
+            { percentage: 57.14, marks: 6 },
+            { percentage: 50.00, marks: 5 },
+            { percentage: 42.86, marks: 4 },
+            { percentage: 35.71, marks: 4 },
+            { percentage: 28.57, marks: 3 },
+            { percentage: 21.43, marks: 3 },
+            { percentage: 14.29, marks: 2 },
+            { percentage: 7.14, marks: 1 },
+            { percentage: 0.00, marks: 0 },
+          ];
+
+          const matchingEntry = percentageMarksTable.find(entry => percentageMarks >= entry.percentage);
+          setInteraction(matchingEntry.marks);
+
+    }
+
     const handleFileSubmit = async (e) => {
         const data = new FormData();
         data.append('rollno', rollNo);
@@ -56,14 +91,14 @@ const Progress = () => {
         data.append('file', file);
 
         const resp = await axios.post(url + "/mentor/student/evaluation/upload", data);
-        if(resp.status == 200) {
+        if (resp.status == 200) {
             showToast(toast, 'Success', 'success', 'File Uploaded Successfully');
         } else {
             showToast(toast, 'Error', 'error', 'File Not Uploaded');
         }
         setTimeout(() => {
-            window.location.href = 'http://localhost:3000/mentor/studentprogress'; 
-          }, 2000);
+            window.location.href = 'http://localhost:3000/mentor/studentprogress';
+        }, 2000);
     }
 
     const accessToken = localStorage.getItem('IMPaccessToken');
@@ -94,15 +129,31 @@ const Progress = () => {
             const response = await axios
                 .get(url + `/students/all?sub_id=${student_id}`);
             const student = response.data.data[0];
-            console.log(student.internships[0].evaluation.length);
-            if (student.internships[0].evaluation.length > 1) {
+            const currentDate = new Date();
+            const filteredProgress = student.internships[0].progress.filter(progressItem => {
+                const startDate = new Date(progressItem.startDate);
+                return startDate < currentDate;
+            });
+            calcPeriodicMarks(filteredProgress, 5);
+            // calcPeriodicMarks(student.internships[0].progress);
+            if (student.internships[0].evaluation[1].pdf_buffer.data.length != 0) {
                 setToFill(false);
             }
-            if (student?.internships?.[0]?.evaluation?.[1]?.pdf_buffer !== undefined ) {
+            if (student?.internships?.[0]?.evaluation?.[1]?.pdf_buffer !== undefined) {
                 setPdfBuffer(student.internships[0].evaluation[1].pdf_buffer);
             }
+            setDepartment(student.department);
             setRollNo(student.rollno);
             setName(student.name);
+            setTitle(student.internships[0].job_title);
+            if (student.internships[0].evaluation[1].work_done != "" && student.internships[0].evaluation[1].student_sign != "") {
+                setWorkdone(student.internships[0].evaluation[1].work_done);
+                setStudentSignature(student.internships[0].evaluation[1].student_sign);
+                setScheduledDate(student.internships[0].evaluation[0].scheduled_date);
+            }
+            else {
+                showToast(toast, 'Error', 'error', 'Work Done not Submitted by student');
+            }
         } catch (error) {
             console.log(error);
         }
@@ -119,8 +170,8 @@ const Progress = () => {
             !validateMarks(qreport, 20) ||
             !validateMarks(oral, 20) ||
             !validateMarks(qwork, 15) ||
-            !validateMarks(understanding, 15) ||
-            !validateMarks(interaction, 5)
+            !validateMarks(understanding, 10) ||
+            !validateMarks(interaction, 10)
         ) {
             showToast(
                 toast,
@@ -132,11 +183,13 @@ const Progress = () => {
         }
         try {
             const data = {
-                evaluation: 'ESE',
+                department_name: department,
+                evaluation_name: 'ESE',
                 student_rollno: rollNo,
                 student_name: name,
                 mentor_name: mentorName,
                 exam_date: date,
+                scheduled_date: scheduledDate,
                 exam_time: time,
                 exam_venue: venue,
                 project_title: title,
@@ -154,9 +207,10 @@ const Progress = () => {
                     scored: understanding,
                 },
                 periodic_interaction_marks: {
-                    scored: interaction,
+                    scored: String(interaction),
                 },
                 examiner_specific_remarks: remarks,
+                student_sign: studentSignature,
             };
             const response = await axios.post(url + `/mentor/student/evaluation`, data, { responseType: 'arraybuffer', });
             const blob = new Blob([response.data], { type: 'application/pdf' });
@@ -165,8 +219,8 @@ const Progress = () => {
             setTimeout(() => {
                 fetchData();
                 window.open(pdfUrl, '_blank');
-              }, 1000);
-            
+            }, 1000);
+
         } catch (error) {
             console.error('Error occurred while submitting data:', error);
         }
@@ -252,7 +306,7 @@ const Progress = () => {
                             type="text"
                             name="title"
                             value={title}
-                            onChange={(e) => setTitle(e.target.value)}
+                            disabled
                             required
                         />
                     </div>
@@ -261,7 +315,7 @@ const Progress = () => {
                     </div>
                     <div class="py-2 px-4 mb-4 text-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-500 dark:border-gray-700">
                         <textarea id="comment" rows="6" value={workdone}
-                            onChange={(e) => setWorkdone(e.target.value)}
+                            disabled
                             class="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-500"
                             placeholder="Work done..." required></textarea>
                     </div>
@@ -306,7 +360,7 @@ const Progress = () => {
                         />
                     </div>
                     <div class="flex justify-between items-center mb-2">
-                        <h2 class={`text-md md:text-xl text-${colors.font}`}>Understanding of Work(15)</h2>
+                        <h2 class={`text-md md:text-xl text-${colors.font}`}>Understanding of Work(10)</h2>
                     </div>
                     <div class="py-2 px-4 mb-4 text-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-500 dark:border-gray-700">
                         <input class="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-500"
@@ -318,7 +372,7 @@ const Progress = () => {
                         />
                     </div>
                     <div class="flex justify-between items-center mb-2">
-                        <h2 class={`text-md md:text-xl text-${colors.font}`}>Periodic Interaction with mentor(05)</h2>
+                        <h2 class={`text-md md:text-xl text-${colors.font}`}>Periodic Interaction with mentor(10)</h2>
                     </div>
                     <div class="py-2 px-4 mb-4 text-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-500 dark:border-gray-700">
                         <input class="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-500"
@@ -344,35 +398,35 @@ const Progress = () => {
                 </form>
             </div>) : (<div class="max-w-2xl mx-auto px-4">
                 <button type="submit" class="mt-5 text-white bg-red-400 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 mb-5 text-center" onClick={getEvaluationSheet}>
-                View Evalutation Sheet
+                    View Evalutation Sheet
                 </button>
                 <div class="flex justify-between items-center mb-6">
-                        <h2 class={`text-lg lg:text-2xl font-bold text-${colors.font}`}>Upload Hard Copy of Document:</h2>
-                    </div>
-                    <div className="flex items-center justify-center w-full">
-                        <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-500 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
-                            <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                <svg className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-                                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
-                                </svg>
-                                <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                                    <span className="font-semibold">
-                                        {file ? `Selected file: ${file.name}` : 'Click to upload or drag and drop'}
-                                    </span>
-                                </p>
-                            </div>
-                            <input
-                                id="dropzone-file"
-                                type="file"
-                                onChange={handleFileChange}
-                                className="hidden"
-                            />
-                        </label>
-                    </div>
-                    <button type="submit" class="mt-5 text-white bg-red-400 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center" onClick={handleFileSubmit}>
-                        Submit Data
-                    </button>
+                    <h2 class={`text-lg lg:text-2xl font-bold text-${colors.font}`}>Upload Hard Copy of Document:</h2>
                 </div>
+                <div className="flex items-center justify-center w-full">
+                    <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-500 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+                        <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                            <svg className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
+                            </svg>
+                            <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                                <span className="font-semibold">
+                                    {file ? `Selected file: ${file.name}` : 'Click to upload or drag and drop'}
+                                </span>
+                            </p>
+                        </div>
+                        <input
+                            id="dropzone-file"
+                            type="file"
+                            onChange={handleFileChange}
+                            className="hidden"
+                        />
+                    </label>
+                </div>
+                <button type="submit" class="mt-5 text-white bg-red-400 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center" onClick={handleFileSubmit}>
+                    Submit Data
+                </button>
+            </div>
             )}
         </section>
     );

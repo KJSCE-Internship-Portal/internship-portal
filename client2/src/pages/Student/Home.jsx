@@ -127,23 +127,37 @@ const FramePage = () => {
   const [sign2, setSign2] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [studentData, setStudentData] = useState([]);
+  const [iseDate, setISEDate] = useState('');
+  const [eseDate, setESEDate] = useState('');
 
   const handleSubmit1 = async () => {
+    const currentDate = new Date().toISOString().split('T')[0];
     if(sign1!=''){
       window.location.href="http://localhost:3000/student/ise/view";
     }
     else{
-    window.location.href="http://localhost:3000/student/ise/workdone";
-    }
+      if(new Date(iseDate).toISOString().split('T')[0] == currentDate) {
+        window.location.href="http://localhost:3000/student/ise/workdone";
+      }
+      else {
+        showToast(toast, 'Error', 'error', `${new Date(iseDate).toISOString().split('T')[0] === '1970-01-01' ? `ISE Date not Set` : `Can submit ISE Work Done on ${new Date(iseDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`}`);
+      }
+    } 
   }
 
   const handleSubmit2 = async () => {
+    const currentDate = new Date().toISOString().split('T')[0];
     if(sign2!=''){
       window.location.href="http://localhost:3000/student/ese/view";
     }
     else{
-    window.location.href="http://localhost:3000/student/ese/workdone";
-    }  
+      if(new Date(eseDate).toISOString().split('T')[0] == currentDate) {
+        window.location.href="http://localhost:3000/student/ese/workdone";
+      }
+      else {
+        showToast(toast, 'Error', 'error', `${new Date(eseDate).toISOString().split('T')[0] === '1970-01-01' ? `ESE Date not Set` : `Can submit ESE Work Done on ${new Date(eseDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`}`);
+      }
+    } 
   }
 
   const fetchData = async () => {
@@ -203,7 +217,9 @@ const FramePage = () => {
           if(userInfo.internships[0].isCompleted && userInfo.internships[0].completion[0]?.pdf_buffer) {
             setIsCertificateNotSubmitted(false);
             setCertificatePdfBuffer(userInfo.internships[0].completion[0].pdf_buffer);
-          }          
+          }    
+          setISEDate(userInfo.internships[0].evaluation[0].scheduled_date);
+          setESEDate(userInfo.internships[0].evaluation[1].scheduled_date);      
         }
         // if (userInfo.internships[0].progress && userInfo.internships[0].progress.length > 0) {
         //   const updatedProgressData = userInfo.internships[0].progress.map((weekInfo, index) => ({
