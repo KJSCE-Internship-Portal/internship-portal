@@ -48,6 +48,13 @@ const Progress = () => {
     const [showFileModal, setshowFileModal] = useState(false);
     const [showDataModal, setshowDataModal] = useState(false);
     const [charCount, setCharCount] = useState(0);
+
+    const [isQReportValid, setIsQReportValid] = useState(true);
+    const [isOralValid, setIsOralValid] = useState(true);
+    const [isQWorkValid, setIsQWorkValid] = useState(true);
+    const [isUnderstandingValid, setIsUnderstandingValid] = useState(true);
+    const [isInteractionValid, setIsInteractionValid] = useState(true);
+
     // const [studentData, setStudentData] = useState('');
     const { theme: colors } = useTheme();
     const toast = useToast();
@@ -171,22 +178,22 @@ const Progress = () => {
             const numValue = parseInt(value);
             return numValue >= 0 && numValue <= max;
         };
+        const isQReportValid = validateMarks(qreport, 20);
+        const isOralValid = validateMarks(oral, 20);
+        const isQWorkValid = validateMarks(qwork, 15);
+        const isUnderstandingValid = validateMarks(understanding, 10);
+        const isInteractionValid = validateMarks(interaction, 10);
 
-        if (
-            !validateMarks(qreport, 20) ||
-            !validateMarks(oral, 20) ||
-            !validateMarks(qwork, 15) ||
-            !validateMarks(understanding, 10) ||
-            !validateMarks(interaction, 10)
-        ) {
-            showToast(
-                toast,
-                'Error',
-                'error',
-                'Marks should be within the specified range'
-            );
-            return;
-        }
+        setIsQReportValid(isQReportValid);
+        setIsOralValid(isOralValid);
+        setIsQWorkValid(isQWorkValid);
+        setIsUnderstandingValid(isUnderstandingValid);
+        setIsInteractionValid(isInteractionValid);
+
+        if (!isQReportValid || !isOralValid || !isQWorkValid || !isUnderstandingValid || !isInteractionValid) {
+            showToast(toast, 'Error', 'error', 'Marks should be within the specified range');
+        return;
+    }
         try {
             const data = {
                 department_name: department,
@@ -334,7 +341,8 @@ const Progress = () => {
                     <div class="flex justify-between items-center mb-2">
                         <h2 class={`text-md md:text-xl text-${colors.font}`}>Quality of Report(20)</h2>
                     </div>
-                    <div class="py-2 px-4 mb-4 text-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-500 dark:border-gray-700">
+                    <div class={`py-2 px-4 mb-4 text-white rounded-lg rounded-t-lg border ${isQReportValid ? 'border-gray-200' : 'border-red-500'} dark:bg-gray-500 dark:border-gray-700`}>
+
 
                         <input class="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-500"
                             type="number"
@@ -343,11 +351,13 @@ const Progress = () => {
                             onChange={(e) => setQReport(e.target.value)}
                             required
                         />
+                        {!isQReportValid && <p class="text-red-500 text-xs">Invalid value for Quality of Report. Must be between 0 and 20.</p>}
+
                     </div>
                     <div class="flex justify-between items-center mb-2">
                         <h2 class={`text-md md:text-xl text-${colors.font}`}>Oral Presentation(20)</h2>
                     </div>
-                    <div class="py-2 px-4 mb-4 text-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-500 dark:border-gray-700">
+                    <div class={`py-2 px-4 mb-4 text-white rounded-lg rounded-t-lg border ${isOralValid ? 'border-gray-200' : 'border-red-500'} dark:bg-gray-500 dark:border-gray-700`}>
                         <input class="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-500"
                             type="number"
                             name="oral"
@@ -355,11 +365,13 @@ const Progress = () => {
                             onChange={(e) => setOral(e.target.value)}
                             required
                         />
+                    {!isOralValid && <p class="text-red-500 text-xs">Invalid value for Oral Presentation. Must be between 0 and 20.</p>}
+
                     </div>
                     <div class="flex justify-between items-center mb-2">
                         <h2 class={`text-md md:text-xl text-${colors.font}`}>Quality of Work Done(15)</h2>
                     </div>
-                    <div class="py-2 px-4 mb-4 text-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-500 dark:border-gray-700">
+                    <div class={`py-2 px-4 mb-4 text-white rounded-lg rounded-t-lg border ${isQWorkValid ? 'border-gray-200' : 'border-red-500'} dark:bg-gray-500 dark:border-gray-700`}>
                         <input class="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-500"
                             type="number"
                             name="work"
@@ -367,11 +379,12 @@ const Progress = () => {
                             onChange={(e) => setQWork(e.target.value)}
                             required
                         />
+                         {!isQWorkValid && <p class="text-red-500 text-xs">Invalid value for Quality of Work Done. Must be between 0 and 15.</p>}
                     </div>
                     <div class="flex justify-between items-center mb-2">
                         <h2 class={`text-md md:text-xl text-${colors.font}`}>Understanding of Work(10)</h2>
                     </div>
-                    <div class="py-2 px-4 mb-4 text-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-500 dark:border-gray-700">
+                    <div class={`py-2 px-4 mb-4 text-white rounded-lg rounded-t-lg border ${isUnderstandingValid ? 'border-gray-200' : 'border-red-500'} dark:bg-gray-500 dark:border-gray-700`}>
                         <input class="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-500"
                             type="number"
                             name="understand"
@@ -379,11 +392,12 @@ const Progress = () => {
                             onChange={(e) => setUnderstanding(e.target.value)}
                             required
                         />
+                        {!isUnderstandingValid && <p class="text-red-500 text-xs">Invalid value for Understanding of Work. Must be between 0 and 10.</p>}
                     </div>
                     <div class="flex justify-between items-center mb-2">
                         <h2 class={`text-md md:text-xl text-${colors.font}`}>Periodic Interaction with mentor(10)</h2>
                     </div>
-                    <div class="py-2 px-4 mb-4 text-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-500 dark:border-gray-700">
+                    <div class={`py-2 px-4 mb-4 text-white rounded-lg rounded-t-lg border ${isInteractionValid ? 'border-gray-200' : 'border-red-500'} dark:bg-gray-500 dark:border-gray-700`}>
                         <input class="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-500"
                             type="number"
                             name="interact"
@@ -391,6 +405,8 @@ const Progress = () => {
                             onChange={(e) => setInteraction(e.target.value)}
                             required
                         />
+                        {!isInteractionValid && <p class="text-red-500 text-xs">Invalid value for Periodic Interaction with Mentor. Must be between 0 and 10.</p>}
+
                     </div>
                     <div class="flex justify-between items-center mb-6">
                         <h2 class={`text-lg lg:text-2xl font-bold text-${colors.font}`}>Specific Remarks of the examiners:</h2>
