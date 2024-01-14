@@ -12,6 +12,7 @@ import { Avatar, Tooltip } from '@chakra-ui/react';
 import { DeleteIcon } from '@chakra-ui/icons';
 import { useToast } from '@chakra-ui/react';
 import showToast from '../../../Global/Toast';
+import Alert from '../../../components/Alert/alert';
 
 
 const getRandomLightColor = () => {
@@ -27,6 +28,7 @@ const getRandomLightColor = () => {
 };
 
 const MentorPage = () => {
+    const [DeleteModal, setDeleteModal] = useState(false);
     const { theme: colors } = useTheme();
     const { id } = useParams();
     const toast = useToast();
@@ -75,12 +77,20 @@ const MentorPage = () => {
             <div>
                 <span style={{ float: 'right', display: 'block' }}>
                     <Tooltip label='Delete Mentor Permanently' placement='left'>
+                    {DeleteModal && (
+                                    <Alert
+                                    onConfirm={removeMentor}
+                                    text={'Remove Mentor'}
+                                    onClosec={() => setDeleteModal(false)}
+
+                                    />
+                        )}
                         <Button
                             // isLoading
                             loadingText='Deleting'
                             variant='outline'
                             colorScheme='red'
-                            onClick={removeMentor}
+                            onClick={()=>setDeleteModal(true)}
                         >
                             <DeleteIcon />
                         </Button>
