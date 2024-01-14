@@ -47,6 +47,7 @@ const Progress = () => {
     const [studentSignature, setStudentSignature] = useState('');
     const [showFileModal, setshowFileModal] = useState(false);
     const [showDataModal, setshowDataModal] = useState(false);
+    const [charCount, setCharCount] = useState(0);
     // const [studentData, setStudentData] = useState('');
     const { theme: colors } = useTheme();
     const toast = useToast();
@@ -396,9 +397,13 @@ const Progress = () => {
                     </div>
                     <div class="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-500 dark:border-gray-700">
                         <textarea id="comment" rows="6" value={remarks}
-                            onChange={(e) => setRemarks(e.target.value)}
+
+                            onChange={(e) => {setRemarks(e.target.value);
+                                setCharCount(e.target.value.length);}}
+                                maxLength={1000}
                             class="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-500"
                             placeholder="Write a remark..."></textarea>
+                        <p>Character count: {charCount}/1000</p>
                     </div>
                     {showDataModal && (
                         <Alert

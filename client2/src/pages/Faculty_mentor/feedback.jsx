@@ -20,6 +20,7 @@ const Comment = () => {
     const [wantToReply, setWantToReply] = useState('');
     const [subID, setSubID] = useState('');
     const [weekNo, setWeekNo] = useState('');
+    const [charCount, setCharCount] = useState(0);
     const { theme: colors } = useTheme();
 
     const accessToken = localStorage.getItem('IMPaccessToken');
@@ -130,13 +131,17 @@ const Comment = () => {
                                     id="comment"
                                     rows="6"
                                     value={mentorComment}
-                                    onChange={(e) => setMentorComment(e.target.value)}
+                                    onChange={(e) => {setMentorComment(e.target.value);
+                                        setCharCount(e.target.value.length);}}
+                                        maxLength={500}
                                     className={`px-0 w-full text-sm text-${colors.font} border-0 focus:ring-0 focus:outline-none bg-${colors.secondary} dark:text-${colors.font} dark:placeholder-${colors.font} dark:bg-${colors.secondary}`}
                                     placeholder="Write a comment..."
                                     required
                                     style={{ backgroundColor: colors.secondary2 }}
                                 ></textarea>
+                                <p>Character count: {charCount}/500</p>
                             </div>
+                            
                             <button
                                 type="submit"
                                 className={`inline-flex items-center py-2.5 px-4 font-medium text-center text-${colors.font} bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800`}
@@ -148,6 +153,7 @@ const Comment = () => {
                         <div></div>
                     )}
                 </article>
+                
                 {mentorProfilePicture && (<article class={`p-2 mb-3 ml-6 lg:ml-12 text-base bg-${colors.secondary} rounded-lg`}>
                     <footer class="flex justify-between items-center mb-2">
                         <div class="flex items-center">
