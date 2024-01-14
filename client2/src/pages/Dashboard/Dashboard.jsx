@@ -34,6 +34,7 @@ import { getUserDetails } from '../../Global/authUtils';
 import { url } from '../../Global/URL';
 import {useTheme} from '../../Global/ThemeContext';
 import showToast from '../../Global/Toast';
+import AddMentor from '../Admin/addMentor';
 
 const Dashboard = () => {
 
@@ -239,9 +240,10 @@ const handleAddCoord = async () => {
   if (isLoading) {
     return (
       <Stack>
+        <Skeleton height='30px' />
+        <Skeleton height='30px' />
         <Skeleton height='20px' />
-        <Skeleton height='20px' />
-        <Skeleton height='20px' />
+        <Skeleton height='500px' />
       </Stack>
     )
   }
@@ -256,7 +258,8 @@ const handleAddCoord = async () => {
 
       <Box maxW="1200px" mx="auto" py={5} px={2}>
       <Flex justify="space-between" align="center">
-      <Button colorScheme="teal" ml="auto" onClick={onOpen}>Add Coordinator</Button>
+      <Button color={colors.font} bg={colors.hover} ml="auto" onClick={onOpen}>Add Coordinator</Button>
+      <AddMentor/>
       </Flex>
       <Flex align="center">
             <Avatar size="md" bg='red.700' color="white" name={adminName} src={admin_profile_url} className="h-10 w-10 mr-2"></Avatar>
