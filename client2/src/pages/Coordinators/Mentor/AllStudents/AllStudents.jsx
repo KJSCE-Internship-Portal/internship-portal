@@ -103,7 +103,7 @@ const AllStudentsInDepartment = () => {
           setStudentsNotHavingMentor(0);
           console.log(fetched.data[0]);
           var complete_data = [];
-      
+          
           for (let z = 0; z < fetched.data.length; z++) {
             var student = fetched.data[z];
             if (student.isActive) {
@@ -127,8 +127,8 @@ const AllStudentsInDepartment = () => {
                 End_Date: formatDate(student.internships[0].endDate),
                 Total_Weeks: (student.internships[0].duration_in_weeks).toString(),
                 Submitted_Weeks: c.toString() + "/" + (student.internships[0].duration_in_weeks).toString(),
-                ISE_evaluation_status: (student.internships[0].completion.length === 1 && student.internships[0].completion[0].is_signed) ? 'Completed' : 'Pending',
-                ESE_evaluation_status: (student.internships[0].completion.length === 2 && student.internships[0].completion[1].is_signed) ? 'Completed' : 'Pending',
+                ISE_evaluation_status: (student.internships[0].evaluation[0]?.is_signed) ? 'Completed' : 'Pending',
+                ESE_evaluation_status: (student.internships[0].evaluation[1]?.is_signed) ? 'Completed' : 'Pending',
               }
               complete_data.push(excel_obj);
             }
@@ -249,7 +249,7 @@ const AllStudentsInDepartment = () => {
                                     // setExcelData((x)=> [...x, excel_obj]);
                                     
                                     return (
-                                        <React.Fragment key={student.email}>
+                                        <React.Fragment key={student.email} id={student.rollno}>
                                             <HoverableTr
                                                 onClick={() => handleRowClick(student)}
                                                 style={{ cursor: 'pointer' }}
@@ -264,12 +264,12 @@ const AllStudentsInDepartment = () => {
                                                 <Td style={{ color: colors.font }} isNumeric>
                                                     {c}/{student.internships[0].duration_in_weeks}
                                                 </Td>
-                                                <Td style={{ color: student.internships[0].completion.length === 1 ? colors.primary : colors.heading1 }}>
-                                                    {student.internships[0].completion.length === 1 ? 'Completed' : 'Pending'}
+                                                <Td style={{ color: student.internships[0].evaluation[0]?.is_signed ? colors.primary : colors.heading1 }}>
+                                                    {student.internships[0].evaluation[0]?.is_signed ? 'Completed' : 'Pending'}
                                                 </Td>
 
-                                                <Td style={{ color: student.internships[0].completion.length === 2 ? colors.primary : colors.heading1 }}>
-                                                    {student.internships[0].completion.length === 2 ? 'Completed' : 'Pending'}
+                                                <Td style={{ color: student.internships[0].evaluation[1]?.is_signed ? colors.primary : colors.heading1 }}>
+                                                    {student.internships[0].evaluation[1]?.is_signed ? 'Completed' : 'Pending'}
                                                 </Td>
 
                                             </HoverableTr>

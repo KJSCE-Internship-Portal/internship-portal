@@ -11,6 +11,7 @@ import {
     FormLabel,
     Input,
     InputGroup,
+    InputRightAddon,
     Stack,
     useDisclosure,
     Box,
@@ -24,16 +25,16 @@ import { url } from '../../Global/URL';
 import axios from 'axios';
 import { getUserDetails } from '../../Global/authUtils';
 
-const RegisterCoord = () => {
+const AddMentor = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const { theme: colors } = useTheme();
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [contactNo, setContactNo] = useState('');
-    const [department, setDepartment] = useState('');
     const [emailError, setEmailError] = useState('');
     const [contactNoError, setContactNoError] = useState('');
     const toast = useToast();
+    const [department, setDepartment] = useState('');
     const firstField = React.useRef();
     const [user, setUser] = useState(false);
 
@@ -58,7 +59,12 @@ const RegisterCoord = () => {
         return true;
     };
 
-    const handleAddCoord = async () => {
+    const handleAddMentor = async () => {
+        // if (name == ''){
+        //     showToast(toast, "Error", 'error', "Name Cannot Be Empty");
+        //     return
+        // }
+
         if (validateEmail() && validateContactNo()) {
             console.log(name, email, contactNo);
             onClose();
@@ -66,21 +72,18 @@ const RegisterCoord = () => {
             setUser(current_user)
             try {
 
-                const response = await axios.post(url + '/admin/add/coordinator', { name, email, contact_no: contactNo.toString(), department});
+                const response = await axios.post(url + '/coordinator/add/mentor', { name, email, contact_no: contactNo.toString(), department });
                 console.log(response.data)
                 if (response.data.success) {
-                    showToast(toast, "Success", 'success', "Coordinator Registered Successfully");
+                    showToast(toast, "Success", 'success', "Mentor Registered Successfully");
                 } else {
-                    showToast(toast, "Warning", 'info', "Coordinator Already Exists");
+                    showToast(toast, "Warning", 'info', "Mentor Already Exist");
                 }
-
-                
-                // setEmail('');
-                // setName('');
-                // setContactNo('');
-
+                setEmail('');
+                setName('');
+                setContactNo('');
             } catch (error) {
-                showToast(toast, "Error", 'error', "Something Went Wrong !");
+                showToast(toast, "Error", 'error', "Something Wen't Wrong !");
             }
 
 
@@ -98,8 +101,10 @@ const RegisterCoord = () => {
 
     return (
         <>
-            <Button leftIcon={<AddIcon />} color={colors.font} bg={colors.hover} onClick={onOpen}>
-                Add Coordinator
+            <Button ml={3} 
+            // leftIcon={<AddIcon />} 
+            color={colors.font} bg={colors.hover} onClick={onOpen}>
+                Add Mentor
             </Button>
             <Drawer
                 isOpen={isOpen}
@@ -111,7 +116,7 @@ const RegisterCoord = () => {
                 <DrawerOverlay />
                 <DrawerContent color={colors.font} bg={colors.secondary}>
                     <DrawerCloseButton />
-                    <DrawerHeader borderBottomWidth='0px'>Add a Coordinator</DrawerHeader>
+                    <DrawerHeader borderBottomWidth='0px'>Add a Mentor</DrawerHeader>
 
                     <DrawerBody>
                         <Stack spacing='24px'>
@@ -160,11 +165,15 @@ const RegisterCoord = () => {
                                     placeholder='Select Department'
                                     value={department}
                                     onChange={(e) => setDepartment(e.target.value)}>
-                                    <option value='department1'>IT</option>
-                                    <option value='department2'>COMPS</option>
-                                    <option value='department3'>MECH</option>
-                                    <option value='department4'>EXTC</option>
-                                    <option value='department5'>ETRX</option>
+                                        <option style={{backgroundColor: colors.secondary, color: colors.font}} value="Computer Engineering">COMPS</option>
+                                        <option style={{backgroundColor: colors.secondary, color: colors.font}} value="Information Technology">IT</option>
+                                        <option style={{backgroundColor: colors.secondary, color: colors.font}} value="Mechanical Engineering">MECH</option>
+                                        <option style={{backgroundColor: colors.secondary, color: colors.font}} value="Electronics & Telecommunication Engineering">EXTC</option>
+                                        <option style={{backgroundColor: colors.secondary, color: colors.font}} value="Electronics Engineering">ETRX</option>
+                                        <option style={{backgroundColor: colors.secondary, color: colors.font}} value="Electronics & Computer Engineering" hidden>EXCP</option>
+                                        <option style={{backgroundColor: colors.secondary, color: colors.font}} value="Robotics & Artificial Intelligence" hidden>RAI</option>
+                                        <option style={{backgroundColor: colors.secondary, color: colors.font}} value="Artificial Intelligence & Data Science" hidden>AIDS</option>
+                                        <option style={{backgroundColor: colors.secondary, color: colors.font}} value="Computer & Communication Engineering" hidden>CCE</option>
                                 </Select>
                             </Box>
 
@@ -175,7 +184,7 @@ const RegisterCoord = () => {
                         <Button variant='outline' mr={3} onClick={onClose} color={colors.font} bg={colors.hover}>
                             Cancel
                         </Button>
-                        <Button colorScheme='blue' onClick={handleAddCoord} color={colors.secondary} bg={colors.primary}>
+                        <Button colorScheme='blue' onClick={handleAddMentor} color={colors.secondary} bg={colors.primary}>
                             Add
                         </Button>
                     </DrawerFooter>
@@ -185,4 +194,4 @@ const RegisterCoord = () => {
     );
 };
 
-export default RegisterCoord;
+export default AddMentor;

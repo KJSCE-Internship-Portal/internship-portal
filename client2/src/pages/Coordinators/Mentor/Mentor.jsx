@@ -4,27 +4,32 @@ import { useTheme } from '../../../Global/ThemeContext';
 import styles from './Mentor.module.css';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import { Button } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import { url } from '../../../Global/URL';
 import AssignStudent from './AssignStudent/AssignStudent';
-import { Avatar } from '@chakra-ui/react';
+import { Avatar, Tooltip } from '@chakra-ui/react';
+import { DeleteIcon } from '@chakra-ui/icons';
+import { useToast } from '@chakra-ui/react';
+import showToast from '../../../Global/Toast';
+
 
 const getRandomLightColor = () => {
 
     const r = Math.floor(Math.random() * 128) + 128; // Red component
     const g = Math.floor(Math.random() * 128) + 128; // Green component
     const b = Math.floor(Math.random() * 128) + 128; // Blue component
-  
+
     // Convert RGB values to hexadecimal and concatenate
     const color = `#${r.toString(16)}${g.toString(16)}${b.toString(16)}`;
-  
+
     return color;
-  };
+};
 
 const MentorPage = () => {
     const { theme: colors } = useTheme();
     const { id } = useParams();
-
+    const toast = useToast();
 
     const { isError, isLoading, data } = useQuery({
         queryKey: [`/mentors/all?sub_id=${id}`],
@@ -34,6 +39,22 @@ const MentorPage = () => {
                 .get(url + `/mentors/all?sub_id=${id}`)
                 .then(response => response.data),
     });
+
+    const removeMentor = async () => {
+        if (data && data.data[0].email){
+            try {
+                const res = await axios.post(url + '/remove/mentor', { email: data.data[0].email });
+                if (res.data.success) {
+                    showToast(toast, 'Success', 'success', 'Mentor Deleted');
+                    window.location.href = "/coordinator/home";
+                } else {
+                    showToast(toast, 'Error', 'error', res.data.msg);
+                }
+            } catch (error) {
+                showToast(toast, 'Error', 'error', 'Something Went Wrong');
+            }
+        }
+    }
 
     if (isLoading) {
         return (
@@ -52,6 +73,19 @@ const MentorPage = () => {
         <div style={{ height: '100%', width: '100%', minHeight: '100%', maxWidth: '100%', maxHeight: '100%', overflowY: 'hidden', padding: 10 }}>
 
             <div>
+                <span style={{ float: 'right', display: 'block' }}>
+                    <Tooltip label='Delete Mentor Permanently' placement='left'>
+                        <Button
+                            // isLoading
+                            loadingText='Deleting'
+                            variant='outline'
+                            colorScheme='red'
+                            onClick={removeMentor}
+                        >
+                            <DeleteIcon />
+                        </Button>
+                    </Tooltip>
+                </span>
                 <div>
                     <span style={{ height: '80px', width: '80px', margin: '5px 0 20px 15px' }} className={styles.studentAvatar}>
                         <img src={data.data[0].profile_picture_url} alt="No Profile Photo" />
@@ -69,10 +103,10 @@ const MentorPage = () => {
                 {
                     data.data[0].students.length > 0 ? (
                         data.data[0].students.map((student, index) => (
-                            <div className={styles.studentList} key={index}>
+                            <div className={styles.studentList} key={index} >
                                 <div>
                                     <span className={styles.studentAvatar}>
-                                    <Avatar name={student.email} src='' bg={getRandomLightColor()}/>
+                                        <Avatar name={student.email} src='' bg={getRandomLightColor()} />
                                     </span>
                                 </div>
                                 <div className={styles.studentName}>{student.rollno}</div>

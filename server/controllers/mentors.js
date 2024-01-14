@@ -334,14 +334,14 @@ const removeMentor = async (req, res) => {
         const email = req.body.email;
         const existing_mentor = await Mentor.findOne({email, isActive: true});
         if (!existing_mentor){
-            return res.status(400).json({ success: false, msg: `No Mentor Found` });
+            return res.status(200).json({ success: false, msg: `No Mentor Found` });
         }
         if (existing_mentor.students.length > 0){
-            return res.status(500).json({ success: false, msg: `Cannot Delete Mentor. First Unassign All the Students` });
+            return res.status(200).json({ success: false, msg: `Cannot Delete Mentor. First Unassign All the Students` });
         }
         const mentor = await Mentor.findOneAndUpdate({email}, {isActive: false}, {new: true}).exec();
         if (!mentor){
-            return res.status(400).json({ success: false, msg: `${email} not found !` });
+            return res.status(200).json({ success: false, msg: `${email} not found !` });
         }
         return res.status(200).json({ success: true, msg: "Deleted Mentor Successfully" });
     } catch (error) {

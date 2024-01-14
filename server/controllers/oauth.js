@@ -177,7 +177,7 @@ const getUserWithAccessToken = async (req, res) => {
         );
         const ticket = await oAuth2Client.verifyIdToken({ idToken: accessToken, audience: process.env.CLIENT_ID });
         const payload = ticket.getPayload();
-        console.log(payload);
+        // console.log(payload);
 
         const currentTimestamp = Date.now(); // current timestamp in milliseconds
         const givenTimestampInSeconds = payload.exp; // the timestamp to compare in seconds

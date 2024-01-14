@@ -118,12 +118,14 @@ const AssignStudent = ({ mentor_sub_id, mentor_email }) => {
 
     return (
         <>
-            <Button leftIcon={<AddIcon />} color={colors.font} bg={colors.hover} onClick={() => {
-                fetchStudents();
-                return onOpen();
-            }}>
-                Add Student
-            </Button>
+            <Tooltip label='Assign Student to this Mentor' placement='left'>
+                <Button leftIcon={<AddIcon />} color={colors.font} bg={colors.hover} onClick={() => {
+                    fetchStudents();
+                    return onOpen();
+                }}>
+                    Add Student
+                </Button>
+            </Tooltip>
             <Drawer isOpen={isOpen} placement='right' initialFocusRef={firstField} onClose={onClose}>
                 <DrawerOverlay />
                 <DrawerContent color={colors.font} bg={colors.secondary}>
@@ -157,7 +159,7 @@ const AssignStudent = ({ mentor_sub_id, mentor_email }) => {
                         </Stack>
                         <Box position='relative' padding='9'>
                             <Divider />
-                            <AbsoluteCenter px='4' color={'#fff'} bg={colors.primary} style={{borderRadius: '10px'}}>
+                            <AbsoluteCenter px='4' color={'#fff'} bg={colors.primary} style={{ borderRadius: '10px' }}>
                                 Students
                             </AbsoluteCenter>
                         </Box>
