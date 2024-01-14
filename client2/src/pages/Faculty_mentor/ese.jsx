@@ -438,6 +438,7 @@ const Progress = () => {
                             type="file"
                             onChange={handleFileChange}
                             className="hidden" 
+                            accept=".pdf" 
 
 
                         />

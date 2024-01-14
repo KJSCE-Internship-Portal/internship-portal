@@ -66,6 +66,7 @@ const Certificate = () => {
                             type="file"
                             onChange={handleFileChange}
                             className="hidden"
+                            accept=".pdf" 
                         />
                     </label>
                 </div>
