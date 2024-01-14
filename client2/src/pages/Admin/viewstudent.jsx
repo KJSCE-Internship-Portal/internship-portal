@@ -71,7 +71,7 @@ const StudentList = () => {
     <h1 className={`text-xl font-bold mb-5 text-${colors.font}`}>Students List</h1>
     <Tabs variant='soft-rounded' isFitted colorScheme='green'>
         <TabList marginX={5} gap={3}>
-          <Tab bg={colors.hover} color={colors.font}>CS</Tab>
+          <Tab bg={colors.hover} color={colors.font}>COMPS</Tab>
           <Tab bg={colors.hover} color={colors.font}>IT</Tab>
           <Tab bg={colors.hover} color={colors.font}>MECH</Tab>
           <Tab bg={colors.hover} color={colors.font}>EXTC</Tab>
