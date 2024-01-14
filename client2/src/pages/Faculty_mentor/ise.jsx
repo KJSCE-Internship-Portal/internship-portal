@@ -441,6 +441,7 @@ const Progress = () => {
                         />
                     </label>
                 </div>
+                <p>*only pdf files are accepted</p>
                 {showFileModal && (
                 <Alert
                 onConfirm={handleFileSubmit}
