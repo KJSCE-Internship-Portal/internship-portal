@@ -80,10 +80,10 @@ const Work = () => {
                     style={{ backgroundColor: colors.secondary2, color: colors.font}}
                     onChange={(e) => {setWorkDone(e.target.value);
                         setCharCount(e.target.value.length);}}
-                        maxLength={5000}
+                        maxLength={350}
                     class="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-500"
                     placeholder="Write you work done..." required></textarea>
-                    <p>Character count: {charCount}/5000</p>
+                    <p>Character count: {charCount}/350</p>
             </div>
             <div class="flex justify-between items-center mb-3">
                 <h2 class={`text-lg lg:text-2xl font-bold text-${colors.font}`}>Enter your full name as your Signature for attendance:</h2>

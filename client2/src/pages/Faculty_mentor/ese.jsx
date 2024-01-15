@@ -414,10 +414,10 @@ const Progress = () => {
 
                             onChange={(e) => {setRemarks(e.target.value);
                                 setCharCount(e.target.value.length);}}
-                                maxLength={1000}
+                                maxLength={150}
                             class="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-500"
                             placeholder="Write a remark..."></textarea>
-                            <p>Character count: {charCount}/1000</p>
+                            <p>Character count: {charCount}/150</p>
                     </div>
                     {showDataModal && (
                         <Alert
