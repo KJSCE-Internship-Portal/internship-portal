@@ -283,7 +283,7 @@ const handleAddCoord = async () => {
           </Stat>
           <Stat bg="green.100" p={4} borderRadius="md">
             <StatLabel>Average Internship Duration</StatLabel>
-            <StatNumber>{Number(data.avgInternshipDuration[0].avgDuration).toFixed(2)}</StatNumber>
+            <StatNumber>{Number(data.avgInternshipDuration[0]?.avgDuration).toFixed(2)}</StatNumber>
             <StatHelpText>Duration displayed is in weeks</StatHelpText>
           </Stat>
           <Stat bg="pink.100" p={4} borderRadius="md">

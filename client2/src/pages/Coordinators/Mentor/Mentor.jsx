@@ -76,15 +76,15 @@ const MentorPage = () => {
 
             <div>
                 <span style={{ float: 'right', display: 'block' }}>
-                    <Tooltip label='Delete Mentor Permanently' placement='left'>
-                    {DeleteModal && (
+                {DeleteModal && (
                                     <Alert
                                     onConfirm={removeMentor}
                                     text={'Remove Mentor'}
                                     onClosec={() => setDeleteModal(false)}
-
                                     />
                         )}
+                    <Tooltip label='Delete Mentor Permanently' placement='left'>
+            
                         <Button
                             // isLoading
                             loadingText='Deleting'
