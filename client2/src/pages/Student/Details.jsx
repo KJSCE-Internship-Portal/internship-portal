@@ -25,6 +25,7 @@ const Details = () => {
     const [jobDescription, setJobDescription] = useState('');
     const [stipend, setStipend] = useState('');
     const [showDataModal, setshowDataModal] = useState(false);
+    const [charCount, setCharCount] = useState(0);
     const toast = useToast();
 
     const location = useLocation();
@@ -282,9 +283,13 @@ const Details = () => {
                         <div class="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
                             <label for="jobdesc" class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-black">Job Description<span class="text-red-500">*</span></label>
                             <textarea id="comment" rows="6" value={jobDescription}
-                                onChange={(e) => setJobDescription(e.target.value)}
+                                onChange={(e) => {setJobDescription(e.target.value);
+                                    setCharCount(e.target.value.length);}}
+                                    maxLength={350}
                                 class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                placeholder="Enter Description..." required></textarea>
+                                placeholder="Enter Description..." required>
+                                </textarea>
+                                <p>Character count: {charCount}/350</p>
                         </div>
                         <div class="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
                             <label for="stipend" class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-black">Stipend  (Leave Empty if N/A)</label>
@@ -293,7 +298,10 @@ const Details = () => {
                                 name="stipend"
                                 value={stipend}
                                 onChange={(e) => setStipend(e.target.value)}
+
+                                
                             />
+
                         </div>
                         {showDataModal && (
                         <Alert
