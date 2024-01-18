@@ -28,7 +28,7 @@ import {
         <AlertDialog
           isOpen={isOpen}
           leastDestructiveRef={cancelRef}
-          onClose={onClose}
+          onClose={onClosec}
         >
           <AlertDialogOverlay>
             <AlertDialogContent>
