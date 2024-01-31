@@ -415,7 +415,7 @@ const handleAddCoord = async () => {
                 {showDataModal && (
                         <Alert
                         onConfirm={handleAddCoord}
-                        text={'Add mentor'}
+                        text={'Add Coordinator'}
                         onClosec={() => setshowDataModal(false)}
 
                         />)

@@ -25,6 +25,7 @@ import { url } from '../../../../Global/URL';
 import axios from 'axios';
 import { useTheme } from '../../../../Global/ThemeContext';
 import { getUserDetails } from '../../../../Global/authUtils';
+import Alert from '../../../../components/Alert/alert';
 import { useQuery } from '@chakra-ui/react';
 
 const slugify = (text) => {
@@ -48,6 +49,7 @@ const AssignStudent = ({ mentor_sub_id, mentor_email }) => {
     const firstField = React.useRef();
     const [user, setUser] = useState(false);
     const [listOfStudents, setListofStudents] = useState(false);
+    const [showDataModal, setshowDataModal] = useState(false);
 
     const validateEmail = () => {
         const emailRegex = /^[^\s@]+@somaiya\.edu$/;
@@ -200,7 +202,15 @@ const AssignStudent = ({ mentor_sub_id, mentor_email }) => {
                         <Button variant='outline' mr={3} onClick={onClose} color={colors.font} bg={colors.hover}>
                             Cancel
                         </Button>
-                        <Button colorScheme='blue' onClick={handleAddStudent} color={colors.secondary} bg={colors.primary}>
+                        {showDataModal && (
+                        <Alert
+                        onConfirm={handleAddStudent}
+                        text={'Add student'}
+                        onClosec={() => setshowDataModal(false)}
+
+                        />)
+                        }
+                        <Button colorScheme='blue' onClick={()=>setshowDataModal(true)} color={colors.secondary} bg={colors.primary}>
                             Add
                         </Button>
                     </DrawerFooter>
