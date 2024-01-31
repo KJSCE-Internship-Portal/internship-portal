@@ -7,6 +7,7 @@ import axios from 'axios';
 import showToast from '../../../../../Global/Toast';
 import { useToast } from '@chakra-ui/react';
 import { getUserDetails } from '../../../../../Global/authUtils';
+import Alert from '../../../../../components/Alert/alert';
 
 const AddMentors = () => {
   const [csvData, setCsvData] = useState([]);
@@ -14,6 +15,7 @@ const AddMentors = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [user, setUser] = useState();
   const toast = useToast();
+  const [showDataModal, setshowDataModal] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -176,9 +178,17 @@ const AddMentors = () => {
 
 
       </div>
+      {showDataModal && (
+                        <Alert
+                        onConfirm={uploadExcel}
+                        text={'Upload Excel'}
+                        onClosec={() => setshowDataModal(false)}
+
+                        />)
+                        }
       {
         errors.length == 0 && (
-          <button onClick={uploadExcel} style={{ width: '100%', border: 'none', height: '30px', marginTop: '20px', backgroundColor: '#b4f7ab', borderRadius: '15px', border: 'solid 0.5px #555' }}>Upload Excel</button>
+          <button onClick={()=>setshowDataModal(true)} style={{ width: '100%', border: 'none', height: '30px', marginTop: '20px', backgroundColor: '#b4f7ab', borderRadius: '15px', border: 'solid 0.5px #555' }}>Upload Excel</button>
         )
       }
     </div>

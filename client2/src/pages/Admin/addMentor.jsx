@@ -24,6 +24,7 @@ import { useToast } from '@chakra-ui/react';
 import { url } from '../../Global/URL';
 import axios from 'axios';
 import { getUserDetails } from '../../Global/authUtils';
+import Alert from '../../components/Alert/alert';
 
 const AddMentor = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -37,6 +38,7 @@ const AddMentor = () => {
     const [department, setDepartment] = useState('');
     const firstField = React.useRef();
     const [user, setUser] = useState(false);
+    const [showDataModal, setshowDataModal] = useState(false);
 
 
     const validateEmail = () => {
@@ -184,7 +186,15 @@ const AddMentor = () => {
                         <Button variant='outline' mr={3} onClick={onClose} color={colors.font} bg={colors.hover}>
                             Cancel
                         </Button>
-                        <Button colorScheme='blue' onClick={handleAddMentor} color={colors.secondary} bg={colors.primary}>
+                        {showDataModal && (
+                        <Alert
+                        onConfirm={handleAddMentor}
+                        text={'Add mentor'}
+                        onClosec={() => setshowDataModal(false)}
+
+                        />)
+                        }
+                        <Button colorScheme='blue' onClick={()=>setshowDataModal(true)} color={colors.secondary} bg={colors.primary}>
                             Add
                         </Button>
                     </DrawerFooter>
