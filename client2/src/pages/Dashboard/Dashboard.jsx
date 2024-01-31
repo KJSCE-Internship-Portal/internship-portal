@@ -35,6 +35,7 @@ import { url } from '../../Global/URL';
 import {useTheme} from '../../Global/ThemeContext';
 import showToast from '../../Global/Toast';
 import AddMentor from '../Admin/addMentor';
+import Alert from '../../components/Alert/alert';
 
 const Dashboard = () => {
 
@@ -51,6 +52,7 @@ const Dashboard = () => {
   const [department, setDepartment] = useState('');
   const [emailError, setEmailError] = useState('');
   const [contactNoError, setContactNoError] = useState('');
+  const [showDataModal, setshowDataModal] = useState(false);
   const toast = useToast();
   const firstField = React.useRef();
   const {theme: colors} = useTheme();
@@ -410,7 +412,15 @@ const handleAddCoord = async () => {
                 <Button variant='outline' mr={3} onClick={onClose} color={colors.font} bg={colors.hover}>
                     Cancel
                 </Button>
-                <Button colorScheme='blue' onClick={handleAddCoord} color={colors.secondary} bg={colors.primary}>
+                {showDataModal && (
+                        <Alert
+                        onConfirm={handleAddCoord}
+                        text={'Add mentor'}
+                        onClosec={() => setshowDataModal(false)}
+
+                        />)
+                        }
+                <Button colorScheme='blue' onClick={()=>setshowDataModal(true)} color={colors.secondary} bg={colors.primary}>
                     Add
                 </Button>
             </DrawerFooter>
