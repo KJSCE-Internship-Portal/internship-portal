@@ -20,6 +20,7 @@ router.get("/logout", controllerOAuth.logoutUser);
 router.get("/mentors/all", controllerMentor.getAllMentors);
 router.get("/announcements/all", controllerAdmin.getAllAnnouncements);
 router.get("/coordinators/all", controllerCoordinator.getAllCoordinators);
+router.get("/download-template", controllerCoordinator.downloadCSVTemplate);
 
 
 

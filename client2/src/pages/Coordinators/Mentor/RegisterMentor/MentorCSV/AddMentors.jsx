@@ -44,6 +44,29 @@ const AddMentors = () => {
     }
   }
 
+  const downloadTemplate = async () => {
+    try {
+      const response = await axios.get(url + '/download-template', {
+        responseType: 'blob' // Specify the response type as blob
+      });  
+      const blobUrl = window.URL.createObjectURL(new Blob([response.data]));
+
+      // Create a temporary link element
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.setAttribute('download', 'faculty-upload-template.xlsx'); // Set the filename
+
+      // Append the link to the body and click it
+      document.body.appendChild(link);
+      link.click();
+
+      // Cleanup
+      link.parentNode.removeChild(link);
+    } catch (error) {
+      showToast(toast, "Error", 'error', "Something wen't Wrong");
+    }
+  }
+
   const onDrop = useCallback((acceptedFiles) => {
     const file = acceptedFiles[0];
     setSelectedFile(file); // Update the selected file state
@@ -191,6 +214,7 @@ const AddMentors = () => {
           <button onClick={()=>setshowDataModal(true)} style={{ width: '100%', border: 'none', height: '30px', marginTop: '20px', backgroundColor: '#b4f7ab', borderRadius: '15px', border: 'solid 0.5px #555' }}>Upload Excel</button>
         )
       }
+      <button onClick={()=>downloadTemplate()} style={{ width: '100%', border: 'none', height: '30px', marginTop: '20px', backgroundColor: '#b4f7ab', borderRadius: '15px', border: 'solid 0.5px #555' }}>Download Template</button>
     </div>
   );
 };

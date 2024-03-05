@@ -31,7 +31,7 @@ import { Chart } from 'react-google-charts';
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 import { getUserDetails } from '../../Global/authUtils';
-import { url } from '../../Global/URL';
+import { url, c_url } from '../../Global/URL';
 import {useTheme} from '../../Global/ThemeContext';
 import showToast from '../../Global/Toast';
 import AddMentor from '../Admin/addMentor';
@@ -172,13 +172,13 @@ const handleAddCoord = async () => {
   // Data and options for the pie chart
 
   const viewstudent = async () => {
-    window.location.href="http://localhost:3000/admin/dashboard/viewstudent";
+    window.location.href= c_url + "admin/dashboard/viewstudent";
   }
   const viewmentor = async () => {
-    window.location.href="http://localhost:3000/admin/dashboard/viewmentor";
+    window.location.href= c_url + "admin/dashboard/viewmentor";
   }
   const viewcoord = async () => {
-    window.location.href="http://localhost:3000/admin/dashboard/viewcoordinator";
+    window.location.href= c_url + "admin/dashboard/viewcoordinator";
   }
 
   const pieOptions = {
@@ -293,11 +293,11 @@ const handleAddCoord = async () => {
             <StatNumber>{data.assignedStudents}</StatNumber>
             <StatHelpText>Students being mentored currently</StatHelpText>
           </Stat>
-          <Stat bg="orange.100" p={4} borderRadius="md">
+          {/* <Stat bg="orange.100" p={4} borderRadius="md">
             <StatLabel>Review Completed</StatLabel>
             <StatNumber>35</StatNumber>
             <StatHelpText>This is Static for now</StatHelpText>
-          </Stat>
+          </Stat> */}
         </SimpleGrid>
 
         <Box mt={10}>
@@ -321,7 +321,7 @@ const handleAddCoord = async () => {
                 options={pieOptions}
               />
             </Box>
-            <Box bg="white" p={5} shadow="md" borderRadius="md">
+            {/* <Box bg="white" p={5} shadow="md" borderRadius="md">
               <Chart
                 chartType="BarChart"
                 width="100%"
@@ -340,7 +340,7 @@ const handleAddCoord = async () => {
                 options={lineOptions}
                 chartPackages={['corechart', 'line']}
               />
-            </Box>
+            </Box> */}
           </SimpleGrid>
         </Box>
       </Box>

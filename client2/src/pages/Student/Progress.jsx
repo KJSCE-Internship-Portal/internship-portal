@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useTheme } from '../../Global/ThemeContext';
 import axios from 'axios';
-import { url } from '../../Global/URL';
+import { url,c_url } from '../../Global/URL';
 import showToast from '../../Global/Toast';
 import { useToast } from '@chakra-ui/react';
 import { color } from "framer-motion";
@@ -50,7 +50,7 @@ const Progress = () => {
                 showToast(toast, 'Error', 'error', response.data.msg);
             }
             setTimeout(() => {
-                window.location.href = 'http://localhost:3000/student/progress/view'; 
+                window.location.href = c_url + 'student/progress/view'; 
               }, 2000);
             if (response.ok) {
                 console.log('Data successfully submitted to the backend!');

@@ -5,7 +5,7 @@ import showToast from '../../Global/Toast';
 import { useToast } from '@chakra-ui/react';
 import axios from 'axios';
 import { Card, CardHeader, CardBody, CardFooter, Avatar, AvatarBadge } from '@chakra-ui/react'
-import { url } from '../../Global/URL';
+import { url, c_url } from '../../Global/URL';
 import StudentDrawer from './studentdrawer.jsx';
 import MentorDrawer from '../Admin/mentordrawer.jsx';
 
@@ -31,7 +31,7 @@ const InternshipPlatform = () => {
   const trackUser = (studentInfo) => {
     console.log(`APPROVED USER`);
     localStorage.setItem('student', studentInfo);
-    window.location.href = 'http://localhost:3000/mentor/studentprogress';
+    window.location.href = c_url + 'mentor/studentprogress';
   }
 
   const { theme: colors } = useTheme();

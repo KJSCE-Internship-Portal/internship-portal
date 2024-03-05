@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Avatar, AvatarBadge } from '@chakra-ui/react';
-import {url} from '../../Global/URL';
+import {url, c_url} from '../../Global/URL';
 import showToast from '../../Global/Toast';
 import { useToast } from '@chakra-ui/react';
 import Alert from '../../components/Alert/alert';
@@ -81,7 +81,7 @@ const Details = () => {
                 console.log('Data successfully submitted to the backend!');
                 showToast(toast, 'Success', 'success', 'Data Submitted...Redirecting...');
                 setTimeout(() => {
-                    window.location.href = 'http://localhost:3000/login'; 
+                    window.location.href = c_url + 'login'; 
                   }, 500);
             } else {
                 console.error('Failed to submit data to the backend.');
@@ -117,7 +117,7 @@ const Details = () => {
                         <div class="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
                             <label for="rollno" class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-black">Email<span class="text-red-500">*</span></label>
                             <input class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                type="text"
+                                type="email"
                                 name="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
@@ -128,7 +128,7 @@ const Details = () => {
                         <div class="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
                             <label for="rollno" class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-black">Contact No.<span class="text-red-500">*</span></label>
                             <input class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                type="tel"
+                                type="number"
                                 name="phone"
                                 value={phone}
                                 onChange={(e) => setPhone(e.target.value)}
@@ -138,7 +138,7 @@ const Details = () => {
                         <div class="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
                             <label for="rollno" class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-black">Roll. No.<span class="text-red-500">*</span></label>
                             <input class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                type="text"
+                                type="number"
                                 name="rollno"
                                 value={rollno}
                                 onChange={(e) => setRollNo(e.target.value)}

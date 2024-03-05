@@ -71,7 +71,7 @@ const callbackCheck = async (req, res) => {
 
         const found = await findPersonBySubId(email);
         if (found) {
-            if (found._doc.isApproved) {
+            if (found._doc.isApproved && found._doc.isActive) {
                 var updatedUser = await Student.findOneAndUpdate(
                     {email},
                     { $set: {
@@ -144,7 +144,7 @@ const callbackCheck = async (req, res) => {
                 return res.redirect(redirectURL);
 
             } else {
-                res.send("NOT APPROVED YET !");
+                return res.redirect(`${process.env.CLIENT_URL}/error`);
             }
         }
         else {

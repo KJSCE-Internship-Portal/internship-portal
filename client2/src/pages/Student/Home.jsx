@@ -23,7 +23,7 @@ import {
 } from '@chakra-ui/react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { url } from '../../Global/URL';
+import { url, c_url } from '../../Global/URL';
 
 const FramePage = () => {
   const { theme: colors } = useTheme();
@@ -68,7 +68,7 @@ const FramePage = () => {
           late: currentDate > new Date(progressData[currentWeekIndex].endDate),
         };
         localStorage.setItem('week', JSON.stringify(weekData));
-        const weekURL = 'http://localhost:3000/student/progress';
+        const weekURL = c_url + 'student/progress';
         window.location.href = weekURL;
       } else if (progressData[currentWeekIndex].status === 'Submitted') {
         const weekData = {
@@ -76,7 +76,7 @@ const FramePage = () => {
           late: false,
         };
         localStorage.setItem('week', JSON.stringify(weekData));
-        const weekURL = 'http://localhost:3000/student/progress/view';
+        const weekURL = c_url + 'student/progress/view';
         window.location.href = weekURL;
       }
     } else {
@@ -87,7 +87,7 @@ const FramePage = () => {
   const handleCompletionSubmission = async () => {
     if(allWeeksDone) {
       if(onTimeSubmission + lateSubmission == totalWeeks){
-        window.location.href = 'http://localhost:3000/student/certificate/submission';
+        window.location.href =  c_url + 'student/certificate/submission';
         // setAllSubmissionsDone(true);
       }
       // if(allSubmissionsDone) {
@@ -133,11 +133,11 @@ const FramePage = () => {
   const handleSubmit1 = async () => {
     const currentDate = new Date().toISOString().split('T')[0];
     if(sign1!=''){
-      window.location.href="http://localhost:3000/student/ise/view";
+      window.location.href= c_url+ "student/ise/view";
     }
     else{
       if(new Date(iseDate).toISOString().split('T')[0] == currentDate) {
-        window.location.href="http://localhost:3000/student/ise/workdone";
+        window.location.href = c_url + "student/ise/workdone";
       }
       else {
         showToast(toast, 'Error', 'error', `${new Date(iseDate).toISOString().split('T')[0] === '1970-01-01' ? `ISE Date not Set` : `Can submit ISE Work Done on ${new Date(iseDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`}`);
@@ -148,11 +148,11 @@ const FramePage = () => {
   const handleSubmit2 = async () => {
     const currentDate = new Date().toISOString().split('T')[0];
     if(sign2!=''){
-      window.location.href="http://localhost:3000/student/ese/view";
+      window.location.href = c_url + "student/ese/view";
     }
     else{
       if(new Date(eseDate).toISOString().split('T')[0] == currentDate) {
-        window.location.href="http://localhost:3000/student/ese/workdone";
+        window.location.href = c_url + "student/ese/workdone";
       }
       else {
         showToast(toast, 'Error', 'error', `${new Date(eseDate).toISOString().split('T')[0] === '1970-01-01' ? `ESE Date not Set` : `Can submit ESE Work Done on ${new Date(eseDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`}`);

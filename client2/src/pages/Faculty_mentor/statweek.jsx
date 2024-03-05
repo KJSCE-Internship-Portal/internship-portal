@@ -2,10 +2,8 @@ import React, { useState } from "react";
 import { useEffect } from 'react';
 import { useTheme } from '../../Global/ThemeContext';
 import showToast from '../../Global/Toast';
-import { useToast } from '@chakra-ui/react';
-import {
-  Card,
-} from '@chakra-ui/react'
+import { useToast, Card } from '@chakra-ui/react';
+import { url, c_url } from '../../Global/URL';
 
 const StatWeek = () => {
   const { theme: colors } = useTheme();
@@ -13,7 +11,7 @@ const StatWeek = () => {
   function generateWeekURL(week) {
     if (week.status == 'Submitted') {
       localStorage.setItem('week', week.week);
-      const weekURL = 'http://localhost:3000/mentor/studentprogress/feedback';
+      const weekURL = c_url + 'mentor/studentprogress/feedback';
       window.location.href = weekURL;
     }
     else if (week.status == 'Not Submitted') {
