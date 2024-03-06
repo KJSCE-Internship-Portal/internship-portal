@@ -175,7 +175,7 @@ const Details = () => {
                                 required
                             >
                                 <option value="" disabled>Select Semester</option>
-                                <option value="7" hidden>7</option>
+                                {/* <option value="7" hidden>7</option> */}
                                 <option value="8">8</option>
                             </select>
                             </div>
