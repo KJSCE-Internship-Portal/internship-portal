@@ -87,10 +87,10 @@ const MentorList = () => {
             {mentors && renderMentorList(mentors, "Mechanical Engineering", openDrawer, colors)}
           </TabPanel>
           <TabPanel>
-            {mentors && renderMentorList(mentors, "Electronics and Telecommunication", openDrawer, colors)}
+            {mentors && renderMentorList(mentors, "Electronics & Telecommunication Engineering", openDrawer, colors)}
           </TabPanel>
           <TabPanel>
-            {mentors && renderMentorList(mentors, "Electronics", openDrawer, colors)}
+            {mentors && renderMentorList(mentors, "Electronics Engineering", openDrawer, colors)}
           </TabPanel>
         </TabPanels>
       </Tabs>

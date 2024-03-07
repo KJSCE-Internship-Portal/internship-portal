@@ -30,20 +30,20 @@ const Navbar = () => {
     };
   }, []);
 
-  // const options = [
-  //   {
-  //     name: "Internships",
-  //     link: '/internships/browse'
-  //   },
-  //   {
-  //     name: "Courses",
-  //     link: "/courses/browse/all"
-  //   },
-  //   {
-  //     name: "Contact Us",
-  //     link: false
-  //   }
-  // ]
+  const options = [
+    // {
+    //   name: "Internships",
+    //   link: '/internships/browse'
+    // },
+    // {
+    //   name: "Courses",
+    //   link: "/courses/browse/all"
+    // },
+    // {
+    //   name: "Contact Us",
+    //   link: false
+    // }
+  ]
 
   const sideBarOptions = [
     {
@@ -51,21 +51,21 @@ const Navbar = () => {
       name: "Home",
       link: "/"
     },
-    {
-      icon: <FaRocket />,
-      name: "Explore",
-      link: "/explore"
-    },
-    {
-      icon: <FaThLarge />,
-      name: "Application",
-      link: "/my-internships"
-    },
-    {
-      icon: <FaRocket />,
-      name: "Profile",
-      link: '/my-profile-settings'
-    }
+    // {
+    //   icon: <FaRocket />,
+    //   name: "Explore",
+    //   link: "/explore"
+    // },
+    // {
+    //   icon: <FaThLarge />,
+    //   name: "Application",
+    //   link: "/my-internships"
+    // },
+    // {
+    //   icon: <FaRocket />,
+    //   name: "Profile",
+    //   link: '/my-profile-settings'
+    // }
 
 
   ]
@@ -90,10 +90,10 @@ const Navbar = () => {
                 ))
 
               }
-              <div className={sidebarStyles.listItem} onClick={toggleTheme}>
+              {/* <div className={sidebarStyles.listItem} onClick={toggleTheme}>
                 <span className={sidebarStyles.iconContainer}><FaSun /></span>
                 Change Theme
-              </div>
+              </div> */}
               <div className={sidebarStyles.listItem} onClick={logout}>
                 <span className={sidebarStyles.iconContainer}><FaSignOutAlt /></span>
                 Logout
@@ -122,7 +122,7 @@ const Navbar = () => {
 
         </div>
 
-        {/* <div style={{ maxHeight: smallNav ? '30px' : '0px', height: smallNav ? '30px' : '0px', backgroundColor: colors.secondary, display: 'flex', justifyContent: 'center', position: 'relative' }}>
+        <div style={{ maxHeight: smallNav ? '30px' : '0px', height: smallNav ? '30px' : '0px', backgroundColor: colors.secondary, display: 'flex', justifyContent: 'center', position: 'relative' }}>
           {(menu && isLoggedIn) &&
             (showMenu ? <FaTimes style={{ color: colors.font, position: 'absolute', left: '15px', top: '5px' }} onClick={() => { setShowMenu(!showMenu) }} /> : < FaStream style={{ color: colors.font, position: 'absolute', left: '15px', top: '5px' }} onClick={() => { setShowMenu(!showMenu) }} />)}
 
@@ -137,7 +137,7 @@ const Navbar = () => {
               ))
             }
           </div>
-        </div> */}
+        </div>
 
       </div>
     </>

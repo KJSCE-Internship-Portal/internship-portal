@@ -4,7 +4,7 @@ import { useTheme } from '../../Global/ThemeContext';
 import showToast from '../../Global/Toast';
 import { useToast } from '@chakra-ui/react';
 import axios from 'axios';
-import { url } from '../../Global/URL';
+import { url, c_url } from '../../Global/URL';
 
 const Work = () => {
     const [name, setName] = useState('');
@@ -42,7 +42,7 @@ const Work = () => {
                 showToast(toast, 'Error', 'error', response.data.msg);
             }
             setTimeout(() => {
-                window.location.href = 'http://localhost:3000/student/ise/view'; 
+                window.location.href = c_url + 'student/ise/view'; 
               }, 2000);
         } catch(error){
             console.log(error);

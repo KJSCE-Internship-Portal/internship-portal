@@ -20,7 +20,7 @@ import {
     StatGroup,
 } from '@chakra-ui/react'
 import axios from 'axios';
-import { url } from '../../Global/URL';
+import { url, c_url } from '../../Global/URL';
 import Alert from '../../components/Alert/alert';
 
 const Progress = () => {
@@ -108,7 +108,7 @@ const Progress = () => {
             showToast(toast, 'Error', 'error', 'File Not Uploaded');
         }
         setTimeout(() => {
-            window.location.href = 'http://localhost:3000/mentor/studentprogress';
+            window.location.href = c_url + 'mentor/studentprogress';
         }, 2000);
     }
 

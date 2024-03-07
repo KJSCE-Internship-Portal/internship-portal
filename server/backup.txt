@@ -1,0 +1,99 @@
+const express = require("express");
+const https = require("https");
+const fs = require("fs");
+const dotenv = require("dotenv").config({ path: './config.env'});
+const app = express();
+const http = require('http');
+const colors = require("colors");
+const cors = require('cors');
+const path = require('path');
+const router = require("./routes/router")
+const connectDB = require("./database/db");
+const cookieParser = require('cookie-parser');
+
+// Initiall Set Up
+app.use(express.json());
+app.use(cors());
+app.use(cookieParser());
+app.use('/imgs', express.static(path.join(__dirname, 'imgs')));
+app.use("/api",router);
+
+// Connecting to Database
+connectDB()
+
+var options = {
+    // key: fs.readFileSync('c3976ebe92e975c9.pem', 'utf-8').toString(),
+    cert: fs.readFileSync('c3976ebe92e975c9.crt', 'utf-8').toString(),
+    ca: [fs.readFileSync('ca1.crt', 'utf-8').toString(),fs.readFileSync('ca2.crt', 'utf-8').toString(),fs.readFileSync('ca3.crt', 'utf-8').toString()]
+  };
+
+const PORT = process.env.PORT || 5000;
+
+const httpServer = http.createServer(app);
+const httpsServer = https.createServer(options, app);
+
+httpServer.listen(5001, (req, res) => {
+    console.log(`Server running on Port ${5001}`.yellow.bold);
+});
+
+httpsServer.listen(PORT, (req, res) => {
+    console.log(`Server running on Port ${PORT}`.yellow.bold);
+});
+
+// This is just for testing. Visit: http://sli-kjsce.somaiya.edu:5001/ OR https://sli-kjsce.somaiya.edu:5000/
+app.get('/', (req, res) => {
+    res.send('<h1>Welcome to My Website</h1>');
+});
+
+
+___________
+
+const express = require("express");
+const https = require("https");
+const fs = require("fs");
+const dotenv = require("dotenv").config({ path: './config.env'});
+const app = express();
+const colors = require("colors");
+const cors = require('cors');
+const path = require('path');
+const router = require("./routes/router")
+const connectDB = require("./database/db");
+const cookieParser = require('cookie-parser');
+
+// Initiall Set Up
+app.use(express.json());
+app.use(cors());
+app.use(cookieParser());
+app.use('/imgs', express.static(path.join(__dirname, 'imgs')));
+app.use("/api",router);
+
+// Connecting to Database
+connectDB()
+
+// HTTPS options
+const httpsOptions = {
+    key: fs.readFileSync('./_.somaiya.edu/server.key', 'utf8'), // Your SSL key
+    certificate: fs.readFileSync('./_.somaiya.edu/c3976ebe92e975c9.crt', 'utf8'), // Your SSL certificate
+    // ca: [fs.readFileSync('./_.somaiya.edu/gd_bundle-g2-g1.crt')], // CA bundle
+    ca: [fs.readFileSync('./_.somaiya.edu/ca1.crt', 'utf-8').toString(),fs.readFileSync('./_.somaiya.edu/ca2.crt', 'utf-8').toString(),fs.readFileSync('./_.somaiya.edu/ca3.crt', 'utf-8').toString()]
+};
+// const privateKey  = filesystem.readFileSync('./_.somaiya.edu/c3976ebe92e975c9.pem', 'utf8');
+// const certificate = filesystem.readFileSync('./_.somaiya.edu/c3976ebe92e975c9.crt', 'utf8');
+
+// const credentials = {key: privateKey, cert: certificate};
+// const httpsServer = https.createServer( httpsOptions, app);
+
+// Starting the serveron Localhost
+const PORT = process.env.PORT || 5000;
+// const HOST = 'sli-kjsce.somaiya.edu';
+// app.listen(PORT, (req, res) => {
+//     console.log(`Server running on Port ${PORT}`.yellow.bold);
+// });
+
+https.createServer(httpsOptions, app).listen(PORT, () => {
+    console.log(`Server running on Port ${PORT} with HTTPS`.yellow.bold);
+});
+
+
+
+

@@ -88,10 +88,10 @@ const StudentList = () => {
             {students && renderStudentList(students, "Mechanical Engineering", openDrawer, colors)}
           </TabPanel>
           <TabPanel>
-            {students && renderStudentList(students, "Electronics and Telecommunication", openDrawer, colors)}
+            {students && renderStudentList(students, "Electronics & Telecommunication Engineering", openDrawer, colors)}
           </TabPanel>
           <TabPanel>
-            {students && renderStudentList(students, "Electronics", openDrawer, colors)}
+            {students && renderStudentList(students, "Electronics Engineering", openDrawer, colors)}
           </TabPanel>
         </TabPanels>
       </Tabs>

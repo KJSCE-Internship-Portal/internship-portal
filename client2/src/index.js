@@ -16,7 +16,7 @@ import axios from'axios';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 
-const BASE_URL = "http://localhost:5000/api"
+const BASE_URL = "http://sli-kjsce.somaiya.edu:5000/api"
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {

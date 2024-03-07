@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Navbar from "./components/navbar/Navbar";
 import SideBar from "./components/sidebar/SideBar";
 import Wrapper from './components/Wrapper/Wrapper';
+import ErrorPage from './components/error/ErrorPage.jsx';
 
 //Importing Pages
 import HomePage from './pages/Coordinators/Home/Home';
@@ -89,6 +90,7 @@ function App() {
 
               <Routes>
                 <Route path="/login" element={<Login />} />
+                <Route path="/error" element={<ErrorPage />} />
                 <Route path="/" element={<Login />} />
                 <Route path="/admin/dashboard" element={<PrivateRoute element={<Dashboard/>} />} />
                 <Route path="/coordinator/home" element={<PrivateRoute element={<HomePage />} />} />

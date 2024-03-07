@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import showToast from '../../Global/Toast';
 import { useToast } from '@chakra-ui/react';
 import axios from 'axios';
-import { url } from '../../Global/URL';
+import { url, c_url } from '../../Global/URL';
 
 const Certificate = () => {
     const [file, setFile] = useState('');
@@ -41,7 +41,7 @@ const Certificate = () => {
             showToast(toast, 'Error', 'error', 'File Not Uploaded');
         }
         setTimeout(() => {
-            window.location.href = 'http://localhost:3000/student/home'; 
+            window.location.href = c_url + 'student/home'; 
           }, 2000);
     }
 

@@ -351,6 +351,26 @@ const removeMentor = async (req, res) => {
 
 };
 
+const removeFaculty = async (req, res) => {
+
+    try {
+        const email = req.body.email;
+        const existing_mentor = await Mentor.findOne({email, isActive: true});
+        if (!existing_mentor){
+            return res.status(200).json({ success: false, msg: `No Mentor Found` });
+        }
+        const mentor = await Mentor.findOneAndDelete({email}).exec();
+        if (!mentor){
+            return res.status(200).json({ success: false, msg: `${email} not found !` });
+        }
+        return res.status(200).json({ success: true, msg: "Deleted Faculty Successfully" });
+    } catch (error) {
+        console.error(`Error: ${error.message}`);
+        return res.status(500).json({ success: false, msg: `Something Went Wrong ${error.message}` });
+    }
+
+};
+
 const scheduleEvaluation = async (req, res) => {  
     const data = req.body;
     const { sub_id, date, evaluation } = data;
@@ -412,5 +432,6 @@ module.exports = {
     uploadSignedDocument,
     getAllMentors,
     removeMentor,
+    removeFaculty,
     scheduleEvaluation
 };

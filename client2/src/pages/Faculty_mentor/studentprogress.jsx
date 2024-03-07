@@ -25,7 +25,7 @@ import {
   StatGroup,
 } from '@chakra-ui/react'
 import axios from 'axios';
-import { url } from '../../Global/URL';
+import { url, c_url } from '../../Global/URL';
 import StatWeek from './statweek.jsx';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -49,7 +49,7 @@ const Week = () => {
     // console.log(week.submitted);
     if (week.submitted == true) {
       localStorage.setItem('week', week.week);
-      const weekURL = 'http://localhost:3000/mentor/studentprogress/feedback';
+      const weekURL = c_url + 'mentor/studentprogress/feedback';
       window.location.href = weekURL;
     }
     else if (week.submitted == false) {
@@ -57,7 +57,7 @@ const Week = () => {
     }
     else if (week.status == 'Submitted') {
       localStorage.setItem('week', week.week);
-      const weekURL = 'http://localhost:3000/mentor/studentprogress/feedback';
+      const weekURL = c_url + 'mentor/studentprogress/feedback';
       window.location.href = weekURL;
     }
     else if (week.status == 'Not Submitted') {
@@ -77,11 +77,11 @@ const Week = () => {
   }
 
   const handleISEButtonClick = () => {
-    window.location.href = 'http://localhost:3000/mentor/studentprogress/evaluation/ise';
+    window.location.href = c_url + 'mentor/studentprogress/evaluation/ise';
   };
 
   const handleESEButtonClick = () => {
-    window.location.href = 'http://localhost:3000/mentor/studentprogress/evaluation/ese';
+    window.location.href = c_url + 'mentor/studentprogress/evaluation/ese';
   };
 
   const getEvaluationSheet = async (evaluation) => {
