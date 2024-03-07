@@ -11,7 +11,6 @@ const loginCoordinator = async (req, res) => {
         console.error(`Error: ${error.message}`);
         res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
     }
-
 };
 
 const assignStudent = async (req, res) => {
@@ -79,7 +78,7 @@ const removeAssignedStudent = async (req, res) => {
     try {
         const rollno = req.body.rollno;
         const mentor_email = req.body.mentor_email;
-
+      
         let student = await Student.findOne({ rollno }).exec();
 
         if (!student) {
@@ -104,6 +103,7 @@ const removeAssignedStudent = async (req, res) => {
         }
         // Remove the student from the mentor's students array
         mentor.students.splice(assignedStudentIndex, 1);
+        student.hasMentor = false;
 
         await mentor.save();
         await student.save();
@@ -122,14 +122,9 @@ const addMentor = async (req, res) => {
         const mentor = new Mentor(req.body);
         var existing_mentor = await Mentor.findOne({ email: req.body.email }).exec();
         var stu = await Student.findOne({email: req.body.email}).exec();
-        if (existing_mentor && existing_mentor.isActive) {
+        if (existing_mentor) {
             return res.status(201).json({ success: false, msg: `Mentor Already Exists` });
-        } else if (existing_mentor && !existing_mentor.isActive){
-            existing_mentor.isActive = true;
-            await existing_mentor.save(); // Save the updated existing mentor
-            return res.status(200).json({ success: true, msg: "Mentor Registered Successfully !" });
-          return res.status(200).json({ success: true, msg: "Mentor Registered Successfully !" });
-      } else if (!stu && !existing_mentor){
+        } else if (!stu && !existing_mentor){
             await mentor.save();
             return res.status(200).json({ success: true, msg: "Mentor Registered Successfully !" });
         } else if (stu && !existing_mentor){
@@ -166,18 +161,6 @@ const addMentors = async (req, res) => {
       console.error(`Error: ${error.message}`);
       res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
   }
-};
-
-const downloadCSVTemplate = async  (req, res) => {
-  try {
-      const filePath = './assets/faculty-upload-template.xlsx'
-      return res.download(filePath);
-      // return res.status(200).json({ success: true, msg: "Deleted Faculty Successfully" });
-  } catch (error) {
-      console.error(`Error: ${error.message}`);
-      return res.status(500).json({ success: false, msg: `Something Went Wrong ${error.message}` });
-  }
-
 };
 
 
@@ -457,6 +440,5 @@ module.exports = {
     addMentors,
     assignStudent,
     removeAssignedStudent,
-    downloadCSVTemplate,
     getStatisticsCoordinator
 };

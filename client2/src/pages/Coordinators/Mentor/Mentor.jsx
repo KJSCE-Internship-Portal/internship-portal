@@ -42,6 +42,21 @@ const MentorPage = () => {
                 .then(response => response.data),
     });
 
+    const unassignStudent = async (roll) => {
+        if (data && data.data[0].email){
+            try {
+                const res = await axios.post(url + '/coordinator/mentor/remove-assigned-student', { rollno: roll, mentor_email: data.data[0].email  });
+                if (res.data.success) {
+                    showToast(toast, 'Success', 'success', 'Student Unassigned');
+                } else {
+                    showToast(toast, 'Error', 'error', res.data.msg);
+                }
+            } catch (error) {
+                showToast(toast, 'Error', 'error', 'Something Went Wrong');
+            }
+        }
+    }
+
     const removeMentor = async () => {
         if (data && data.data[0].email){
             try {
@@ -120,6 +135,8 @@ const MentorPage = () => {
                                     </span>
                                 </div>
                                 <div className={styles.studentName}>{student.rollno}</div>
+                                <div className={styles.studentName} style={{marginLeft:"50px"}} onClick={() => {unassignStudent(student.rollno)}}>UN</div>
+
                             </div>
                         ))
                     ) : (
