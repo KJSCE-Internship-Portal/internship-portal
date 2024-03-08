@@ -159,7 +159,12 @@ const addMentors = async (req, res) => {
               const mentor = new Mentor({...mentorData, department});
               await mentor.save();
               count++;
-          } 
+          }
+
+          if (!stu && !existing_mentor.isActive) {
+              await Mentor.findOneAndUpdate({ email: mentorData.email }, { isActive: true });
+              count++;
+          }
       }
       return res.status(200).json({ success: count>0 ? true : false, msg: `${count} Mentors registered !` });
   } catch (error) {

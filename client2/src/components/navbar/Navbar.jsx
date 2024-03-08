@@ -7,6 +7,7 @@ import { setAuthToken, isAuthenticated, getUserDetails, logout } from '../../Glo
 import { useTheme } from '../../Global/ThemeContext';
 import { useNavigate } from 'react-router-dom';
 import StudentNotification from '../Notification/studentnotif';
+import { c_url } from '../../Global/URL.js';
 
 
 const Navbar = () => {
@@ -110,7 +111,7 @@ const Navbar = () => {
 
           <div className={styles.titleContainer}>
             <img src="https://myaccount.somaiya.edu/img/somaiya-vidyavihar-brand.svg" alt="" style={{maxHeight: '40px'}}/>
-            <p onClick={() => navigate('/')}></p>
+            <p onClick={() => navigate(c_url)}></p>
           </div>
 
           {

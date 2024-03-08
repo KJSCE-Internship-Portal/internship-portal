@@ -35,12 +35,15 @@ const AddMentors = () => {
       console.log(response.data);
       if (response.data.success) {
         showToast(toast, "Success", 'success', response.data.msg);
+        setshowDataModal(false);
       } else {
         showToast(toast, "Error", 'error', response.data.msg);
+        setshowDataModal(false);
       }
       setCsvData([]);
     } catch (error) {
       showToast(toast, "Error", 'error', "Something went Wrong");
+      setshowDataModal(false);
     }
   }
 

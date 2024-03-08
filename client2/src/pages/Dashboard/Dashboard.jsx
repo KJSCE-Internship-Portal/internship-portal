@@ -147,7 +147,32 @@ const handleAddCoord = async () => {
       setPieData([['Company', 'Number of Students']]);
       setBarData([['Department', 'Total Students']]);
       setPieData((x) => [...x, ...temp.topCompanies.map(company => [company._id, company.count])]);
-      setBarData((x) => [...x, ...temp.departmentWiseDistribution.map(company => [company._id, company.count])]);
+      // setBarData((x) => [...x, ...temp.departmentWiseDistribution.map(company => [company._id, company.count])]);
+
+      setBarData((x) => [
+        ...x,
+        ...temp.departmentWiseDistribution.map((company) => [
+          mapDepartment(company._id),
+          company.count,
+        ]),
+      ]);
+
+      function mapDepartment(department) {
+        switch (department) {
+          case "Information Technology":
+            return "IT";
+          case "Computer Engineering":
+            return "COMPS";
+          case "Mechanical Engineering":
+            return "MECH";
+          case "Electronics & Telecommunication Engineering":
+            return "EXTC";
+          case "Electronics Engineering":
+            return "ETRX";
+          default:
+            return department;
+        }
+      }
 
       return temp;
     },
