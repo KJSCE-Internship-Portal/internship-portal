@@ -433,6 +433,17 @@ const getAllCoordinators = async (req, res) => {
 
 };
 
+const downloadCSVTemplate = async  (req, res) => {
+  try {
+      const filePath = './assets/faculty-upload-template.xlsx'
+      return res.download(filePath);
+  } catch (error) {
+      console.error(`Error: ${error.message}`);
+      return res.status(500).json({ success: false, msg: `Something Went Wrong ${error.message}` });
+  }
+
+};
+
 module.exports = {
     loginCoordinator,
     getAllCoordinators,
@@ -440,5 +451,6 @@ module.exports = {
     addMentors,
     assignStudent,
     removeAssignedStudent,
+    downloadCSVTemplate,
     getStatisticsCoordinator
 };
