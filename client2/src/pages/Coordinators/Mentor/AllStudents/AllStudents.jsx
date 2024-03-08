@@ -297,6 +297,12 @@ const AllStudentsInDepartment = () => {
                                                                     <div style={{ fontSize: '17px', color: colors.font, fontWeight: 'bold' }}><span style={{ color: colors.primary }}>Contact No. :</span> {student.mentor.contact_no}</div>
 
                                                                 </div>}
+                                                                <div style={{ borderRadius: '10px', margin: '5px 0', backgroundColor: colors.secondary2, padding: '5px 1.5vw', display: 'flex', flexDirection: 'column' }}>
+                                                                <div style={{ color: colors.font }}>Company Details :</div>
+                                                                <div style={{ height: '10px' }}></div>
+                                                                    <div style={{ fontSize: '17px', color: colors.font, fontWeight: 'bold' }}><span style={{ color: colors.primary }}>Name:</span> {student.internships[0].company}</div>
+                                                                    <div style={{ fontSize: '17px', color: colors.font, fontWeight: 'bold' }}><span style={{ color: colors.primary }}>Description:</span> {student.internships[0].job_description}</div>
+                                                                </div>
                                                             </div>
                                                         </Box>
                                                     </Td>

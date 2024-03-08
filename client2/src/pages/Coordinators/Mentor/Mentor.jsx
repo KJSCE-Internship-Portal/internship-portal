@@ -27,8 +27,11 @@ const getRandomLightColor = () => {
     return color;
 };
 
+
 const MentorPage = () => {
     const [DeleteModal, setDeleteModal] = useState(false);
+    const [unassignModalState, setUnassignModalState] = useState({});
+    
     const { theme: colors } = useTheme();
     const { id } = useParams();
     const toast = useToast();
@@ -42,12 +45,20 @@ const MentorPage = () => {
                 .then(response => response.data),
     });
 
+    const openUnassignModal = (student) => {
+        setUnassignModalState(prevState => ({
+            ...prevState,
+            [student.rollno]: true // Set modal state for the specific student
+        }));
+    };
+
     const unassignStudent = async (roll) => {
         if (data && data.data[0].email){
             try {
                 const res = await axios.post(url + '/coordinator/mentor/remove-assigned-student', { rollno: roll, mentor_email: data.data[0].email  });
                 if (res.data.success) {
                     showToast(toast, 'Success', 'success', 'Student Unassigned');
+                    setUnassignModalState(false);
                 } else {
                     showToast(toast, 'Error', 'error', res.data.msg);
                 }
@@ -135,23 +146,41 @@ const MentorPage = () => {
                                     </span>
                                 </div>
                                 <div className={styles.studentName}>{student.rollno}</div>
-                                <div className={styles.studentName} style={{marginLeft:"50px"}} onClick={() => {unassignStudent(student.rollno)}}>UN</div>
+                                {/* <div className={styles.studentName} style={{marginLeft:"50px", border: "1px solid black", padding: "5px"}} onClick={() => {unassignStudent(student.rollno)}}>UNASSIGN</div> */}            
+                                <div className={styles.studentName} style={{ marginLeft: "50px", padding: "5px" }}>
+                                    <Button
+                                        loadingText='Unassigning'
+                                        variant='outline'
+                                        colorScheme='red'
+                                        onClick={() => openUnassignModal(student)}
+                                    >
+                                        UNASSIGN
+                                    </Button>
+                                </div>
 
-                            </div>
-                        ))
+                                {/* Alert component for unassign confirmation */}
+                                {unassignModalState[student.rollno] && (
+                                    <Alert
+                                        onConfirm={() => unassignStudent(student.rollno)}
+                                        text={'Unassign Student'}
+                                        onClosec={() => setUnassignModalState(prevState => ({
+                                            ...prevState,
+                                            [student.rollno]: false
+                                        }))}
+                                    />
+                                )}
+                                </div>
+                            ))
                     ) : (
-                        <div style={{ color: colors.font, fontStyle: 'italic', fontSize: '20px', height: '200px', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>No Students Allocated</div>
-                    )
+                            <div style={{ color: colors.font, fontStyle: 'italic', fontSize: '20px', height: '200px', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>No Students Allocated</div>
+                        )
                 }
-
 
             </div>
 
             <div className={styles.addStudentButtonContainer}>
                 <AssignStudent mentor_sub_id={id} mentor_email={data.data[0].email} />
             </div>
-
-
         </div>
     );
 };

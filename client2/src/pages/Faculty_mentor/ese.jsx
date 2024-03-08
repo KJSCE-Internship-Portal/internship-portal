@@ -446,7 +446,7 @@ const Progress = () => {
                             </svg>
                             <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
                                 <span className="font-semibold">
-                                    {file ? `Selected file: ${file.name}` : 'Click to upload or drag and drop'}
+                                    {file ? `Selected file: ${file.name}` : 'Click to upload'}
                                 </span>
                             </p>
                         </div>

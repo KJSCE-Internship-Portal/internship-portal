@@ -40,7 +40,7 @@ const AddMentors = () => {
       }
       setCsvData([]);
     } catch (error) {
-      showToast(toast, "Error", 'error', "Something wen't Wrong");
+      showToast(toast, "Error", 'error', "Something went Wrong");
     }
   }
 
@@ -63,7 +63,7 @@ const AddMentors = () => {
       // Cleanup
       link.parentNode.removeChild(link);
     } catch (error) {
-      showToast(toast, "Error", 'error', "Something wen't Wrong");
+      showToast(toast, "Error", 'error', "Something went Wrong");
     }
   }
 
