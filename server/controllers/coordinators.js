@@ -161,7 +161,7 @@ const addMentors = async (req, res) => {
               count++;
           }
 
-          if (!stu && !existing_mentor.isActive) {
+          else if (!stu && !existing_mentor.isActive) {
               await Mentor.findOneAndUpdate({ email: mentorData.email }, { isActive: true });
               count++;
           }
