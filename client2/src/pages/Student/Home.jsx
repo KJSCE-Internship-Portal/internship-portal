@@ -114,6 +114,20 @@ const FramePage = () => {
     }
   }
 
+  const handleOtherSubmission = async () => {
+    if (allWeeksDone) {
+      if (onTimeSubmission + lateSubmission == totalWeeks) {
+        window.location.href = c_url + 'student/other/submission';
+      }
+      else {
+        showToast(toast, 'Error', 'error', 'Week Submissions still pending');
+      }
+    } else {
+      showToast(toast, 'Error', 'error', 'Internship Duration not completed');
+    }
+  }
+  
+
   const getCertificate = async () => {
     try {
       const uint8Array = new Uint8Array(certificatePdfBuffer.data);
@@ -133,7 +147,19 @@ const FramePage = () => {
       const pdfUrl = URL.createObjectURL(blob);
       window.open(pdfUrl, '_blank');
     } catch (error) {
-      console.error('Error while getting certificate:', error);
+      console.error('Error while getting report:', error);
+      showToast(toast, 'Error', 'error', "Something Wen't Wrong");
+    }
+  }
+
+  const getOther = async () => {
+    try {
+      const uint8Array = new Uint8Array(otherPdfBuffer.data);
+      const blob = new Blob([uint8Array], { type: 'application/pdf' });
+      const pdfUrl = URL.createObjectURL(blob);
+      window.open(pdfUrl, '_blank');
+    } catch (error) {
+      console.error('Error while getting submission:', error);
       showToast(toast, 'Error', 'error', "Something Wen't Wrong");
     }
   }
@@ -153,8 +179,10 @@ const FramePage = () => {
   const [allWeeksDone, setAllWeeksDone] = useState(false);
   const [isCertificateNotSubmitted, setIsCertificateNotSubmitted] = useState(true);
   const [isReportNotSubmitted, setIsReportNotSubmitted] = useState(true);
+  const [isOtherNotSubmitted, setIsOtherNotSubmitted] = useState(true);
   const [certificatePdfBuffer, setCertificatePdfBuffer] = useState(null);
   const [reportPdfBuffer, setReportPdfBuffer] = useState(null);
+  const [otherPdfBuffer, setOtherPdfBuffer] = useState(null);
   const [sign1, setSign1] = useState(null);
   const [sign2, setSign2] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -249,6 +277,14 @@ const FramePage = () => {
           if (userInfo.internships[0].isCompleted && userInfo.internships[0].completion[0]?.pdf_buffer) {
             setIsCertificateNotSubmitted(false);
             setCertificatePdfBuffer(userInfo.internships[0].completion[0].pdf_buffer);
+          }
+          if (userInfo.internships[0].isSubmitted && userInfo.internships[0].report[0]?.pdf_buffer) {
+            setIsReportNotSubmitted(false);
+            setReportPdfBuffer(userInfo.internships[0].report[0].pdf_buffer);
+          }
+          if (userInfo.internships[0].isSubmittedOther && userInfo.internships[0].othersubmissions[0]?.pdf_buffer) {
+            setIsOtherNotSubmitted(false);
+            setOtherPdfBuffer(userInfo.internships[0].othersubmissions[0].pdf_buffer);
           }
           setISEDate(userInfo.internships[0].evaluation[0].scheduled_date);
           setESEDate(userInfo.internships[0].evaluation[1].scheduled_date);
@@ -446,6 +482,23 @@ const FramePage = () => {
               onClick={getReport}
             >
               View Submitted Report
+            </button>
+          )}
+          {isOtherNotSubmitted ? (
+            <button
+              type="submit"
+              className="flex-1 mt-5 text-white bg-red-400 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm sm:w-auto px-5 py-2.5 text-center"
+              onClick={handleOtherSubmission}
+            >
+              Other Outcome Submissions
+            </button>
+          ) : (
+            <button
+              type="submit"
+              className="flex-1 mt-5 text-white bg-red-400 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm sm:w-auto px-5 py-2.5 text-center"
+              onClick={getOther}
+            >
+              View Submission
             </button>
           )}
         </div>

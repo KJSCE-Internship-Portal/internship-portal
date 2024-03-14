@@ -29,6 +29,8 @@ import ViewMentor from './pages/Admin/viewmentor.jsx';
 import ViewCoord from './pages/Admin/viewcoordinator.jsx';
 import StudentProfile from './pages/Student/Profile.jsx';
 import CertificateSubmission from './pages/Student/Certificate.jsx';
+import ReportSubmission from './pages/Student/Report.jsx';
+import OtherSubmission from './pages/Student/OtherSubmission.jsx';
 import StatWeek from './pages/Faculty_mentor/statweek.jsx';
 import WorkDoneISE from './pages/Student/WorkDoneISE.jsx';
 import WorkDoneESE from './pages/Student/WorkDoneESE.jsx';
@@ -119,6 +121,14 @@ function App() {
                 <Route
                   path="/student/certificate/submission"
                   element={<PrivateRoute element={<CertificateSubmission />} />}
+                />
+                <Route
+                  path="/student/report/submission"
+                  element={<PrivateRoute element={<ReportSubmission />} />}
+                />
+                <Route
+                  path="/student/other/submission"
+                  element={<PrivateRoute element={<OtherSubmission />} />}
                 />
                 <Route
                   path="/student/profile"

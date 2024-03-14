@@ -116,6 +116,16 @@ const studentSchema = new mongoose.Schema({
                 required: false,
                 default: false
             },
+            isSubmitted: {
+                type: Boolean,
+                required: false,
+                default: false
+            },
+            isSubmittedOther: {
+                type: Boolean,
+                required: false,
+                default: false
+            },
             evaluation: [    // 0th index for ISE and 1st Index for ESE
                 {
                     mentor_name: {
@@ -236,6 +246,22 @@ const studentSchema = new mongoose.Schema({
                     pdf_buffer: {
                         type: Buffer,
                         required: true
+                    }
+                }
+            ],
+            report: [
+                {
+                    pdf_buffer: {
+                        type: Buffer,
+                        required: true
+                    }
+                }
+            ],
+            othersubmissions: [
+                {
+                    pdf_buffer: {
+                        type: Buffer,
+                        required: false
                     }
                 }
             ],

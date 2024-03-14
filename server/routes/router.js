@@ -33,6 +33,8 @@ router.post("/student/find", controllerStudent.getOneStudent);
 router.post("/student/approve", controllerStudent.approveStudent);
 router.post("/student/evaluation/add", controllerStudent.addWorkDone);
 router.post("/student/certificate/upload", upload.single('file'), controllerStudent.uploadCertificate);
+router.post("/student/report/upload", upload.single('file'), controllerStudent.uploadReport);
+router.post("/student/other/upload", upload.single('file'), controllerStudent.uploadOther);
 router.post("/mentor/comment/add", controllerMentor.addPrivateComments);
 router.post("/mentor/student/evaluation", controllerMentor.studentEvaluation);
 router.post("/mentor/student/evaluation/setdate", controllerMentor.scheduleEvaluation);

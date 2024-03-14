@@ -117,6 +117,10 @@ const Week = () => {
   const [esePdfBuffer, setESEPdfBuffer] = useState(null);
   const [isCertificateSubmitted, setIsCertificateSubmitted] = useState(false);
   const [certificatePdfBuffer, setCertificatePdfBuffer] = useState(null);
+  const [isReportSubmitted, setIsReportSubmitted] = useState(false);
+  const [reportPdfBuffer, setReportPdfBuffer] = useState(null);
+  const [isOtherSubmitted, setIsOtherSubmitted] = useState(false);
+  const [otherPdfBuffer, setOtherPdfBuffer] = useState(null);
   const [modalData, setModalData] = useState([]);
   const [modalType, setModalType] = useState('');
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -211,6 +215,14 @@ const Week = () => {
             setIsCertificateSubmitted(true);
             setCertificatePdfBuffer(student.internships[0].completion[0].pdf_buffer);
           }
+          if (student.internships[0].isSubmitted && student.internships[0].report[0]?.pdf_buffer) {
+            setIsReportSubmitted(true);
+            setReportPdfBuffer(student.internships[0].report[0].pdf_buffer);
+          }
+          if (student.internships[0].isSubmittedOther && student.internships[0].othersubmissions[0]?.pdf_buffer) {
+            setIsOtherSubmitted(true);
+            setOtherPdfBuffer(student.internships[0].othersubmissions[0].pdf_buffer);
+          }
           // console.log(new Date(student.internships[0].evaluation[1].scheduled_date).toISOString().split('T')[0] == '1970-01-01' ? 'Yes' : 'No');
           setISEDate(new Date(student.internships[0].evaluation[0].scheduled_date).toISOString().split('T')[0] === '1970-01-01' ? null : new Date(student.internships[0].evaluation[0].scheduled_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }));
           setESEDate(new Date(student.internships[0].evaluation[1].scheduled_date).toISOString().split('T')[0] === '1970-01-01' ? null : new Date(student.internships[0].evaluation[1].scheduled_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }));
@@ -284,6 +296,28 @@ const Week = () => {
 
   const getCertificate = async () => {
     const uint8Array = new Uint8Array(certificatePdfBuffer.data);
+    const blob = new Blob([uint8Array], { type: 'application/pdf' });
+    const pdfUrl = URL.createObjectURL(blob);
+    window.open(pdfUrl, '_blank');
+  }
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const getReport = async () => {
+    const uint8Array = new Uint8Array(reportPdfBuffer.data);
+    const blob = new Blob([uint8Array], { type: 'application/pdf' });
+    const pdfUrl = URL.createObjectURL(blob);
+    window.open(pdfUrl, '_blank');
+  }
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const getOther = async () => {
+    const uint8Array = new Uint8Array(otherPdfBuffer.data);
     const blob = new Blob([uint8Array], { type: 'application/pdf' });
     const pdfUrl = URL.createObjectURL(blob);
     window.open(pdfUrl, '_blank');
@@ -488,6 +522,22 @@ const Week = () => {
           <div class="flex gap-10">
             <button type="submit" class="flex-1 mt-5 text-white bg-red-400 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm sm:w-auto px-5 py-2.5 text-center" onClick={getCertificate}>
               View Submitted Certificate
+            </button>
+          </div>
+        </div>) : (<div></div>)}
+        {isReportSubmitted ? (<div>
+          <h1 className="mt-10">Internship Report</h1>
+          <div class="flex gap-10">
+            <button type="submit" class="flex-1 mt-5 text-white bg-red-400 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm sm:w-auto px-5 py-2.5 text-center" onClick={getReport}>
+              View Submitted Report
+            </button>
+          </div>
+        </div>) : (<div></div>)}
+        {isOtherSubmitted ? (<div>
+          <h1 className="mt-10">Other Outcomes</h1>
+          <div class="flex gap-10">
+            <button type="submit" class="flex-1 mt-5 text-white bg-red-400 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm sm:w-auto px-5 py-2.5 text-center" onClick={getOther}>
+              View Other Outcomes
             </button>
           </div>
         </div>) : (<div></div>)}

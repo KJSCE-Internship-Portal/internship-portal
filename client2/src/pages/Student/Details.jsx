@@ -69,7 +69,14 @@ const Details = () => {
                     progress:[]
                 }]
             };
-            console.log(data);
+            
+            const weeksDiff = Math.ceil((new Date(enddate) - new Date(startdate)) / (1000 * 60 * 60 * 24 * 7));
+            if (weeksDiff < 14) {
+                showToast(toast, 'Error', 'error', 'Minimum internship duration should be 14 weeks.');
+                return;
+            }
+            // console.log(data);
+
             const response = await fetch(url + "/student/register", {
                 method: 'POST',
                 headers: {
@@ -130,6 +137,7 @@ const Details = () => {
                             <input class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 type="number"
                                 name="phone"
+                                maxLength={10}
                                 value={phone}
                                 onChange={(e) => setPhone(e.target.value)}
                                 required

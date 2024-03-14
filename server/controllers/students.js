@@ -396,6 +396,87 @@ const uploadCertificate = async (req, res) => {
     }
 };
 
+const uploadReport = async (req, res) => {
+
+    try {
+        if(!req.file) {
+            return res.status(400).json({ success: false, msg: 'No file uploaded' });
+        }
+        const { sub_id } = req.body;
+        console.log(sub_id);
+        const finalPdfBuffer = req.file.buffer;
+        const data = {
+            pdf_buffer: finalPdfBuffer
+        };
+        const updatedStudent = await Student.findOneAndUpdate(
+            {
+                sub_id
+            },
+            {
+                $push: {
+                    'internships.0.report': data,
+                },
+                $set: {
+                    'internships.0.isSubmitted': true,
+                },
+            },
+            {
+                new: true,
+            }
+        );
+        
+        if (updatedStudent) {
+            return res.status(200).json({ success: true, msg: "Uploaded Internship Report" });
+        } else{
+            return res.status(400).json({ success: false, msg: `Something Went Wrong` });
+        }  
+    } catch (error) {
+        console.error(`Error: ${error.message}`);
+        return res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
+    }
+};
+
+const uploadOther = async (req, res) => {
+
+    try {
+        if(!req.file) {
+            return res.status(400).json({ success: false, msg: 'No file uploaded' });
+        }
+        const { sub_id } = req.body;
+        console.log(sub_id);
+        const finalPdfBuffer = req.file.buffer;
+        const data = {
+            pdf_buffer: finalPdfBuffer
+        };
+        const updatedStudent = await Student.findOneAndUpdate(
+            {
+                sub_id
+            },
+            {
+                $push: {
+                    'internships.0.othersubmissions': data,
+                },
+                $set: {
+                    'internships.0.isSubmittedOther': true,
+                },
+            },
+            {
+                new: true,
+            }
+        );
+        
+        if (updatedStudent) {
+            return res.status(200).json({ success: true, msg: "Uploaded Document" });
+        } else{
+            return res.status(400).json({ success: false, msg: `Something Went Wrong` });
+        }  
+    } catch (error) {
+        console.error(`Error: ${error.message}`);
+        return res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
+    }
+};
+
+
 module.exports = {
     loginStudent,
     addWeeklyProgress,
@@ -405,5 +486,7 @@ module.exports = {
     approveStudent,
     registerStudent,
     addWorkDone,
-    uploadCertificate
+    uploadCertificate,
+    uploadReport,
+    uploadOther
 };
