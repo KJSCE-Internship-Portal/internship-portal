@@ -40,7 +40,7 @@ const Comment = () => {
                 if (userInfo) {
                     console.log(userInfo);
                     const weekData = JSON.parse(localStorage.getItem('week'));
-                    const {week, late} = weekData;
+                    const { week, late } = weekData;
                     setStartDate(new Date(userInfo.internships[0].progress[week - 1].startDate).toISOString().substring(0, 10));
                     setEndDate(new Date(userInfo.internships[0].progress[week - 1].endDate).toISOString().substring(0, 10));
                     setStudentName(userInfo.name);
@@ -51,7 +51,7 @@ const Comment = () => {
                     if (privComment != "No Comments Yet") {
                         setMentorName(userInfo.mentor.name);
                         setMentorEmail(userInfo.mentor.email);
-                        setMentorProfilePicture(userInfo.profile_picture_url);  
+                        setMentorProfilePicture(userInfo.profile_picture_url);
                     }
                     setMentorComment(privComment);
                 }
@@ -65,29 +65,41 @@ const Comment = () => {
     return (
 
         <section className={`bg-${colors.secondary} py-8 lg:py-16 antialiased min-h-screen`}>
-        <div className={`max-w-2xl mx-auto px-4 text-${colors.font} dark:text-black`}>
+            <div className={`max-w-2xl mx-auto px-4 text-${colors.font} dark:text-black`}>
                 <div className="flex justify-between items-center mb-6">
-                    <h2 className={`text-lg lg:text-3xl font-bold text-${colors.font}`}>Weekly Report:</h2>
+                    <h2 className={`text-lg lg:text-3xl font-bold text-${colors.font} w-100`}>Weekly Report</h2>
                 </div>
                 <div className={`flex justify-between items-center mb-6 text-${colors.font}`}>
+                    <h2>From <span style={{ fontWeight: 'bold', fontStyle: 'italic', fontSize: '20px', padding: '0 10px' }}>{startdate}</span> to <span style={{ fontWeight: 'bold', fontStyle: 'italic', fontSize: '20px', padding: '0 10px' }}>{enddate}</span> </h2>
+                </div>
+                {/* <div className={`flex justify-between items-center mb-6 text-${colors.font}`}>
                     <h2>Start Date: {startdate}</h2>
                 </div>
                 <div className={`flex justify-between items-center mb-6 text-${colors.font}`}>
                     <h2>End Date: {enddate}</h2>
-                </div>
-                <article className={`p-6 text-base bg-${colors.secondary} rounded-lg`}>
+                </div> */}
+                <article className={`p-6 text-base bg-${colors.secondary} rounded-lg mb-3`} style={{ borderColor: `#${colors.font}`, boxShadow: `0 0 10px rgba(${254/2}, ${254/2}, ${254/2}, 0.2)` }}>
                     <footer className="flex justify-between items-center mb-2">
                         <div className="flex items-center">
-                            <p className={`inline-flex items-center mr-3 text-sm text-${colors.font} font-semibold`}>
                             <Avatar size="xs" bg='red.700' color="white" name={studentName} src={studentProfilePicture} className="h-10 w-10 mr-2"></Avatar>
-                                {studentName}
-                            </p>
-                            <p className={`text-sm text-${colors.font}`}>{studentEmail}</p>
+                            <div>
+                                <p className={`text-sm text-${colors.font} font-semibold`}>
+                                    {studentName}
+                                </p>
+                                <p className={`text-sm text-${colors.font} opacity-75`}>
+                                    {studentEmail}
+                                </p>
+                            </div>
                         </div>
+                        <p className={`text-xs text-${colors.font} opacity-75`}>
+                            {/* {commentDate} */}
+                        </p>
                     </footer>
                     <p className={`text-${colors.font}`}>{weekDescription}</p>
                 </article>
-                {!mentorProfilePicture && (<hr className="border-gray-300" />)}
+
+
+                {/* {!mentorProfilePicture && (<hr className="border-gray-300" />)} */}
                 <article className={`p-2 mb-3 ml-6 lg:ml-12 text-base bg-${colors.secondary} rounded-lg`}>
                     <footer className="flex justify-between items-center mb-2">
                         <div className="flex items-center">
