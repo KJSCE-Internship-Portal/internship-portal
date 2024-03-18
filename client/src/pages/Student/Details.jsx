@@ -205,15 +205,19 @@ const Details = () => {
                                 </select>
                             </div>
                             <div className="flex-1 py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
-                                <label for="batch" className="text-lg lg:text-2xl font-bold text-gray-900 dark:text-black">Batch<span className="text-red-500">*</span></label>
-                                <input
+                                <label for="batch" className="text-lg lg:text-2xl font-bold text-gray-900 dark:text-black">Batch (Academic Year)<span className="text-red-500">*</span></label>
+                                <select
                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                    type="text"
                                     name="batch"
                                     value={batch}
                                     onChange={(e) => setBatch(e.target.value)}
                                     required
-                                />
+                                >
+                                    <option value={new Date().getFullYear() - 1}>{new Date().getFullYear() - 1}</option>
+                                    <option value={new Date().getFullYear()}>{new Date().getFullYear()}</option>
+                                    <option value={new Date().getFullYear() + 1}>{new Date().getFullYear() + 1}</option>
+                                    <option value={new Date().getFullYear() + 2}>{new Date().getFullYear() + 2}</option>
+                                </select>
                             </div>
                         </div>
 

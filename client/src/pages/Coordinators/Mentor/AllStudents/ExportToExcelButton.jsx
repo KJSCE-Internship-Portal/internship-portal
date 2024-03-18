@@ -8,11 +8,20 @@ import showToast from '../../../../Global/Toast';
 
 
 
-function ExportToExcelButton({ excelData, department }) {
+function ExportToExcelButton({ excelData, department, batch }) {
   const [workbook, setWorkbook] = useState(null);
   const toast = useToast();
 
   const handleExport = () => {
+    let filteredData = excelData;
+    if (batch) {
+      filteredData = excelData.filter(student => student.batch === batch);
+    }
+
+    if (filteredData.length === 0) {
+      showToast(toast, 'Error', 'error', "No data available for the selected batch");
+      return;
+    }
     const worksheet = XLSX.utils.json_to_sheet(excelData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
@@ -32,6 +41,8 @@ function ExportToExcelButton({ excelData, department }) {
       </div>
 
     );
+  } else{
+    return null;
   }
 }
 

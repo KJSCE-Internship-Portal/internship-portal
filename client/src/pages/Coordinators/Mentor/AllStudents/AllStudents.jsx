@@ -70,6 +70,8 @@ const AllStudentsInDepartment = () => {
     const [studentsnothavingmentor, setStudentsNotHavingMentor] = useState(0);
     const [selectedStudent, setSelectedStudent] = useState(null);
     const [excel_data, setExcelData] = useState([]);
+    const [batchFilter, setBatchFilter] = useState("");
+    // const [selectedBatch, setSelectedBatch] = useState(null);
 
     const handleRowClick = (student) => {
         setSelectedStudent(student === selectedStudent ? null : student);
@@ -139,6 +141,15 @@ const AllStudentsInDepartment = () => {
         },
       });
       
+      const filterStudents = (students) => {
+        if (!students || !batchFilter) {
+            return students;
+        }
+        return students.filter(student => student.batch === batchFilter);
+    };
+    
+
+    const filteredStudents = filterStudents(data?.data);
 
     const { data: pie_data } = useQuery({
         queryKey: ['/statistics/department'],
@@ -177,7 +188,15 @@ const AllStudentsInDepartment = () => {
     return (
         <div>
             <h1 style={{ color: colors.primary, fontSize: '23px', margin: '15px 3vw 0 3vw', fontWeight: 'bold', textAlign: 'center' }}>Department Stats</h1>
-
+            <div style={{ margin: '0 3vw', textAlign: 'right' }}>
+                <select value={batchFilter} onChange={(e) => setBatchFilter(e.target.value)}>
+                    <option value="">All Batches</option>
+                    <option value={new Date().getFullYear() - 1}>{new Date().getFullYear() - 1}</option>
+                    <option value={new Date().getFullYear()}>{new Date().getFullYear()}</option>
+                    <option value={new Date().getFullYear() + 1}>{new Date().getFullYear() + 1}</option>
+                    <option value={new Date().getFullYear() + 2}>{new Date().getFullYear() + 2}</option>
+                </select>
+            </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-evenly' }}>
 
                 <Box mt={10}>
@@ -205,7 +224,8 @@ const AllStudentsInDepartment = () => {
                     Students
                 </AbsoluteCenter>
             </Box>
-            <ExportToExcelButton excelData={excel_data} department={user ? slugify(user.department) : "data"}/>
+            {/* <ExportToExcelButton excelData={excel_data} department={user ? slugify(user.department) : "data"}/> */}
+            <ExportToExcelButton excelData={filteredStudents} department={user ? slugify(user.department) : "data"} batch={batchFilter} />
 
             <div style={{ maxWidth: '100%', overflowY: 'auto' }}>
 
@@ -225,8 +245,8 @@ const AllStudentsInDepartment = () => {
                         </Tr>
                     </Thead>
                     <Tbody>
-                        {data.success &&
-                            data.data.map((student) => {
+                        {/* {data.success && */}
+                            {filteredStudents && filteredStudents.map((student) => {
                                 
                                 if (student.isActive) {
                                     var c = 0;
