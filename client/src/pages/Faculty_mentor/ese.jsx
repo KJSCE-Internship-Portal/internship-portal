@@ -62,6 +62,16 @@ const Progress = () => {
         setFile(selectedFile);
     };
 
+    function calculateWeeks (startDate, endDate) {
+        const start = new Date(startDate).getTime();
+        const end = new Date(endDate).getTime();
+
+        const difference = end - start;
+
+        const weeks = Math.ceil(difference / (1000 * 60 * 60 * 24 * 7));
+        return parseInt(weeks);
+    };
+
     const calcPeriodicMarks = async (weeks, buffer) => {
         const onTimeWeeks = Math.min(buffer, weeks.length);
 
@@ -72,20 +82,20 @@ const Progress = () => {
         // const onTimeSubmissions = (weeks.filter(submission => !submission.isLateSubmission && submission.submitted)).length;
         const percentageMarks = (onTimeSubmissions/weeks.length * 100).toFixed(2);
         const percentageMarksTable = [
-            { percentage: 100, marks: 10 },
-            { percentage: 92.86, marks: 9 },
-            { percentage: 85.71, marks: 8 },
-            { percentage: 78.57, marks: 8 },
-            { percentage: 71.43, marks: 7 },
-            { percentage: 64.29, marks: 6 },
-            { percentage: 57.14, marks: 6 },
-            { percentage: 50.00, marks: 5 },
-            { percentage: 42.86, marks: 4 },
-            { percentage: 35.71, marks: 4 },
-            { percentage: 28.57, marks: 3 },
-            { percentage: 21.43, marks: 3 },
-            { percentage: 14.29, marks: 2 },
-            { percentage: 7.14, marks: 1 },
+            { percentage: 100, marks: 20 },
+            { percentage: 92.86, marks: 18 },
+            { percentage: 85.71, marks: 16 },
+            { percentage: 78.57, marks: 16 },
+            { percentage: 71.43, marks: 14 },
+            { percentage: 64.29, marks: 12 },
+            { percentage: 57.14, marks: 12 },
+            { percentage: 50.00, marks: 10 },
+            { percentage: 42.86, marks: 8 },
+            { percentage: 35.71, marks: 8 },
+            { percentage: 28.57, marks: 6 },
+            { percentage: 21.43, marks: 6 },
+            { percentage: 14.29, marks: 4 },
+            { percentage: 7.14, marks: 2 },
             { percentage: 0.00, marks: 0 },
           ];
 
@@ -145,7 +155,9 @@ const Progress = () => {
                 const startDate = new Date(progressItem.startDate);
                 return startDate < currentDate;
             });
-            calcPeriodicMarks(filteredProgress, 5);
+            const buffer_date = new Date("2024-03-30");
+            const buffer = calculateWeeks(student.internships[0].startDate, buffer_date);
+            calcPeriodicMarks(filteredProgress, buffer);
             // calcPeriodicMarks(student.internships[0].progress);
             if (student.internships[0].evaluation[1].pdf_buffer.data.length != 0) {
                 setToFill(false);
@@ -177,11 +189,11 @@ const Progress = () => {
             return numValue >= 0 && numValue <= max;
         };
 
-        const isQReportValid = validateMarks(qreport, 20);
-        const isOralValid = validateMarks(oral, 20);
-        const isQWorkValid = validateMarks(qwork, 15);
-        const isUnderstandingValid = validateMarks(understanding, 10);
-        const isInteractionValid = validateMarks(interaction, 10);
+        const isQReportValid = validateMarks(qreport, 50);
+        const isOralValid = validateMarks(oral, 40);
+        const isQWorkValid = validateMarks(qwork, 20);
+        const isUnderstandingValid = validateMarks(understanding, 20);
+        const isInteractionValid = validateMarks(interaction, 20);
 
         setIsQReportValid(isQReportValid);
         setIsOralValid(isOralValid);
@@ -341,7 +353,7 @@ const Progress = () => {
                         <h2 class={`text-lg lg:text-2xl font-bold text-${colors.font}`}>Marks:</h2>
                     </div>
                     <div class="flex justify-between items-center mb-2">
-                        <h2 class={`text-md md:text-xl text-${colors.font}`}>Quality of Report(20)</h2>
+                        <h2 class={`text-md md:text-xl text-${colors.font}`}>Quality of Report(50)</h2>
                     </div>
 
                     <div class={`py-2 px-4 mb-4 text-white rounded-lg rounded-t-lg border ${isQReportValid ? 'border-gray-200' : 'border-red-500'} dark:bg-gray-500 dark:border-gray-700`}>
@@ -355,7 +367,7 @@ const Progress = () => {
                          {!isQReportValid && <p class="text-red-500 text-xs">Invalid value for Quality of Report. Must be between 0 and 20.</p>}
                     </div>
                     <div class="flex justify-between items-center mb-2">
-                        <h2 class={`text-md md:text-xl text-${colors.font}`}>Oral Presentation(20)</h2>
+                        <h2 class={`text-md md:text-xl text-${colors.font}`}>Oral Presentation(40)</h2>
                     </div>
                     <div class={`py-2 px-4 mb-4 text-white rounded-lg rounded-t-lg border ${isOralValid ? 'border-gray-200' : 'border-red-500'} dark:bg-gray-500 dark:border-gray-700`}>
                         <input class="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-500"
@@ -368,7 +380,7 @@ const Progress = () => {
                          {!isOralValid && <p class="text-red-500 text-xs">Invalid value for Oral Presentation. Must be between 0 and 20.</p>}
                     </div>
                     <div class="flex justify-between items-center mb-2">
-                        <h2 class={`text-md md:text-xl text-${colors.font}`}>Quality of Work Done(15)</h2>
+                        <h2 class={`text-md md:text-xl text-${colors.font}`}>Quality of Work Done(20)</h2>
                     </div>
                     <div class={`py-2 px-4 mb-4 text-white rounded-lg rounded-t-lg border ${isQWorkValid ? 'border-gray-200' : 'border-red-500'} dark:bg-gray-500 dark:border-gray-700`}>
                         <input class="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-500"
@@ -381,7 +393,7 @@ const Progress = () => {
                          {!isQWorkValid && <p class="text-red-500 text-xs">Invalid value for Quality of Work Done. Must be between 0 and 15.</p>}
                     </div>
                     <div class="flex justify-between items-center mb-2">
-                        <h2 class={`text-md md:text-xl text-${colors.font}`}>Understanding of Work(10)</h2>
+                        <h2 class={`text-md md:text-xl text-${colors.font}`}>Understanding of Work(20)</h2>
                     </div>
                     <div class={`py-2 px-4 mb-4 text-white rounded-lg rounded-t-lg border ${isUnderstandingValid ? 'border-gray-200' : 'border-red-500'} dark:bg-gray-500 dark:border-gray-700`}>
                         <input class="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-500"
@@ -394,7 +406,7 @@ const Progress = () => {
                         {!isUnderstandingValid && <p class="text-red-500 text-xs">Invalid value for Understanding of Work. Must be between 0 and 10.</p>}
                     </div>
                     <div class="flex justify-between items-center mb-2">
-                        <h2 class={`text-md md:text-xl text-${colors.font}`}>Periodic Interaction with mentor(10)</h2>
+                        <h2 class={`text-md md:text-xl text-${colors.font}`}>Periodic Interaction with mentor(20)</h2>
                     </div>
                     <div class={`py-2 px-4 mb-4 text-white rounded-lg rounded-t-lg border ${isInteractionValid ? 'border-gray-200' : 'border-red-500'} dark:bg-gray-500 dark:border-gray-700`}>
                         <input class="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-500"

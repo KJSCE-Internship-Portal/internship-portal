@@ -1,6 +1,6 @@
 node_modules
 .env
 config.env
-_.somaiya.edu
+/_.somaiya.edu
 index.js
 backup.txt

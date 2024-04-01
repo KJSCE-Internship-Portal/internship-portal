@@ -77,13 +77,13 @@ const studentEvaluation = async (req, res) => {
     try {
         const evaluateDetails = req.body;
         console.log(evaluateDetails);
-        inputFilePath='./assets/SVU Sem Long Evaluation Scheme.pdf';
-        // if(evaluateDetails.evaluation == 'ISE') {
-        //     inputFilePath = './assets/ISE-Editable-Template.pdf';
-        // }
-        // else if(evaluateDetails.evaluation == 'ESE') {
-        //     inputFilePath = './assets/ESE-Editable-Template.pdf';
-        // }
+        // inputFilePath='./assets/SVU Sem Long Evaluation Scheme.pdf';
+        if(evaluateDetails.evaluation_name == 'ISE') {
+            inputFilePath = './assets/SVU Sem Long Evaluation Scheme - ISE.pdf';
+        }
+        else if(evaluateDetails.evaluation_name == 'ESE') {
+            inputFilePath = './assets/SVU Sem Long Evaluation Scheme - ESE.pdf';
+        }
         
         const pdfBytes = await readFile(inputFilePath);
         const pdfDoc = await PDFDocument.load(pdfBytes);
@@ -91,7 +91,6 @@ const studentEvaluation = async (req, res) => {
         const form = pdfDoc.getForm();
 
         form.getTextField('department_name').setText(evaluateDetails.department_name);
-        form.getTextField('evaluation_name').setText(evaluateDetails.evaluation_name);
         form.getTextField('student_rollno').setText(evaluateDetails.student_rollno);
         form.getTextField('student_name').setText(evaluateDetails.student_name);
         form.getTextField('exam_date').setText(evaluateDetails.exam_date);
@@ -129,12 +128,23 @@ const studentEvaluation = async (req, res) => {
               radioGroup.select(options[3]); // <= 49%
             }
         }
-        
-        setRadioSelection(reportQualityMarks, 20, 'report_quality_radio');
-        setRadioSelection(oralPresentationMarks, 20, 'oral_presentation_radio');
-        setRadioSelection(workQualityMarks, 15, 'work_quality_radio');
-        setRadioSelection(workUnderstandingMarks, 10, 'work_understanding_radio');
-        setRadioSelection(periodicInteractionMarks, 10, 'periodic_interaction_radio');
+
+
+        if (evaluateDetails.evaluation_name == 'ISE') {
+            setRadioSelection(reportQualityMarks, 20, 'report_quality_radio');
+            setRadioSelection(oralPresentationMarks, 30, 'oral_presentation_radio');
+            setRadioSelection(workQualityMarks, 15, 'work_quality_radio');
+            setRadioSelection(workUnderstandingMarks, 15, 'work_understanding_radio');
+            setRadioSelection(periodicInteractionMarks, 20, 'periodic_interaction_radio');
+        }
+
+        else if (evaluateDetails.evaluation_name == 'ESE') {
+            setRadioSelection(reportQualityMarks, 50, 'report_quality_radio');
+            setRadioSelection(oralPresentationMarks, 40, 'oral_presentation_radio');
+            setRadioSelection(workQualityMarks, 20, 'work_quality_radio');
+            setRadioSelection(workUnderstandingMarks, 20, 'work_understanding_radio');
+            setRadioSelection(periodicInteractionMarks, 20, 'periodic_interaction_radio');
+        }
 
         form.getTextField('examiner_specific_remarks').setText(evaluateDetails.examiner_specific_remarks);
 
