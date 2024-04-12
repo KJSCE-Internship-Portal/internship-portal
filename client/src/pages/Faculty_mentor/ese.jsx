@@ -364,7 +364,7 @@ const Progress = () => {
                             onChange={(e) => setQReport(e.target.value)}
                             required
                         />
-                         {!isQReportValid && <p class="text-red-500 text-xs">Invalid value for Quality of Report. Must be between 0 and 20.</p>}
+                         {!isQReportValid && <p class="text-red-500 text-xs">Invalid value for Quality of Report. Marks out of range.</p>}
                     </div>
                     <div class="flex justify-between items-center mb-2">
                         <h2 class={`text-md md:text-xl text-${colors.font}`}>Oral Presentation(40)</h2>
@@ -377,7 +377,7 @@ const Progress = () => {
                             onChange={(e) => setOral(e.target.value)}
                             required
                         />
-                         {!isOralValid && <p class="text-red-500 text-xs">Invalid value for Oral Presentation. Must be between 0 and 20.</p>}
+                         {!isOralValid && <p class="text-red-500 text-xs">Invalid value for Oral Presentation. Marks out of range.</p>}
                     </div>
                     <div class="flex justify-between items-center mb-2">
                         <h2 class={`text-md md:text-xl text-${colors.font}`}>Quality of Work Done(20)</h2>
@@ -390,7 +390,7 @@ const Progress = () => {
                             onChange={(e) => setQWork(e.target.value)}
                             required
                         />
-                         {!isQWorkValid && <p class="text-red-500 text-xs">Invalid value for Quality of Work Done. Must be between 0 and 15.</p>}
+                         {!isQWorkValid && <p class="text-red-500 text-xs">Invalid value for Quality of Work Done. Marks out of range.</p>}
                     </div>
                     <div class="flex justify-between items-center mb-2">
                         <h2 class={`text-md md:text-xl text-${colors.font}`}>Understanding of Work(20)</h2>
@@ -403,7 +403,7 @@ const Progress = () => {
                             onChange={(e) => setUnderstanding(e.target.value)}
                             required
                         />
-                        {!isUnderstandingValid && <p class="text-red-500 text-xs">Invalid value for Understanding of Work. Must be between 0 and 10.</p>}
+                        {!isUnderstandingValid && <p class="text-red-500 text-xs">Invalid value for Understanding of Work. Marks out of range.</p>}
                     </div>
                     <div class="flex justify-between items-center mb-2">
                         <h2 class={`text-md md:text-xl text-${colors.font}`}>Periodic Interaction with mentor(20)</h2>
@@ -416,7 +416,7 @@ const Progress = () => {
                             onChange={(e) => setInteraction(e.target.value)}
                             required
                         />
-                        {!isInteractionValid && <p class="text-red-500 text-xs">Invalid value for Periodic Interaction with Mentor. Must be between 0 and 10.</p>}
+                        {!isInteractionValid && <p class="text-red-500 text-xs">Invalid value for Periodic Interaction with Mentor. Marks out of range.</p>}
                     </div>
                     <div class="flex justify-between items-center mb-6">
                         <h2 class={`text-lg lg:text-2xl font-bold text-${colors.font}`}>Specific Remarks of the examiners:</h2>

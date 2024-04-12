@@ -76,6 +76,7 @@ const Details = () => {
             const weeksDiff = Math.ceil((new Date(enddate) - new Date(startdate)) / (1000 * 60 * 60 * 24 * 7));
             if (weeksDiff < 14) {
                 showToast(toast, 'Error', 'error', 'Minimum internship duration should be 14 weeks.');
+                setIsSubmitting(false);
                 return;
             }
             // console.log(data);
@@ -96,9 +97,11 @@ const Details = () => {
             } else {
                 console.error('Failed to submit data to the backend.');
                 showToast(toast, 'Error', 'error', response.data.msg);
+                setIsSubmitting(false);
             }
         } catch (error) {
             console.error('Error occurred while submitting data:', error);
+            setIsSubmitting(false);
         }
         setIsSubmitting(false);
     };
@@ -217,6 +220,7 @@ const Details = () => {
                                     onChange={(e) => setBatch(e.target.value)}
                                     required
                                 >
+                                    <option value="" disabled>Select Batch</option>
                                     <option value={new Date().getFullYear() - 1}>{new Date().getFullYear() - 1}</option>
                                     <option value={new Date().getFullYear()}>{new Date().getFullYear()}</option>
                                     <option value={new Date().getFullYear() + 1}>{new Date().getFullYear() + 1}</option>
