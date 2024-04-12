@@ -26,6 +26,8 @@ const Details = () => {
     const [stipend, setStipend] = useState('');
     const [showDataModal, setshowDataModal] = useState(false);
     const [charCount, setCharCount] = useState(0);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
     const toast = useToast();
 
     const location = useLocation();
@@ -45,6 +47,7 @@ const Details = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsSubmitting(true); 
         try {
             const data = {
                 name,
@@ -97,6 +100,7 @@ const Details = () => {
         } catch (error) {
             console.error('Error occurred while submitting data:', error);
         }
+        setIsSubmitting(false);
     };
 
     return (
@@ -323,7 +327,7 @@ const Details = () => {
 
                         />)
                         }
-                        <button type="submit" className="text-white bg-red-400 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center mt-3">Submit Data</button>
+                        <button type="submit" className="text-white bg-red-400 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center mt-3" disabled={isSubmitting}>{isSubmitting ? 'Submitting...' : 'Submit Data'}</button>
                     </form>
                 </div>
             </div>
