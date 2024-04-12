@@ -4,7 +4,7 @@ import { useTheme } from '../../Global/ThemeContext';
 import showToast from '../../Global/Toast';
 import { useToast } from '@chakra-ui/react';
 import axios from 'axios';
-import { url, c_url } from '../../Global/URL';
+import { url, c_url } from '../../Global/URL.js';
 
 const Work = () => {
     const [name, setName] = useState('');

@@ -1,15 +1,65 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { url } from '../../Global/URL';
-import { Avatar, Button, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
+import { Avatar, Button, Tab, TabList, TabPanel, TabPanels, Tabs, Select } from '@chakra-ui/react';
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton } from '@chakra-ui/react';
+import ExportToExcelButton from './StudentData/ExportToExcelButton';
 import {useTheme} from '../../Global/ThemeContext';
 import StudentDrawer from '../Faculty_mentor/studentdrawer';
+import { useNavigate } from "react-router-dom";
+import {DownloadIcon} from "@chakra-ui/icons";
 
 const StudentList = () => {
   const [students, setStudents] = useState([]);
   const {theme:colors} = useTheme();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [studentData, setStudentData] = useState([]);
+  const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedOption, setSelectedOption] = useState("ALL");
+  const [selectBatch, setSelectBatch] = useState("2025");
+  const [excelData, setExcelData] = useState();
+
+  const onClose = () => setIsOpen(false);
+  const onOpen = () => setIsOpen(true);
+
+
+  const DownloadModal = () => {
+    return (
+      <Modal isOpen={isOpen} onClose={onClose}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Download Data</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          <Select value={selectedOption} onChange={(e) => setSelectedOption(e.target.value)} mb={4}>
+          <option value="ALL">ALL Departments</option>
+          <option value="Computer Engineering">COMPS</option>
+          <option value="Information Technology">IT</option>
+          <option value="Mechanical Engineering">MECH</option>
+          <option value="Electronics & Telecommunication Engineering">EXTC</option>
+          <option value="Electronics Engineering">ETRX</option>
+          <option value="Electronics & Computer Engineering" hidden>EXCP</option>
+          <option value="Robotics & Artificial Intelligence" hidden>RAI</option>
+          <option value="Artificial Intelligence & Data Science" hidden>AIDS</option>
+          <option value="Computer & Communication Engineering" hidden>CCE</option>
+          </Select>
+
+          <Select value={selectBatch} onChange={(e) => setSelectBatch(e.target.value)} mb={4}>
+            <option value="2025">2025</option>
+            <option value="2026">2026</option>
+            <option value="2027">2027</option>
+            <option value="A3">A3</option>
+          </Select>
+        
+        </ModalBody>
+        <ModalFooter>
+        <ExportToExcelButton excelData={students} department={selectedOption} batch={selectBatch}/>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+    );
+  };
 
   const openDrawer = (student) => {
     setStudentData(student);
@@ -68,7 +118,12 @@ const StudentList = () => {
 
   return (
     <div className={`bg-${colors.secondary2} flex flex-col font-roboto items-left justify-start mx-auto w-full max-h-full py-6 px-4 h-screen text-${colors.font}`}>
-    <h1 className={`text-xl font-bold mb-5 text-${colors.font}`}>Students List</h1>
+    <div>
+    <h1 className={`text-xl font-bold mb-5 text-${colors.font}`}>Students List <DownloadIcon style={{marginLeft: '10px', cursor: 'pointer'}} onClick={onOpen}/></h1> 
+    <DownloadModal/>
+    
+    </div>
+    
     <Tabs variant='soft-rounded' isFitted colorScheme='green'>
         <TabList marginX={5} gap={3}>
           <Tab bg={colors.hover} color={colors.font}>COMPS</Tab>

@@ -60,6 +60,25 @@ const addCoordinator = async (req, res) => {
 
 };
 
+const deleteCoordinator = async (req, res) => {
+    try {
+        const coordinator = await Coordinator.findById(req.body.id).exec();
+
+        if (!coordinator) {
+            return res.status(404).json({ success: false, msg: "Coordinator not found" });
+        }
+        console.log(`${coordinator.name} has been deleted`);
+        await Coordinator.findByIdAndDelete(req.body.id).exec();
+
+        return res.status(200).json({ success: true, msg: "Coordinator deleted successfully" });
+
+    } catch (error) {
+        console.error(`Error: ${error.message}`);
+        res.status(400).json({ success: false, msg: `Something went wrong: ${error.message}` });
+    }
+};
+
+
 const getAllAnnouncements = async (req, res) => {
     try {
         const reqQuery = { ...req.query };
@@ -376,5 +395,6 @@ module.exports = {
     signOutAdmin,
     getStatisticsAdmin,
     getAllAnnouncements,
-    addCoordinator
+    addCoordinator,
+    deleteCoordinator
 };

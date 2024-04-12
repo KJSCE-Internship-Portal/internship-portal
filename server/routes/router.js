@@ -47,6 +47,7 @@ router.post("/coordinator/mentor/remove-assigned-student", controllerCoordinator
 router.post("/coordinator/statistics", controllerCoordinator.getStatisticsCoordinator);
 router.post("/admin/statistics", controllerAdmin.getStatisticsAdmin);
 router.post("/admin/add/coordinator", controllerAdmin.addCoordinator);
+router.post("/admin/delete/coordinator", controllerAdmin.deleteCoordinator);
 router.post("/announcement/add", controllerAdmin.postAnnouncement);
 
 

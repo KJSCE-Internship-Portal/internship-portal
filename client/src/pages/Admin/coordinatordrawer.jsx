@@ -10,8 +10,32 @@ import {
   DrawerFooter,
   Avatar,
 } from "@chakra-ui/react";
+import axios from 'axios';
+import {url} from "../../Global/URL";
+import { useTheme } from '../../Global/ThemeContext';
+import showToast from '../../Global/Toast';
+import { useToast } from '@chakra-ui/react';
+import Alert from '../../components/Alert/alert';
+
+
 
 function CoordinatorDrawer({ isOpen, onClose, coordinatorData }) {
+
+  const deleteCoordiator = async (id) => {
+    try {
+      const response = await axios.post(url + '/admin/delete/coordinator', {id: id});
+      console.log(response.data)
+      if (response.data.success) {
+          showToast(toast, "Success", 'success', "Co-ordinatore Deleted !");
+      } else {
+          showToast(toast, "Warning", 'info', "No Co-ordinator exist !");
+      }
+  } catch (error) {
+      showToast(toast, "Error", 'error', "Something Wen't Wrong !");
+  }
+  }
+
+  const toast = useToast();
   return (
     <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
       <DrawerOverlay />
@@ -45,7 +69,10 @@ function CoordinatorDrawer({ isOpen, onClose, coordinatorData }) {
         </DrawerBody>
 
         <DrawerFooter>
-          <Button variant="outline" mr={3} onClick={onClose}>
+        <Button variant="outline" colorScheme="red" mr={3} onClick={() => (deleteCoordiator(coordinatorData._id))}>
+            Delete
+          </Button>
+          <Button w={60} mr={3} onClick={onClose}>
             Close
           </Button>
         </DrawerFooter>
