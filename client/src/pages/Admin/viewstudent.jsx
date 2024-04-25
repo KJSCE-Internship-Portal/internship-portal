@@ -46,10 +46,12 @@ const StudentList = () => {
           </Select>
 
           <Select value={selectBatch} onChange={(e) => setSelectBatch(e.target.value)} mb={4}>
+            <option value="2024">2024</option>
             <option value="2025">2025</option>
             <option value="2026">2026</option>
             <option value="2027">2027</option>
-            <option value="A3">A3</option>
+            <option value="2028">2028</option>
+            {/* <option value="B3">B3</option> */}
           </Select>
         
         </ModalBody>
