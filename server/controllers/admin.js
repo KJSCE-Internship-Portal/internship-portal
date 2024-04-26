@@ -63,7 +63,6 @@ const addCoordinator = async (req, res) => {
 const deleteCoordinator = async (req, res) => {
     try {
         const coordinator = await Coordinator.findById(req.body.id).exec();
-
         if (!coordinator) {
             return res.status(404).json({ success: false, msg: "Coordinator not found" });
         }
@@ -396,5 +395,5 @@ module.exports = {
     getStatisticsAdmin,
     getAllAnnouncements,
     addCoordinator,
-    deleteCoordinator
+    deleteCoordinator,
 };

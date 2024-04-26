@@ -24,14 +24,13 @@ function CoordinatorDrawer({ isOpen, onClose, coordinatorData }) {
   const deleteCoordiator = async (id) => {
     try {
       const response = await axios.post(url + '/admin/delete/coordinator', {id: id});
-      console.log(response.data)
       if (response.data.success) {
-          showToast(toast, "Success", 'success', "Co-ordinatore Deleted !");
+          showToast(toast, "Success", 'success', "Co-ordinator Deleted !");
       } else {
           showToast(toast, "Warning", 'info', "No Co-ordinator exist !");
       }
   } catch (error) {
-      showToast(toast, "Error", 'error', "Something Wen't Wrong !");
+      showToast(toast, "Error", 'error', "Something Went Wrong !");
   }
   }
 

@@ -46,11 +46,11 @@ const StudentList = () => {
           </Select>
 
           <Select value={selectBatch} onChange={(e) => setSelectBatch(e.target.value)} mb={4}>
-            <option value="2024">2024</option>
-            <option value="2025">2025</option>
-            <option value="2026">2026</option>
-            <option value="2027">2027</option>
-            <option value="2028">2028</option>
+          <option value="" disabled>Select Batch</option>
+              <option value={new Date().getFullYear() - 1}>{new Date().getFullYear() - 1}</option>
+              <option value={new Date().getFullYear()}>{new Date().getFullYear()}</option>
+              <option value={new Date().getFullYear() + 1}>{new Date().getFullYear() + 1}</option>
+              <option value={new Date().getFullYear() + 2}>{new Date().getFullYear() + 2}</option>
             {/* <option value="B3">B3</option> */}
           </Select>
         
