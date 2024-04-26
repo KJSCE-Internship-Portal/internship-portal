@@ -60,6 +60,10 @@ const registerStudent = async (req, res) => {
     try {
 
         var student = req.body;
+        const existingStudent = await Student.findOne({email: student.email}).exec();
+        if (existingStudent){
+            return res.status(500).json({ success: false, msg: "Student Already Exists" });
+        }
         const mentor = {
             email: '',
             contact_no: '',
@@ -105,8 +109,9 @@ const registerStudent = async (req, res) => {
         }
 
         const newStudent = new Student(student);
+        
         await newStudent.save();
-        res.status(200).json({ success: true, msg: "Student Registration Route" });
+        return res.status(200).json({ success: true, msg: "Student Registration Route" });
 
     } catch (error) {
         console.error(`Error: ${error.message}`);
