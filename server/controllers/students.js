@@ -60,8 +60,11 @@ const registerStudent = async (req, res) => {
     try {
 
         var student = req.body;
+        // console.log(req.body.email);
         const existingStudent = await Student.findOne({email: student.email}).exec();
+        
         if (existingStudent){
+            console.log("Existing");
             return res.status(500).json({ success: false, msg: "Student Already Exists" });
         }
         const mentor = {

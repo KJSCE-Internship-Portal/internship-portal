@@ -17,11 +17,12 @@ const studentSchema = new mongoose.Schema({
     },
     email: {
         type: String,
+        unique: [true, "Email should be unique"],
         required: [true, "E-mail is mandatory"],
         validate: {
             validator: validateEmail,
             message: "Email must be from @somaiya.edu domain"
-        }
+        },
     },
     sub_id: {
         type: String,

@@ -20,6 +20,7 @@ const mentorSchema = new mongoose.Schema({
     },
     email: {
         type: String,
+        unique: [true, "E-mail should be Unique"],
         required: [true, "E-mail is mandatory"],
         validate: {
             validator: validateEmail,
