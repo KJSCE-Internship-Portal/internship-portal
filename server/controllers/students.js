@@ -64,7 +64,6 @@ const registerStudent = async (req, res) => {
         const existingStudent = await Student.findOne({email: student.email}).exec();
         
         if (existingStudent){
-            console.log("Existing");
             return res.status(500).json({ success: false, msg: "Student Already Exists" });
         }
         const mentor = {
@@ -114,6 +113,7 @@ const registerStudent = async (req, res) => {
         const newStudent = new Student(student);
         
         await newStudent.save();
+        console.log(student.email + " registered !".blue);
         return res.status(200).json({ success: true, msg: "Student Registration Route" });
 
     } catch (error) {
@@ -204,7 +204,7 @@ const getAllStudents = async (req, res) => {
         }
 
         const page = parseInt(req.query.page, 10) || 1;
-        const limit = parseInt(req.query.limit, 10) || 100;
+        const limit = parseInt(req.query.limit, 10) || 100000;
         const startIndex = (page - 1) * limit;
         const endIndex = page * limit;
         const total = await Student.countDocuments(query);

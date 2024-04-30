@@ -16,10 +16,16 @@ import {
 
     const { isOpen, onOpen, onClose } = useDisclosure()
     const cancelRef = React.useRef()
+    const [isClicked, setIsClicked] = React.useState(false);
 
+    const handleConfirm = async (event) => {
+      setIsClicked(true);
+      await onConfirm(event); 
+      setIsClicked(false); 
+    };
     useEffect(()=>{
       onOpen();
-    },[])
+    },[]);
   
     return (
       <>
@@ -44,7 +50,7 @@ import {
                 <Button ref={cancelRef} onClick={onClosec}>
                   Cancel
                 </Button>
-                <Button colorScheme='green' onClick={onConfirm} ml={3}>
+                <Button isLoading={isClicked} colorScheme='green' onClick={(event) => handleConfirm(event)} ml={3}>
                   Submit
                 </Button>
               </AlertDialogFooter>
