@@ -173,12 +173,12 @@ const Details = () => {
                                 <option value="Computer Engineering">COMPS</option>
                                 <option value="Information Technology">IT</option>
                                 <option value="Mechanical Engineering">MECH</option>
-                                <option value="Electronics & Telecommunication Engineering">EXTC</option>
+                                <option value="Electronics And Telecommunication Engineering">EXTC</option>
                                 <option value="Electronics Engineering">ETRX</option>
-                                <option value="Electronics & Computer Engineering" hidden>EXCP</option>
-                                <option value="Robotics & Artificial Intelligence" hidden>RAI</option>
-                                <option value="Artificial Intelligence & Data Science" hidden>AIDS</option>
-                                <option value="Computer & Communication Engineering" hidden>CCE</option>
+                                <option value="Electronics And Computer Engineering" hidden>EXCP</option>
+                                <option value="Robotics And Artificial Intelligence" hidden>RAI</option>
+                                <option value="Artificial Intelligence And Data Science" hidden>AIDS</option>
+                                <option value="Computer And Communication Engineering" hidden>CCE</option>
                             </select>
                         </div>
                         <div className="flex-1 py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
@@ -220,7 +220,7 @@ const Details = () => {
                                     onChange={(e) => setBatch(e.target.value)}
                                     required
                                 >
-                                    <option value="" disabled>Select Batch</option>
+                                    <option value="" selected disabled>Select Batch</option>
                                     <option value={new Date().getFullYear() - 1}>{new Date().getFullYear() - 1}</option>
                                     <option value={new Date().getFullYear()}>{new Date().getFullYear()}</option>
                                     <option value={new Date().getFullYear() + 1}>{new Date().getFullYear() + 1}</option>

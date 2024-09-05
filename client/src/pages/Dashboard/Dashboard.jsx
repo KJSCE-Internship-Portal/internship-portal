@@ -165,7 +165,7 @@ const handleAddCoord = async () => {
             return "COMPS";
           case "Mechanical Engineering":
             return "MECH";
-          case "Electronics & Telecommunication Engineering":
+          case "Electronics And Telecommunication Engineering":
             return "EXTC";
           case "Electronics Engineering":
             return "ETRX";
@@ -424,11 +424,16 @@ const handleAddCoord = async () => {
                             placeholder='Select Department'
                             value={department}
                             onChange={(e) => setDepartment(e.target.value)}>
-                            <option value='Information Technology'>IT</option>
-                            <option value='Computer Engineering'>CS</option>
-                            <option value='Mechanical Engineering'>MECH</option>
-                            <option value='Electronics and Telecommunication'>EXTC</option>
-                            <option value='Electronics'>ETRX</option>
+                                <option style={{backgroundColor: colors.secondary, color: colors.font}} selected disabled>Select Department</option>
+                                <option style={{backgroundColor: colors.secondary, color: colors.font}} value="Computer Engineering">COMPS</option>
+                                <option style={{backgroundColor: colors.secondary, color: colors.font}} value="Information Technology">IT</option>
+                                <option style={{backgroundColor: colors.secondary, color: colors.font}} value="Mechanical Engineering">MECH</option>
+                                <option style={{backgroundColor: colors.secondary, color: colors.font}} value="Electronics And Telecommunication Engineering">EXTC</option>
+                                <option style={{backgroundColor: colors.secondary, color: colors.font}} value="Electronics Engineering">ETRX</option>
+                                <option style={{backgroundColor: colors.secondary, color: colors.font}} value="Electronics And Computer Engineering" hidden>EXCP</option>
+                                <option style={{backgroundColor: colors.secondary, color: colors.font}} value="Robotics And Artificial Intelligence" hidden>RAI</option>
+                                <option style={{backgroundColor: colors.secondary, color: colors.font}} value="Artificial Intelligence And Data Science" hidden>AIDS</option>
+                                <option style={{backgroundColor: colors.secondary, color: colors.font}} value="Computer And Communication Engineering" hidden>CCE</option>
                         </Select>
                     </Box>
                 </Stack>

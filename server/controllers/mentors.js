@@ -287,6 +287,7 @@ const getAllMentors = async (req, res) => {
         if (reqQuery.department){
             reqQuery.department = deslugify(reqQuery.department);
         }
+        console.log(reqQuery.department);
         const removeFields = ['select', 'sort', 'limit', 'page'];
         removeFields.forEach(param => delete reqQuery[param]);
 

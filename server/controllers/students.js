@@ -173,8 +173,9 @@ const editWeeklyProgress = async (req, res) => {
 };
 
 const deslugify = (slug) => {
-    return slug
-        .replace(/-/g, ' ') 
+    return decodeURIComponent(slug) 
+        .replace(/%26/g, '&')
+        .replace(/-/g, ' ')
         .replace(/(?:^|\s)\S/g, (a) => a.toUpperCase());
 };
 

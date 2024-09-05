@@ -60,9 +60,10 @@ const RegisterCoord = () => {
 
     const handleAddCoord = async () => {
         if (validateEmail() && validateContactNo()) {
-            console.log(name, email, contactNo);
+            console.log(department);
             onClose();
             const current_user = await getUserDetails();
+            console.log(current_user);
             setUser(current_user)
             try {
 
@@ -160,20 +161,16 @@ const RegisterCoord = () => {
                                     placeholder='Select Department'
                                     value={department}
                                     onChange={(e) => setDepartment(e.target.value)}>
-                                    {/* <option value='department1'>IT</option>
-                                    <option value='department2'>COMPS</option>
-                                    <option value='department3'>MECH</option>
-                                    <option value='department4'>EXTC</option>
-                                    <option value='department5'>ETRX</option> */}
-                                    <option style={{backgroundColor: colors.secondary, color: colors.font}} value="Computer Engineering">COMPS</option>
-                                    <option style={{backgroundColor: colors.secondary, color: colors.font}} value="Information Technology">IT</option>
-                                    <option style={{backgroundColor: colors.secondary, color: colors.font}} value="Mechanical Engineering">MECH</option>
-                                    <option style={{backgroundColor: colors.secondary, color: colors.font}} value="Electronics & Telecommunication Engineering">EXTC</option>
-                                    <option style={{backgroundColor: colors.secondary, color: colors.font}} value="Electronics Engineering">ETRX</option>
-                                    <option style={{backgroundColor: colors.secondary, color: colors.font}} value="Electronics & Computer Engineering" hidden>EXCP</option>
-                                    <option style={{backgroundColor: colors.secondary, color: colors.font}} value="Robotics & Artificial Intelligence" hidden>RAI</option>
-                                    <option style={{backgroundColor: colors.secondary, color: colors.font}} value="Artificial Intelligence & Data Science" hidden>AIDS</option>
-                                    <option style={{backgroundColor: colors.secondary, color: colors.font}} value="Computer & Communication Engineering" hidden>CCE</option>
+                                        <option style={{backgroundColor: colors.secondary, color: colors.font}} selected disabled>Select Department</option>
+                                        <option style={{backgroundColor: colors.secondary, color: colors.font}} value="Computer Engineering">COMPS</option>
+                                        <option style={{backgroundColor: colors.secondary, color: colors.font}} value="Information Technology">IT</option>
+                                        <option style={{backgroundColor: colors.secondary, color: colors.font}} value="Mechanical Engineering">MECH</option>
+                                        <option style={{backgroundColor: colors.secondary, color: colors.font}} value="Electronics And Telecommunication Engineering">EXTC</option>
+                                        <option style={{backgroundColor: colors.secondary, color: colors.font}} value="Electronics Engineering">ETRX</option>
+                                        <option style={{backgroundColor: colors.secondary, color: colors.font}} value="Electronics And Computer Engineering" hidden>EXCP</option>
+                                        <option style={{backgroundColor: colors.secondary, color: colors.font}} value="Robotics And Artificial Intelligence" hidden>RAI</option>
+                                        <option style={{backgroundColor: colors.secondary, color: colors.font}} value="Artificial Intelligence And Data Science" hidden>AIDS</option>
+                                        <option style={{backgroundColor: colors.secondary, color: colors.font}} value="Computer And Communication Engineering" hidden>CCE</option>
                                 </Select>
                             </Box>
 

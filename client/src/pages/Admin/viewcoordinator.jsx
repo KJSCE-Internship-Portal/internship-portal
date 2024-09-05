@@ -88,7 +88,7 @@ const CoordinatorList = () => {
           {coordinators && renderCoordinatorList(coordinators, "Mechanical Engineering", openDrawer, colors)}
         </TabPanel>
         <TabPanel>
-          {coordinators && renderCoordinatorList(coordinators, "Electronics & Telecommunication Engineering", openDrawer, colors)}
+          {coordinators && renderCoordinatorList(coordinators, "Electronics And Telecommunication Engineering", openDrawer, colors)}
         </TabPanel>
         <TabPanel>
           {coordinators && renderCoordinatorList(coordinators, "Electronics Engineering", openDrawer, colors)}
