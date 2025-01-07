@@ -13,6 +13,33 @@ const loginCoordinator = async (req, res) => {
     }
 };
 
+const checkStudent = async (req, res) => {
+  try {
+    const email = req.body.email;
+    const student = await Student.findOne({ email }).exec();
+    if (!student) {
+      return res.status(200).json({ success: true, isRegistered: false });
+    }
+    return res.status(200).json({ success: true, isRegistered: true });
+  } catch (error) {
+    console.error(`Error: ${error.message}`);
+    return res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
+  }
+};
+
+const checkMentor = async (req, res) => {
+  try {
+    const email = req.body.email;
+    const mentor = await Mentor.findOne({ email }).exec();
+    if (!mentor) {
+      return res.status(200).json({ success: true, isRegistered: false });
+    }
+    return res.status(200).json({ success: true, isRegistered: true });
+  } catch (error) {
+    console.error(`Error: ${error.message}`);
+    return res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}`});
+  }
+};
 const assignStudent = async (req, res) => {
 
     try {
@@ -173,6 +200,37 @@ const addMentors = async (req, res) => {
   }
 };
 
+//new
+const AddStudentsexcel = async (req, res) => {
+
+  try {
+      const mentors = req.body.csvData;
+      const department = req.body.department;
+      var count = 0;
+      for (const mentorData of mentors) {
+          
+          const existing_mentor = await Mentor.findOne({ email: mentorData.email }).exec();
+          // const stu = await Student.findOneAndUpdate({ email: mentorData.email }, { isActive: false, isApproved: false }, { new: true });
+          var stu = await Student.findOne({email: req.body.email}).exec();
+
+          if (!stu && !existing_mentor) {
+              const mentor = new Mentor({...mentorData, department});
+              await mentor.save();
+              count++;
+          }
+
+          else if (!stu && !existing_mentor.isActive) {
+              await Mentor.findOneAndUpdate({ email: mentorData.email }, { isActive: true });
+              count++;
+          }
+      }
+      return res.status(200).json({ success: count>0 ? true : false, msg: `${count} Mentors registered !` });
+  } catch (error) {
+      console.error(`Error: ${error.message}`);
+      res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
+  }
+};
+//end//
 
 const getStatisticsCoordinator = async (req,res) => {
     try {
@@ -453,14 +511,29 @@ const downloadCSVTemplate = async  (req, res) => {
   }
 
 };
+//new//
+const downloadStudentTemplate = async (req, res) => {
+  try {
+      const filePath = './assets/faculty-upload-Student.xlsx';
+      return res.download(filePath);
+  } catch (error) {
+      console.error(`Error: ${error.message}`);
+      return res.status(500).json({ success: false, msg: `Something Went Wrong ${error.message}` });
+  }
+};
+//end//
 
 module.exports = {
     loginCoordinator,
     getAllCoordinators,
     addMentor,
     addMentors,
+    AddStudentsexcel,
     assignStudent,
     removeAssignedStudent,
     downloadCSVTemplate,
-    getStatisticsCoordinator
+    downloadStudentTemplate,
+    getStatisticsCoordinator,
+    checkStudent,
+    checkMentor
 };

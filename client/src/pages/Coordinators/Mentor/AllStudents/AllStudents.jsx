@@ -229,114 +229,97 @@ const AllStudentsInDepartment = () => {
 
             <div style={{ maxWidth: '100%', overflowY: 'auto' }}>
 
-                <Table variant="simple">
-                    <Thead>
-                        <Tr>
-                            <Th style={{ color: colors.font }}>Roll no.</Th>
-                            <Th style={{ color: colors.font }}>Name</Th>
-                            <Th style={{ color: colors.font }}>Batch</Th>
-                            <Th style={{ color: colors.font }}>E-mail</Th>
-                            <Th style={{ color: colors.font }} isNumeric>
-                                Contact
-                            </Th>
-                            <Th style={{ color: colors.font }} isNumeric>Submission Status</Th>
-                            <Th style={{ color: colors.font }} >ISE</Th>
-                            <Th style={{ color: colors.font }} >ESE</Th>
-                        </Tr>
-                    </Thead>
-                    <Tbody>
-                        {/* {data.success && */}
-                            {filteredStudents && filteredStudents.map((student) => {
-                                
-                                if (student.isActive) {
-                                    var c = 0;
-                                    for (let i = 0; i<student.internships[0].progress.length; i++){
-                                        if (student.internships[0].progress[i].submitted){
-                                            c++;
-                                        }
-                                    }
-                                    // var excel_obj = 
-                                    //     {
-                                    //         Roll_no: student.rollno,
-                                    //         Name: student.name,
-                                    //         Batch: student.batch,
-                                    //         Email: student.email,
-                                    //         Contact_no: student.contact_no,
-                                    //         Weekly_Submissions: c.toString() + "/" + (student.internships[0].duration_in_weeks).toString(),
-                                    //         ISE_evaluation_status: student.internships[0].completion.length === 1 ? 'Completed' : 'Pending',
-                                    //         ESE_evaluation_status: student.internships[0].completion.length === 2 ? 'Completed' : 'Pending',
-                                    //     }
-                                    // setExcelData((x)=> [...x, excel_obj]);
-                                    
-                                    return (
-                                        <React.Fragment key={student.email} id={student.rollno}>
-                                            <HoverableTr
-                                                onClick={() => handleRowClick(student)}
-                                                style={{ cursor: 'pointer' }}
-                                            >
-                                                <Td style={{ color: colors.font }}>{student.rollno}</Td>
-                                                <Td style={{ color: colors.font }}>{student.name}</Td>
-                                                <Td style={{ color: colors.font }}>{student.batch}</Td>
-                                                <Td style={{ color: colors.font }}>{student.email}</Td>
-                                                <Td style={{ color: colors.font }} isNumeric>
-                                                    {student.contact_no}
-                                                </Td>
-                                                <Td style={{ color: colors.font }} isNumeric>
-                                                    {c}/{student.internships[0].duration_in_weeks}
-                                                </Td>
-                                                <Td style={{ color: student.internships[0].evaluation[0]?.is_signed ? colors.primary : colors.heading1 }}>
-                                                    {student.internships[0].evaluation[0]?.is_signed ? 'Completed' : 'Pending'}
-                                                </Td>
+            <Table variant="simple">
+    <Thead>
+        <Tr>
+            <Th style={{ color: colors.font }}>Roll no.</Th>
+            <Th style={{ color: colors.font }}>Name</Th>
+            <Th style={{ color: colors.font }}>Batch</Th>
+            <Th style={{ color: colors.font }}>E-mail</Th>
+            <Th style={{ color: colors.font }} isNumeric>Contact</Th>
+            <Th style={{ color: colors.font }} isNumeric>Submission Status</Th>
+            <Th style={{ color: colors.font }}>ISE</Th>
+            <Th style={{ color: colors.font }}>ESE</Th>
+            <Th style={{ color: colors.font }}>Company Name</Th> {/* New Column */}
 
-                                                <Td style={{ color: student.internships[0].evaluation[1]?.is_signed ? colors.primary : colors.heading1 }}>
-                                                    {student.internships[0].evaluation[1]?.is_signed ? 'Completed' : 'Pending'}
-                                                </Td>
+        </Tr>
+    </Thead>
+    <Tbody>
+        {filteredStudents && filteredStudents.map((student) => {
+            if (student.isActive) {
+                var c = 0;
+                for (let i = 0; i < student.internships[0].progress.length; i++) {
+                    if (student.internships[0].progress[i].submitted) {
+                        c++;
+                    }
+                }
 
-                                            </HoverableTr>
-                                            {selectedStudent === student && (
-                                                <Tr>
-                                                    <Td colSpan="5">
-                                                        <Box
-                                                            width="100%"
-                                                            mt="2"
-                                                            p="4"
-                                                            bg={colors.secondary}
-                                                            style={{ overflow: 'hidden', whiteSpace: 'nowrap', height: 'auto' }}
-                                                        >
-                                                            <div style={{ marginBottom: '10px' }}>
-                                                                {student.hasMentor && <Badge mb={2} colorScheme='green'>Assigned</Badge>}
+                return (
+                    <React.Fragment key={student.email} id={student.rollno}>
+                        <HoverableTr
+                            onClick={() => handleRowClick(student)}
+                            style={{ cursor: 'pointer' }}
+                        >
+                            <Td style={{ color: colors.font }}>{student.rollno}</Td>
+                            <Td style={{ color: colors.font }}>{student.name}</Td>
+                            <Td style={{ color: colors.font }}>{student.batch}</Td>
+                            <Td style={{ color: colors.font }}>{student.email}</Td>
+                            <Td style={{ color: colors.font }} isNumeric>
+                                {student.contact_no}
+                            </Td>
+                            <Td style={{ color: colors.font }} isNumeric>
+                                {c}/{student.internships[0].duration_in_weeks}
+                            </Td>
+                            <Td style={{ color: student.internships[0].evaluation[0]?.is_signed ? colors.primary : colors.heading1 }}>
+                                {student.internships[0].evaluation[0]?.is_signed ? 'Completed' : 'Pending'}
+                            </Td>
+                            <Td style={{ color: student.internships[0].evaluation[1]?.is_signed ? colors.primary : colors.heading1 }}>
+                                {student.internships[0].evaluation[1]?.is_signed ? 'Completed' : 'Pending'}
+                            </Td>
+                            <Td style={{ color: colors.font }}>{student.internships[0].company}</Td> {/* New Column Data */}
+                        </HoverableTr>
+                        {selectedStudent === student && (
+                            <Tr>
+                                <Td colSpan="9">
+                                    <Box
+                                        width="100%"
+                                        mt="2"
+                                        p="4"
+                                        bg={colors.secondary}
+                                        style={{ overflow: 'hidden', whiteSpace: 'nowrap', height: 'auto' }}
+                                    >
+                                        <div style={{ marginBottom: '10px' }}>
+                                            {student.hasMentor && <Badge mb={2} colorScheme='green'>Assigned</Badge>}
 
-                                                                <div style={{ fontSize: '17px', color: colors.heading1, fontStyle: 'italic', fontWeight: 'bold', marginBottom: '5px' }}><Avatar h={5} w={5} mr={2} src={student.profile_picture_url} />{student.email}</div>
-                                                                <div style={{ fontSize: '18px', color: colors.primary, fontWeight: 'bold' }}>  Semester: {student.sem}, Batch: {student.batch} </div>
-                                                                {student.hasMentor && <div style={{ borderRadius: '10px', margin: '5px 0', backgroundColor: colors.secondary2, padding: '5px 1.5vw', display: 'flex', flexDirection: 'column' }}>
-                                                                    <div style={{ color: colors.font }}>Mentor Details :</div>
-                                                                    <div style={{ height: '10px' }}></div>
-                                                                    <div style={{ fontSize: '17px', color: colors.font, fontWeight: 'bold' }}><span style={{ color: colors.primary }}>Name:</span> {student.mentor.name}</div>
-
-                                                                    <div style={{ fontSize: '17px', color: colors.font, fontWeight: 'bold' }}><span style={{ color: colors.primary }}>Email:</span> {student.mentor.email}</div>
-                                                                    <div style={{ fontSize: '17px', color: colors.font, fontWeight: 'bold' }}><span style={{ color: colors.primary }}>Contact No. :</span> {student.mentor.contact_no}</div>
-
-                                                                </div>}
-                                                                <div style={{ borderRadius: '10px', margin: '5px 0', backgroundColor: colors.secondary2, padding: '5px 1.5vw', display: 'flex', flexDirection: 'column' }}>
-                                                                <div style={{ color: colors.font }}>Company Details :</div>
-                                                                <div style={{ height: '10px' }}></div>
-                                                                    <div style={{ fontSize: '17px', color: colors.font, fontWeight: 'bold' }}><span style={{ color: colors.primary }}>Name:</span> {student.internships[0].company}</div>
-                                                                    <div style={{ fontSize: '17px', color: colors.font, fontWeight: 'bold' }}><span style={{ color: colors.primary }}>Description:</span> {student.internships[0].job_description}</div>
-                                                                </div>
-                                                            </div>
-                                                        </Box>
-                                                    </Td>
-                                                </Tr>
-                                            )}
-
-                                        </React.Fragment>
-
-                                    );
-                                }
-                                return null;
-                            })}
-                    </Tbody>
-                </Table>
+                                            <div style={{ fontSize: '17px', color: colors.heading1, fontStyle: 'italic', fontWeight: 'bold', marginBottom: '5px' }}><Avatar h={5} w={5} mr={2} src={student.profile_picture_url} />{student.email}</div>
+                                            <div style={{ fontSize: '18px', color: colors.primary, fontWeight: 'bold' }}>  Semester: {student.sem}, Batch: {student.batch} </div>
+                                            {student.hasMentor && <div style={{ borderRadius: '10px', margin: '5px 0', backgroundColor: colors.secondary2, padding: '5px 1.5vw', display: 'flex', flexDirection: 'column' }}>
+                                                <div style={{ color: colors.font }}>Mentor Details :</div>
+                                                <div style={{ height: '10px' }}></div>
+                                                <div style={{ fontSize: '17px', color: colors.font, fontWeight: 'bold' }}><span style={{ color: colors.primary }}>Name:</span> {student.mentor.name}</div>
+                                                <div style={{ fontSize: '17px', color: colors.font, fontWeight: 'bold' }}><span style={{ color: colors.primary }}>Email:</span> {student.mentor.email}</div>
+                                                <div style={{ fontSize: '17px', color: colors.font, fontWeight: 'bold' }}><span style={{ color: colors.primary }}>Contact No. :</span> {student.mentor.contact_no}</div>
+                                            </div>}
+                                            <div style={{ borderRadius: '10px', margin: '5px 0', backgroundColor: colors.secondary2, padding: '5px 1.5vw', display: 'flex', flexDirection: 'column' }}>
+                                                <div style={{ color: colors.font }}>Company Details :</div>
+                                                <div style={{ height: '10px' }}></div>
+                                                <div style={{ fontSize: '17px', color: colors.font, fontWeight: 'bold' }}><span style={{ color: colors.primary }}>Company Name:</span> {student.internships[0].company}</div>
+                                                <div style={{ fontSize: '17px', color: colors.font, fontWeight: 'bold' }}><span style={{ color: colors.primary }}>Description:</span> {student.internships[0].job_description}</div>
+                                                <div style={{ fontSize: '17px', color: colors.font, fontWeight: 'bold' }}><span style={{ color: colors.primary }}>Company mentor name:</span> {student.internships[0].company_mentor}</div>                                               
+                                                <div style={{ fontSize: '17px', color: colors.font, fontWeight: 'bold' }}><span style={{ color: colors.primary }}>Company mentor email:</span> {student.internships[0].company_mentor_email}</div>
+                                            </div>
+                                        </div>
+                                    </Box>
+                                </Td>
+                            </Tr>
+                        )}
+                    </React.Fragment>
+                );
+            }
+            return null;
+        })}
+    </Tbody>
+</Table>
             </div>
         </div>
     )

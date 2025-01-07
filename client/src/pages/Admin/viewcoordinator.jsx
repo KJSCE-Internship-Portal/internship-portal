@@ -76,6 +76,7 @@ const CoordinatorList = () => {
         <Tab bg={colors.hover} color={colors.font}>MECH</Tab>
         <Tab bg={colors.hover} color={colors.font}>EXTC</Tab>
         <Tab bg={colors.hover} color={colors.font}>ETRX</Tab>
+        <Tab bg={colors.hover} color={colors.font}>EXCP</Tab>
       </TabList>
       <TabPanels w={'100%'}>
         <TabPanel>
@@ -92,6 +93,9 @@ const CoordinatorList = () => {
         </TabPanel>
         <TabPanel>
           {coordinators && renderCoordinatorList(coordinators, "Electronics Engineering", openDrawer, colors)}
+        </TabPanel>
+        <TabPanel>
+          {coordinators && renderCoordinatorList(coordinators, "Electronics And Computer Engineering", openDrawer, colors)}
         </TabPanel>
       </TabPanels>
     </Tabs>

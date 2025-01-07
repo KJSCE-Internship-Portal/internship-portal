@@ -91,6 +91,7 @@ const RegisterMentor = () => {
             }
 
 
+
         }
         else {
             if (!validateEmail()) {
@@ -185,6 +186,8 @@ const RegisterMentor = () => {
                     </DrawerFooter>
                 </DrawerContent>
             </Drawer>
+
+    
         </>
     );
 };

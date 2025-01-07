@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   ChakraProvider,
   Box,
@@ -37,6 +37,12 @@ import showToast from '../../Global/Toast';
 import AddMentor from '../Admin/addMentor';
 import Alert from '../../components/Alert/alert';
 
+//New code
+import { useDropzone } from 'react-dropzone';
+import * as XLSX from 'xlsx';
+//end
+
+
 const Dashboard = () => {
 
   const [user, setUser] = useState(false);
@@ -57,6 +63,147 @@ const Dashboard = () => {
   const firstField = React.useRef();
   const {theme: colors} = useTheme();
   const accessToken = localStorage.getItem('IMPaccessToken');
+
+    //New code
+    const [csvData, setCsvData] = useState([]);
+    const [errors, setErrors] = useState([]);
+    const [selectedFile, setSelectedFile] = useState(null);
+
+
+    const onDrop = useCallback((acceptedFiles) => {
+        const file = acceptedFiles[0];
+        setSelectedFile(file); // Update the selected file state
+      
+        try {
+          if (file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+            handleExcelFile(file);
+          } else {
+            throw new Error({ field: 'file', message: 'Invalid file type. Please upload an Excel (.xlsx) file.' });
+          }
+        } catch (error) {
+          setErrors([{ field: 'file', message: 'Invalid file type. Please upload an Excel (.xlsx) file.' }]);
+          console.error(error);
+        }
+      }, []);
+      
+      const handleExcelFile = (file) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const data = e.target.result;
+      
+          if (!file.name.endsWith('.xlsx')) {
+            setErrors([{ field: 'file', message: 'Invalid file type. Please upload an Excel (.xlsx) file.' }]);
+            console.error('Invalid file type. Please upload an Excel (.xlsx) file.');
+            return;
+          }
+      
+          const workbook = XLSX.read(data, { type: 'binary' });
+          const sheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[sheetName];
+          const jsonData = XLSX.utils.sheet_to_json(worksheet);
+      
+          const { filteredData, validationErrors } = filterColumns(jsonData);
+          if (validationErrors.length === 0) {
+            setCsvData(filteredData);
+            setErrors([]);
+            console.log('Parsed Excel Data:', filteredData); // Log the parsed data to the console
+          } else {
+            setErrors(validationErrors);
+            console.error('Validation errors:', validationErrors); // Log validation errors to the console
+          }
+        };
+        reader.readAsBinaryString(file);
+      };
+
+      const uploadExcel = async () => {
+        try {
+          const response = await axios.post(url + '/coordinator/add/mentors', { csvData, department: user.department });
+          if (response.data.success) {
+            showToast(toast, "Success", 'success', response.data.msg);
+            setshowDataModal(false);
+          } else {
+            showToast(toast, "Error", 'error', response.data.msg);
+            setshowDataModal(false);
+          }
+          setCsvData([]);
+        } catch (error) {
+          showToast(toast, "Error", 'error', "Something went Wrong");
+          setshowDataModal(false);
+        }
+      }
+
+      const downloadTemplate = async () => {
+        try {
+          const response = await axios.get(url + '/download-template', {
+            responseType: 'blob' // Specify the response type as blob
+          });
+          const blobUrl = window.URL.createObjectURL(new Blob([response.data]));
+      
+          const link = document.createElement('a');
+          link.href = blobUrl;
+          link.setAttribute('download', 'faculty-upload-template-department.xlsx');
+          document.body.appendChild(link);
+          link.click();
+          link.parentNode.removeChild(link);
+        } catch (error) {
+          showToast(toast, "Error", 'error', "Something went Wrong");
+        }
+      };
+
+      const { getRootProps, getInputProps, isDragActive } = useDropzone({
+        onDrop,
+        accept: {
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx']
+        }
+      });
+
+      const filterColumns = (data) => {
+        const uniqueErrors = new Set();
+    
+        const filteredData = data.map((row, index) => {
+            const errors = [];
+    
+            // Validate name
+            if (!row.name || row.name.trim() === '') {
+                errors.push({ field: 'name', message: `Name is required for row ${index + 1}` });
+            }
+    
+            // Validate email domain
+            const emailRegex = /^[^\s@]+@somaiya\.edu$/i;
+            if (!row.email || !emailRegex.test(row.email)) {
+                errors.push({ field: 'email', message: `Invalid or missing email for row ${index + 1}. It should be of @somaiya.edu domain.` });
+            }
+    
+            // Validate contact number length
+            const contactNoRegex = /^\d{10}$/;
+            if (!row.contact_no || !contactNoRegex.test(row.contact_no)) {
+                errors.push({ field: 'contact_no', message: `Invalid or missing contact number for row ${index + 1}. It should be 10 digits long.` });
+            }
+    
+            if (errors.length > 0) {
+                errors.forEach((error) => {
+                    uniqueErrors.add(JSON.stringify(error));
+                });
+                return null;
+            }
+    
+            return {
+                name: row.name,
+                email: row.email,
+                contact_no: row.contact_no,
+            };
+        });
+    
+        const validationErrors = [...uniqueErrors].map((errorString) => JSON.parse(errorString));
+    
+        return {
+            filteredData: filteredData.filter((row) => row !== null),
+            validationErrors,
+        };
+    };
+    
+
+      //end
 
   const validateEmail = () => {
     const emailRegex = /^[^\s@]+@somaiya\.edu$/;
@@ -169,6 +316,8 @@ const handleAddCoord = async () => {
             return "EXTC";
           case "Electronics Engineering":
             return "ETRX";
+          case "Electronics And Computer Engineering":
+            return "EXCP";
           default:
             return department;
         }
@@ -285,7 +434,7 @@ const handleAddCoord = async () => {
 
       <Box maxW="1200px" mx="auto" py={5} px={2}>
       <Flex justify="space-between" align="center">
-      <Button color={colors.font} bg={colors.hover} ml="auto" onClick={onOpen}>Add Coordinator</Button>
+      <Button color={colors.font} bg={colors.hover} ml="auto" onClick={onOpen} style={{marginRight:'10px'}} >Add Coordinator</Button>
       <AddMentor/>
       </Flex>
       <Flex align="center">
@@ -430,12 +579,60 @@ const handleAddCoord = async () => {
                                 <option style={{backgroundColor: colors.secondary, color: colors.font}} value="Mechanical Engineering">MECH</option>
                                 <option style={{backgroundColor: colors.secondary, color: colors.font}} value="Electronics And Telecommunication Engineering">EXTC</option>
                                 <option style={{backgroundColor: colors.secondary, color: colors.font}} value="Electronics Engineering">ETRX</option>
-                                <option style={{backgroundColor: colors.secondary, color: colors.font}} value="Electronics And Computer Engineering" hidden>EXCP</option>
+                                <option style={{backgroundColor: colors.secondary, color: colors.font}} value="Electronics And Computer Engineering" >EXCP</option>
                                 <option style={{backgroundColor: colors.secondary, color: colors.font}} value="Robotics And Artificial Intelligence" hidden>RAI</option>
                                 <option style={{backgroundColor: colors.secondary, color: colors.font}} value="Artificial Intelligence And Data Science" hidden>AIDS</option>
                                 <option style={{backgroundColor: colors.secondary, color: colors.font}} value="Computer And Communication Engineering" hidden>CCE</option>
                         </Select>
                     </Box>
+
+                     {/* New code  */}
+                     <Box>
+                              <div
+                                {...getRootProps()}
+                                className={`dropzone ${isDragActive ? 'active' : ''}`}
+                                style={{
+                                    border: '2px dashed #ccc',
+                                    borderRadius: '4px',
+                                    padding: '20px',
+                                    textAlign: 'center',
+                                    cursor: 'pointer',
+                                }}
+                                >
+                                <input {...getInputProps()} />
+                                {selectedFile ? (
+                                    <p>Selected file: {selectedFile.name} ({(selectedFile.size / 1024).toFixed(2)} KB)</p>
+                                ) : (
+                                    <p>Drag & drop your Excel (.xlsx) file here, or click to select one</p>
+                                )}
+
+                                {errors.length > 0 && (
+                                    <div style={{ color: 'red', marginTop: '10px' }}>
+                                    <p>The following errors were found:</p>
+                                    {errors.map((error, index) => (
+                                        <p key={index}>{`${error.field} : ${error.message}`}</p>
+                                    ))}
+                                    </div>
+                                )}
+                                </div>
+
+                                {showDataModal && (
+                                <Alert
+                                    onConfirm={uploadExcel}
+                                    text={'Upload Excel'}
+                                    onClose={() => setshowDataModal(false)}
+                                />
+                                )}
+
+                                {errors.length === 0 && (
+                                <button onClick={() => setshowDataModal(true)} style={{ width: '100%', height: '30px', marginTop: '20px', backgroundColor: '#b4f7ab', borderRadius: '15px' }}>Upload Excel</button>
+                                )}
+
+                                <button onClick={downloadTemplate} style={{ width: '100%', height: '30px', marginTop: '20px', backgroundColor: '#b4f7ab', borderRadius: '15px' }}>Download Template</button>
+
+                      </Box>
+                       {/* End  */}
+
                 </Stack>
             </DrawerBody>
             <DrawerFooter borderTopWidth='0px'>

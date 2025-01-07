@@ -45,6 +45,14 @@ const handleLoginRequest = async (req, res) => {
 
 const callbackCheck = async (req, res) => {
     const code = req.query.code;
+    const error = req.query.error; // Google returns an error if login is canceled
+
+    if (error) {
+        // Handle login cancellation by redirecting back to the frontend login page
+        console.log('User cancelled login or error occurred:', error);
+        return res.redirect(`${process.env.CLIENT_URL}/login?error=canceled`);
+    }
+
     try {
         const redirectUrl = process.env.SERVER_URL + '/api/callback';
         const oAuth2Client = new OAuth2Client(
@@ -52,13 +60,12 @@ const callbackCheck = async (req, res) => {
             process.env.CLIENT_SECRET,
             redirectUrl,
         );
+
         const tokenResponse = await oAuth2Client.getToken(code);
         await oAuth2Client.setCredentials(tokenResponse.tokens);
         const userCredentials = oAuth2Client.credentials;
 
-        //Access token
         const accessToken = userCredentials.id_token;
-        //Refresh Token
         const refreshToken = userCredentials.refresh_token;
 
         const ticket = await oAuth2Client.verifyIdToken({ idToken: accessToken, audience: process.env.CLIENT_ID });
@@ -70,6 +77,7 @@ const callbackCheck = async (req, res) => {
         const picture = payload['picture'];
 
         const found = await findPersonBySubId(email);
+
         if (found) {
             if (found._doc.isApproved && found._doc.isActive) {
                 var updatedUser = await Student.findOneAndUpdate(
@@ -160,10 +168,11 @@ const callbackCheck = async (req, res) => {
         }
 
     } catch (err) {
-        console.log('Error in signing in with Google:', err);
-        res.status(500).send('Error during authentication');
+        console.log('Error during Google callback:', err);
+        return res.status(500).send('Error during authentication');
     }
-}
+};
+
 
 const getUserWithAccessToken = async (req, res) => {
 

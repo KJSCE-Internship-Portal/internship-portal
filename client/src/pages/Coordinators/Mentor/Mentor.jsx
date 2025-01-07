@@ -58,6 +58,7 @@ const MentorPage = () => {
                 const res = await axios.post(url + '/coordinator/mentor/remove-assigned-student', { rollno: roll, mentor_email: data.data[0].email  });
                 if (res.data.success) {
                     showToast(toast, 'Success', 'success', 'Student Unassigned');
+                    setTimeout(()=>{window.location.reload()},10);
                     setUnassignModalState(false);
                 } else {
                     showToast(toast, 'Error', 'error', res.data.msg);

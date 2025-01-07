@@ -74,7 +74,8 @@ const MentorList = () => {
           <Tab bg={colors.hover} color={colors.font}>IT</Tab>
           <Tab bg={colors.hover} color={colors.font}>MECH</Tab>
           <Tab bg={colors.hover} color={colors.font}>EXTC</Tab>
-        <Tab bg={colors.hover} color={colors.font}>ETRX</Tab>
+          <Tab bg={colors.hover} color={colors.font}>ETRX</Tab>
+          <Tab bg={colors.hover} color={colors.font}>EXCP</Tab>
         </TabList>
         <TabPanels w={'100%'}>
           <TabPanel>
@@ -91,6 +92,9 @@ const MentorList = () => {
           </TabPanel>
           <TabPanel>
             {mentors && renderMentorList(mentors, "Electronics Engineering", openDrawer, colors)}
+          </TabPanel>
+          <TabPanel>
+            {mentors && renderMentorList(mentors, "Electronics And Computer Engineering", openDrawer, colors)}
           </TabPanel>
         </TabPanels>
       </Tabs>

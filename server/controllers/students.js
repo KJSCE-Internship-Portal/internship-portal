@@ -43,16 +43,12 @@ function calculateWeeks(startDate, endDate) {
 // });
 
 const loginStudent = async (req, res) => {
-
     try {
-        res.status(200).json({ success: true, msg: "Student Login Route" });
+        res.status(200).json({ success: true, msg: "Successfully Completed" });
     } catch (error) {
         console.error(`Error: ${error.message}`);
         res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
     }
-
-    
-
 };
 
 const registerStudent = async (req, res) => {
