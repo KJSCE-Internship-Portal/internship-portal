@@ -102,6 +102,10 @@ const studentSchema = new mongoose.Schema({
                 type: String,
                 required: [true, "Duration in Weeks is Required"]
             },
+            company_mentor_email: {
+                type: String,
+                required: [true, "Duration in Weeks is Required"]
+            },
             paid: {
                 type: Boolean,
                 default: false,

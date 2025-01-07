@@ -1,6 +1,5 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
-// import Papa from 'papaparse';
 import * as XLSX from 'xlsx';
 import { url } from '../../../../../Global/URL';
 import axios from 'axios';
@@ -9,7 +8,7 @@ import { useToast } from '@chakra-ui/react';
 import { getUserDetails } from '../../../../../Global/authUtils';
 import Alert from '../../../../../components/Alert/alert';
 
-const AddMentors = () => {
+const AddMentorss = () => {
   const [csvData, setCsvData] = useState([]);
   const [errors, setErrors] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -23,7 +22,7 @@ const AddMentors = () => {
         const current_user = await getUserDetails();
         setUser(current_user);
       } catch (error) {
-        showToast(toast, "Error", 'error', "Something Wen't Wrong !");
+        showToast(toast, "Error", 'error', "Something went wrong!");
       }
     };
     fetchData();
@@ -31,8 +30,11 @@ const AddMentors = () => {
 
   const uploadExcel = async () => {
     try {
-      const response = await axios.post(url + '/coordinator/add/mentors', { csvData, department: user.department });
-      console.log(response.data);
+      // Send data to server without overriding department
+      const response = await axios.post(url + '/admin/add/mentors', {
+        csvData: csvData, // Use the department from each row in the file
+      });
+  
       if (response.data.success) {
         showToast(toast, "Success", 'success', response.data.msg);
         setshowDataModal(false);
@@ -42,14 +44,14 @@ const AddMentors = () => {
       }
       setCsvData([]);
     } catch (error) {
-      showToast(toast, "Error", 'error', "Something went Wrong");
+      showToast(toast, "Error", 'error', "Something went wrong");
       setshowDataModal(false);
     }
-  }
-
+  };
+  
   const downloadTemplate = async () => {
     try {
-      const response = await axios.get(url + '/download-template', {
+      const response = await axios.get(url + '/download-template-admin', {
         responseType: 'blob' // Specify the response type as blob
       });  
       const blobUrl = window.URL.createObjectURL(new Blob([response.data]));
@@ -57,7 +59,7 @@ const AddMentors = () => {
       // Create a temporary link element
       const link = document.createElement('a');
       link.href = blobUrl;
-      link.setAttribute('download', 'faculty-upload-template.xlsx'); // Set the filename
+      link.setAttribute('download', 'faculty-upload-template-department.xlsx'); // Set the filename
 
       // Append the link to the body and click it
       document.body.appendChild(link);
@@ -66,7 +68,7 @@ const AddMentors = () => {
       // Cleanup
       link.parentNode.removeChild(link);
     } catch (error) {
-      showToast(toast, "Error", 'error', "Something went Wrong");
+      showToast(toast, "Error", 'error', "Something went wrong");
     }
   }
 
@@ -78,14 +80,13 @@ const AddMentors = () => {
       if (file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
         handleExcelFile(file);
       } else {
-        throw new Error({ field: 'file', message: 'Invalid file type. Please upload an Excel (.xlsx) file.' });
+        throw new Error('Invalid file type. Please upload an Excel (.xlsx) file.');
       }
     } catch (error) {
-      setErrors([{ field: 'file', message: 'Invalid file type. Please upload an Excel (.xlsx) file.' }]);
+      setErrors([{ field: 'file', message: error.message }]);
       console.error(error);
     }
   }, []);
-
 
   const handleExcelFile = (file) => {
     const reader = new FileReader();
@@ -98,7 +99,7 @@ const AddMentors = () => {
         return;
       }
 
-      const workbook = XLSX.read(new Uint8Array(data), { type: 'array' });
+      const workbook = XLSX.read(data, { type: 'binary' });
       const sheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[sheetName];
       const jsonData = XLSX.utils.sheet_to_json(worksheet);
@@ -113,15 +114,19 @@ const AddMentors = () => {
         console.error('Validation errors:', validationErrors); // Log validation errors to the console
       }
     };
-    reader.readAsArrayBuffer(file);
+    reader.readAsBinaryString(file);
   };
-
 
   const filterColumns = (data) => {
     const uniqueErrors = new Set(); // Use a set to store unique error messages
 
     const filteredData = data.map((row, index) => {
       const errors = [];
+
+      // Validate department
+      if (!row.department || row.department.trim() === '') {
+        errors.push({ field: 'department', message: `Department is required for row ${index + 1}` });
+      }
 
       // Validate name
       if (!row.name || row.name.trim() === '') {
@@ -151,6 +156,7 @@ const AddMentors = () => {
         name: row.name,
         email: row.email,
         contact_no: row.contact_no,
+        department: row.department || user.department, // Default to user's department if not provided
       };
     });
 
@@ -163,12 +169,10 @@ const AddMentors = () => {
     };
   };
 
-
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: '.xlsx',
   });
-
 
   return (
     <div>
@@ -181,7 +185,6 @@ const AddMentors = () => {
           padding: '20px',
           textAlign: 'center',
           cursor: 'pointer',
-          // backgroundColor: isDragActive ? '#e6f7ff' : 'white',
         }}
       >
         <input {...getInputProps()} />
@@ -201,25 +204,42 @@ const AddMentors = () => {
             ))}
           </div>
         )}
-
-
       </div>
       {showDataModal && (
-                        <Alert
-                        onConfirm={uploadExcel}
-                        text={'Upload Excel'}
-                        onClosec={() => setshowDataModal(false)}
-
-                        />)
-                        }
+        <Alert
+          onConfirm={uploadExcel}
+          text={'Upload Excel'}
+          onClosec={() => setshowDataModal(false)}
+        />
+      )}
       {
-        errors.length == 0 && (
-          <button onClick={()=>setshowDataModal(true)} style={{ width: '100%', border: 'none', height: '30px', marginTop: '20px', backgroundColor: '#b4f7ab', borderRadius: '15px', border: 'solid 0.5px #555' }}>Upload Excel</button>
+        errors.length === 0 && (
+          <button 
+            onClick={() => setshowDataModal(true)} 
+            style={{ 
+              width: '100%', 
+              border: 'none', 
+              height: '30px', 
+              marginTop: '20px', 
+              backgroundColor: '#b4f7ab', 
+              borderRadius: '15px', 
+              border: 'solid 0.5px #555' 
+            }}>Upload Excel</button>
         )
       }
-      <button onClick={()=>downloadTemplate()} style={{ width: '100%', border: 'none', height: '30px', marginTop: '20px', backgroundColor: '#b4f7ab', borderRadius: '15px', border: 'solid 0.5px #555' }}>Download Template</button>
+      <button 
+        onClick={() => downloadTemplate()} 
+        style={{ 
+          width: '100%', 
+          border: 'none', 
+          height: '30px', 
+          marginTop: '20px', 
+          backgroundColor: '#b4f7ab', 
+          borderRadius: '15px', 
+          border: 'solid 0.5px #555' 
+        }}>Download Template</button>
     </div>
   );
 };
 
-export default AddMentors;
+export default AddMentorss;

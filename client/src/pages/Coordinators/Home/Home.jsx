@@ -8,6 +8,7 @@ import { url } from '../../../Global/URL';
 import { Link } from 'react-router-dom';
 import { getUserDetails } from '../../../Global/authUtils';
 import RegisterMentor from '../Mentor/RegisterMentor/RegisterMentor';
+import AddStudents from '../Mentor/RegisterMentor/AddStudents'
 import { LinkIcon } from '@chakra-ui/icons';
 import { Box, Divider, AbsoluteCenter } from "@chakra-ui/react";
 
@@ -107,27 +108,32 @@ const HomePage = () => {
     return (
 
         <div style={{ height: '100%', width: '100%', minHeight: '100%', maxWidth: '100%', maxHeight: '100%', overflowY: 'hidden', padding: 10 }}>
-
-            <h1 style={{ color: colors.font, fontWeight: 'bold', fontSize: 23, marginLeft: 20, marginBottom: '5px' }}>
-                <span onClick={() => navigateToStudentsList(user && user.department)} style={{ cursor: 'pointer' }}>
-                    {user && user.department} <LinkIcon color={colors.primary} />
-                </span>
-            </h1>
-
-            <div style={{ color: colors.font, marginLeft: 20 }}><RegisterMentor /></div>
-
-
-            {data.data && <MentorList mentors={data.data.filter(mentor => mentor.sub_id !== 'None')} />}
-            <div className={styles.mentorContainer}>
-                {data.data.length <= 0 && <div style={{ backgroundColor: colors.hover, height: '150px', width: '95%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 15px' }}>
-                    <h1 style={{ color: colors.font, textAlign: 'center' }}>No Mentors in your Department</h1>
-                </div>}
-
+        <h1 style={{ color: colors.font, fontWeight: 'bold', fontSize: 23, marginLeft: 20, marginBottom: '5px' }}>
+            <span onClick={() => navigateToStudentsList(user && user.department)} style={{ cursor: 'pointer' }}>
+                {user && user.department} <LinkIcon color={colors.primary} />
+            </span>
+        </h1>
+    
+        {/* Flex container to align "Add Mentor" and "Add Students" buttons in one line */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginLeft: 10, marginBottom: '20px' }}>
+            <div style={{ color: colors.font }}>
+                <RegisterMentor />
             </div>
-
-
-
+            <div style={{ color: colors.font }}>
+                <AddStudents />
+            </div>
         </div>
+    
+        {data.data && <MentorList mentors={data.data.filter(mentor => mentor.sub_id !== 'None')} />}
+        <div className={styles.mentorContainer}>
+            {data.data.length <= 0 && (
+                <div style={{ backgroundColor: colors.hover, height: '150px', width: '95%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 15px' }}>
+                    <h1 style={{ color: colors.font, textAlign: 'center' }}>No Mentors in your Department</h1>
+                </div>
+            )}
+        </div>
+    </div>
+    
     );
 };
 

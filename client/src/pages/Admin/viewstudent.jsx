@@ -39,7 +39,7 @@ const StudentList = () => {
           <option value="Mechanical Engineering">MECH</option>
           <option value="Electronics And Telecommunication Engineering">EXTC</option>
           <option value="Electronics Engineering">ETRX</option>
-          <option value="Electronics And Computer Engineering" hidden>EXCP</option>
+          <option value="Electronics And Computer Engineering" >EXCP</option>
           <option value="Robotics And Artificial Intelligence" hidden>RAI</option>
           <option value="Artificial Intelligence And Data Science" hidden>AIDS</option>
           <option value="Computer And Communication Engineering" hidden>CCE</option>
@@ -133,7 +133,9 @@ const StudentList = () => {
           <Tab bg={colors.hover} color={colors.font}>IT</Tab>
           <Tab bg={colors.hover} color={colors.font}>MECH</Tab>
           <Tab bg={colors.hover} color={colors.font}>EXTC</Tab>
-        <Tab bg={colors.hover} color={colors.font}>ETRX</Tab>
+          <Tab bg={colors.hover} color={colors.font}>ETRX</Tab>
+          <Tab bg={colors.hover} color={colors.font}>EXCP</Tab>
+
         </TabList>
         <TabPanels w={'100%'}>
           <TabPanel>
@@ -150,6 +152,9 @@ const StudentList = () => {
           </TabPanel>
           <TabPanel>
             {students && renderStudentList(students, "Electronics Engineering", openDrawer, colors)}
+          </TabPanel>
+          <TabPanel>
+            {students && renderStudentList(students, "Electronics And Computer Engineering", openDrawer, colors)}
           </TabPanel>
         </TabPanels>
       </Tabs>

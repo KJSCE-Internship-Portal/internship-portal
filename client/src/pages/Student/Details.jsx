@@ -6,7 +6,7 @@ import {url, c_url} from '../../Global/URL';
 import showToast from '../../Global/Toast';
 import { useToast } from '@chakra-ui/react';
 import Alert from '../../components/Alert/alert';
-
+import backgroundImage from '../../assets/images/login_cover.png'; // Import the local image
 
 const Details = () => {
     const [name, setName] = useState('');
@@ -16,6 +16,7 @@ const Details = () => {
     const [enddate, setEndDate] = useState('');
     const [company, setCompany] = useState('');
     const [mentor, setMentor] = useState('');
+    const [mentoremail, setmentorEmail] = useState('');
     const [department, setDepartment] = useState('');
     const [division, setDivision] = useState('');
     const [rollno, setRollNo] = useState('');
@@ -33,15 +34,12 @@ const Details = () => {
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const encodedUserInfo = queryParams.get('userInfo');
-    // const encodedRefreshToken = queryParams.get('refreshToken');
     const userInfo = JSON.parse(decodeURIComponent(encodedUserInfo));
-    // const refreshToken = decodeURIComponent(encodedRefreshToken); 
 
     useEffect(() => {
         if (userInfo) {
             setName(userInfo.name);
             setEmail(userInfo.email);
-            // Other fields can also be set from userInfo
         }
     }, [userInfo]);
 
@@ -67,6 +65,7 @@ const Details = () => {
                     startDate: startdate,
                     endDate: enddate,
                     company_mentor: mentor,
+                    company_mentor_email: mentoremail,
                     stipend: stipend,
                     completion:[],
                     progress:[]
@@ -79,7 +78,6 @@ const Details = () => {
                 setIsSubmitting(false);
                 return;
             }
-            // console.log(data);
 
             const response = await fetch(url + "/student/register", {
                 method: 'POST',
@@ -107,19 +105,29 @@ const Details = () => {
     };
 
     return (
-        <section class="bg-white dark:bg-gray-300 py-8 lg:py-16 antialiased">
-            <div class="max-w-3xl mx-auto px-10">
+        <section 
+            className="bg-white dark:bg-gray-300 py-8 lg:py-16 antialiased relative"
+            style={{
+                backgroundImage: `url(${backgroundImage})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundAttachment: 'fixed'
+            }}
+        >
+            <div className="absolute inset-0 bg-white/80 dark:bg-gray-300/80 backdrop-blur-sm"></div>
+            <div className="max-w-3xl mx-auto px-10 relative z-10">
                 <div className="max-w-2xl mx-auto">
-                    <form className="w-full max-w-2xl mx-auto" onSubmit={(e) => {
+                    <form className="w-full max-w-2xl mx-auto bg-white/90 p-6 rounded-lg shadow-lg" onSubmit={(e) => {
                                                             e.preventDefault();
                                                             setshowDataModal(true);
                                                         }}>
-                        <div className="text-left mb-6 pb-5">
-                            <h2 className="text-5xl font-bold text-gray-900 dark:text-black">
-                                Welcome
+                        {/* Rest of the form remains the same as in the original code */}
+                        <div className="text-left mb-6 pb-5 p-2" >
+                            <h2 className="text-4xl font-bold text-gray-900 dark:text-black">
+                                Welcome to Somaiya Internship portal
                             </h2>
-                            <h3 className="text-2xl font-bold text-gray-900 dark:text-black flex items-center">
-                                <Avatar size="md" bg='red.700' color="white" name={name} src={userInfo.imageUrl} className="h-10 w-10 mr-2"></Avatar>
+                            <h3 className="text-2xl font-bold text-gray-900 dark:text-black flex items-center pt-3 px-2">
+                                <Avatar size="md" bg='red.700' color="white" name={name} src={userInfo.imageUrl} className="h-2 w-10 mr-2"></Avatar>
                                 <span
                                     className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-blue-500"
                                     style={{ animation: 'fadeIn 3s forwards' }}
@@ -128,9 +136,10 @@ const Details = () => {
                                 </span>
                             </h3>
                         </div>
-                        <div class="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
+                        
+                                   <div class="py-5 px-4 mb-3 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
                             <label for="rollno" class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-black">Email<span class="text-red-500">*</span></label>
-                            <input class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            <input class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 type="email"
                                 name="email"
                                 value={email}
@@ -139,7 +148,7 @@ const Details = () => {
                                 required
                             />
                         </div>
-                        <div class="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
+                        <div class="py-5 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
                             <label for="rollno" class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-black">Contact No.<span class="text-red-500">*</span></label>
                             <input class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 type="number"
@@ -150,7 +159,7 @@ const Details = () => {
                                 required
                             />
                         </div>
-                        <div class="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
+                        <div class="py-5 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
                             <label for="rollno" class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-black">Roll. No.<span class="text-red-500">*</span></label>
                             <input class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 type="number"
@@ -161,9 +170,9 @@ const Details = () => {
                             />
                         </div>
                         <div className="flex flex-wrap justify-between">
-                        <div className="mr-4 flex-1 py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
+                        <div className="mr-4 flex-1 py-3 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
                             <label for="dept" class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-black">Department<span class="text-red-500">*</span></label>
-                            <select class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            <select class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 max-h-64 overflow-y-auto"
                                 name="department"
                                 value={department}
                                 onChange={(e) => setDepartment(e.target.value)}
@@ -175,13 +184,13 @@ const Details = () => {
                                 <option value="Mechanical Engineering">MECH</option>
                                 <option value="Electronics And Telecommunication Engineering">EXTC</option>
                                 <option value="Electronics Engineering">ETRX</option>
-                                <option value="Electronics And Computer Engineering" hidden>EXCP</option>
+                                <option value="Electronics And Computer Engineering">EXCP</option>
                                 <option value="Robotics And Artificial Intelligence" hidden>RAI</option>
                                 <option value="Artificial Intelligence And Data Science" hidden>AIDS</option>
                                 <option value="Computer And Communication Engineering" hidden>CCE</option>
                             </select>
                         </div>
-                        <div className="flex-1 py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
+                        <div className="flex-1 py-3 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
                                 <label for="batch" className="text-lg lg:text-2xl font-bold text-gray-900 dark:text-black">Semester<span className="text-red-500">*</span></label>
                                 <select class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 name="sem"
@@ -196,7 +205,7 @@ const Details = () => {
                             </div>
                         </div>
                         <div className="flex flex-wrap justify-between">
-                            <div className="mr-4 flex-1 py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
+                            <div className="mr-4 flex-1 py-3 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
                                 <label for="division" className="text-lg lg:text-2xl font-bold text-gray-900 dark:text-black">Division<span className="text-red-500">*</span></label>
                                 <select
                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -211,7 +220,7 @@ const Details = () => {
                                     <option value="C">C</option>
                                 </select>
                             </div>
-                            <div className="flex-1 py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
+                            <div className="flex-1 py-3 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
                                 <label for="batch" className="text-lg lg:text-2xl font-bold text-gray-900 dark:text-black">Batch (Academic Year)<span className="text-red-500">*</span></label>
                                 <select
                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -229,20 +238,7 @@ const Details = () => {
                             </div>
                         </div>
 
-                        <div className="flex items-center mb-6 pb-14 relative">
-                            <span className="absolute left-0 w-full flex justify-center" style={{ top: '50%' }}>
-                                {/* <hr className="border-gray-300 dark:border-gray-600 w-1/3 mr-4" />
-                                <span className="text-gray-900 dark:text-white font-bold text-lg lg:text-2xl flex items-center">
-                                    <span className="flex-grow"></span>
-                                    Internship Details
-                                    <span className="flex-grow"></span>
-                                </span>
-                                <hr className="border-gray-300 dark:border-gray-600 w-1/3 ml-4" /> */}
-                                <hr className="border-gray-300 dark:border-gray-600 w-full" />
-                            </span>
-                        </div>
-
-                        <div class="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
+                        <div class="py-5 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
                             <label for="cname" class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-black">Company Name<span class="text-red-500">*</span></label>
                             <input class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 type="text"
@@ -254,7 +250,7 @@ const Details = () => {
                         </div>
                         <div className="flex flex-col lg:flex-row justify-between">
                             <div className="lg:w-1/2 mb-4 lg:mb-0 lg:pb-4">
-                                <div className="py-2 px-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
+                                <div className="py-5 px-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
                                     <label htmlFor="startdate" className="text-lg lg:text-2xl font-bold text-gray-900 dark:text-black">Start Date<span className="text-red-500">*</span></label>
                                     <input
                                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -267,7 +263,7 @@ const Details = () => {
                                 </div>
                             </div>
                             <div className="lg:w-1/2 mb-4 lg:mb-0 lg:ml-4 lg:pb-4">
-                                <div className="py-2 px-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
+                                <div className="py-5 px-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
                                     <label htmlFor="enddate" className="text-lg lg:text-2xl font-bold text-gray-900 dark:text-black">End Date<span className="text-red-500">*</span></label>
                                     <input
                                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -280,7 +276,7 @@ const Details = () => {
                                 </div>
                             </div>
                         </div>
-                        <div class="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
+                        <div class="py-5 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
                             <label for="cmentor" class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-black">Company Mentor<span class="text-red-500">*</span></label>
                             <input class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 type="text"
@@ -290,7 +286,17 @@ const Details = () => {
                                 required
                             />
                         </div>
-                        <div class="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
+                        <div class="py-5 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
+                            <label for="cmentor" class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-black">Company Mentor Email<span class="text-red-500">*</span></label>
+                            <input class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                type="email"
+                                name="mentoremail"
+                                value={mentoremail}
+                                onChange={(e) => setmentorEmail(e.target.value)}
+                                required
+                            />
+                        </div>
+                        <div class="py-5 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
                         <label for="jobtitle" class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-black">Job Title<span class="text-red-500">*</span></label>
                         <input class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 type="text"
@@ -300,7 +306,7 @@ const Details = () => {
                                 required
                             />
                         </div>
-                        <div class="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
+                        <div class="py-5 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
                             <label for="jobdesc" class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-black">Job Description<span class="text-red-500">*</span></label>
                             <textarea id="comment" rows="6" value={jobDescription}
                                 onChange={(e) => {setJobDescription(e.target.value);
@@ -311,7 +317,7 @@ const Details = () => {
                                 </textarea>
                                 <p>Character count: {charCount}/350</p>
                         </div>
-                        <div class="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
+                        <div class="py-5 px-4 mb-4 bg-white rounded-lg rounded-t-lg dark:bg-gray-400 dark:border-gray-700">
                             <label for="stipend" class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-black">Stipend  (Leave Empty if N/A)</label>
                             <input class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 type="number"
@@ -323,15 +329,24 @@ const Details = () => {
                             />
 
                         </div>
+
+                        
                         {showDataModal && (
                         <Alert
                         onConfirm={handleSubmit}
                         text={'Data Submission'}
                         onClosec={() => setshowDataModal(false)}
-
                         />)
                         }
-                        <button type="submit" className="text-white bg-red-400 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center mt-3" disabled={isSubmitting}>{isSubmitting ? 'Submitting...' : 'Submit Data'}</button>
+                      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center',     }}>
+                           <button 
+                              type="submit" 
+                              className="text-white bg-red-400 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center mt-3" 
+                              disabled={isSubmitting}
+  >
+                              {isSubmitting ? 'Submitting...' : 'Submit Data'}
+                           </button>
+                      </div>
                     </form>
                 </div>
             </div>
