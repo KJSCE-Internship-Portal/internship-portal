@@ -29,7 +29,7 @@ const coordinatorSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        required: false
+        default: "COORDINATOR"
     },
     sub_id: {
         type: String,

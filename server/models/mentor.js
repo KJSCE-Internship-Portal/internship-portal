@@ -27,6 +27,10 @@ const mentorSchema = new mongoose.Schema({
             message: "Email must be from @somaiya.edu domain"
         }
     },
+    role: {
+        type: String,
+        default: "MENTOR"
+    },
     sub_id: {
         type: String,
         required: [true, "sub_id is Required"],

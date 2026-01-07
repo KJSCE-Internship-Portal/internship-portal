@@ -10,10 +10,12 @@ const path = require('path');
 const router = require("./routes/router")
 const connectDB = require("./database/db");
 const cookieParser = require('cookie-parser');
+const corsOptions = require('./config/corsOptions');
 
 // Initiall Set Up
 app.use(express.json());
-app.use(cors());
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 app.use(cookieParser());
 app.use('/imgs', express.static(path.join(__dirname, 'imgs')));
 app.use("/api",router);
@@ -21,16 +23,16 @@ app.use("/api",router);
 // Connecting to Database
 connectDB()
 
-// var options = {
-//     key: fs.readFileSync('./_.somaiya.edu/server.key', 'utf-8').toString(),
-//     cert: fs.readFileSync('./_.somaiya.edu/c3976ebe92e975c9.crt', 'utf-8').toString(),
-//     ca: [fs.readFileSync('./_.somaiya.edu/ca1.crt', 'utf-8').toString(),fs.readFileSync('./_.somaiya.edu/ca2.crt', 'utf-8').toString(),fs.readFileSync('./_.somaiya.edu/ca3.crt', 'utf-8').toString()]
-//   };
+var options = {
+    key: fs.readFileSync('./_.somaiya.edu/server.key', 'utf-8').toString(),
+    cert: fs.readFileSync('./_.somaiya.edu/4140fabdf4d6d067.crt', 'utf-8').toString(),
+    ca: [fs.readFileSync('./_.somaiya.edu/ca1.crt', 'utf-8').toString(),fs.readFileSync('./_.somaiya.edu/ca2.crt', 'utf-8').toString(),fs.readFileSync('./_.somaiya.edu/ca3.crt', 'utf-8').toString()]
+  };
 
 const PORT = process.env.PORT || 5000;
 
-const httpServer = http.createServer(app);
+const httpsServer = https.createServer(options, app);
 
-httpServer.listen(PORT, (req, res) => {
+httpsServer.listen(PORT, (req, res) => {
     console.log(`Server running on Port ${PORT} with HTTPS`.yellow.bold);
 });

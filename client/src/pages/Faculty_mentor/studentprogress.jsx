@@ -85,9 +85,16 @@ const Week = () => {
   };
 
   const getEvaluationSheet = async (evaluation) => {
-    const pdfBuffer = (evaluation == 'ISE' ? isePdfBuffer.data : esePdfBuffer.data);
-    const uint8Array = new Uint8Array(pdfBuffer);
-    const blob = new Blob([uint8Array], { type: 'application/pdf' });
+    const base64 = (evaluation == 'ISE' ? isePdfBuffer : esePdfBuffer); // assume directly base64
+    const binaryString = atob(base64);
+    const len = binaryString.length;
+    const bytes = new Uint8Array(len);
+
+    for (let i = 0; i < len; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+
+    const blob = new Blob([bytes], { type: 'application/pdf' });
     const pdfUrl = URL.createObjectURL(blob);
     window.open(pdfUrl, '_blank');
   }

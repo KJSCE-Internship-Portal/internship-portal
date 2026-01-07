@@ -103,7 +103,7 @@ const AllStudentsInDepartment = () => {
             .get(url + `/students/all?department=${slugify(current_user.department)}&sort=-hasMentor,rollno`)
             .then(response => response.data);
           setStudentsNotHavingMentor(0);
-          console.log(fetched.data[0]);
+        //   console.log(fetched.data[0]);
           var complete_data = [];
           
           for (let z = 0; z < fetched.data.length; z++) {
@@ -164,7 +164,7 @@ const AllStudentsInDepartment = () => {
             var fetched = await axios
                 .post(url + `/coordinator/statistics`, { department: current_user.department })
                 .then(response => response.data);
-            console.log(fetched.data);
+            // console.log(fetched.data);
             setStudentsNotHavingMentor(0);
             return (
                 fetched.data

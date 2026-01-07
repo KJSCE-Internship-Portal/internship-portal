@@ -11,7 +11,7 @@ const ExcelDemo = () => {
     setPastedData(pastedText);
     const jsonData = parsePastedData(pastedText);
     if (jsonData) {
-      console.log('Parsed Data:', jsonData);
+      // console.log('Parsed Data:', jsonData);
     }
   };
 
@@ -27,7 +27,7 @@ const ExcelDemo = () => {
 
     
     
-    console.log(jsonData);
+    // console.log(jsonData);
     return jsonData;
   };
 

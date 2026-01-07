@@ -60,15 +60,15 @@ const RegisterCoord = () => {
 
     const handleAddCoord = async () => {
         if (validateEmail() && validateContactNo()) {
-            console.log(department);
+            // console.log(department);
             onClose();
             const current_user = await getUserDetails();
-            console.log(current_user);
+            // console.log(current_user);
             setUser(current_user)
             try {
 
                 const response = await axios.post(url + '/admin/add/coordinator', { name, email, contact_no: contactNo.toString(), department});
-                console.log(response.data)
+                // console.log(response.data)
                 if (response.data.success) {
                     showToast(toast, "Success", 'success', "Coordinator Registered Successfully");
                 } else {

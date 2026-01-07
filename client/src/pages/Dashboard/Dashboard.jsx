@@ -106,7 +106,7 @@ const Dashboard = () => {
           if (validationErrors.length === 0) {
             setCsvData(filteredData);
             setErrors([]);
-            console.log('Parsed Excel Data:', filteredData); // Log the parsed data to the console
+            // console.log('Parsed Excel Data:', filteredData); // Log the parsed data to the console
           } else {
             setErrors(validationErrors);
             console.error('Validation errors:', validationErrors); // Log validation errors to the console
@@ -227,14 +227,14 @@ const validateContactNo = () => {
 
 const handleAddCoord = async () => {
     if (validateEmail() && validateContactNo()) {
-        console.log(name, email, contactNo);
+        // console.log(name, email, contactNo);
         onClose();
         const current_user = await getUserDetails();
         setUser(current_user)
         try {
 
             const response = await axios.post(url + '/admin/add/coordinator', { name, email, contact_no: contactNo.toString(), department});
-            console.log(response.data)
+            // console.log(response.data)
             if (response.data.success) {
                 showToast(toast, "Success", 'success', "Coordinator Registered Successfully");
             } else {
@@ -587,7 +587,7 @@ const handleAddCoord = async () => {
                     </Box>
 
                      {/* New code  */}
-                     <Box>
+                     {/* <Box>
                               <div
                                 {...getRootProps()}
                                 className={`dropzone ${isDragActive ? 'active' : ''}`}
@@ -630,7 +630,7 @@ const handleAddCoord = async () => {
 
                                 <button onClick={downloadTemplate} style={{ width: '100%', height: '30px', marginTop: '20px', backgroundColor: '#b4f7ab', borderRadius: '15px' }}>Download Template</button>
 
-                      </Box>
+                      </Box> */}
                        {/* End  */}
 
                 </Stack>

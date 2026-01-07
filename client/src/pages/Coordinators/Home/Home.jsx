@@ -38,11 +38,11 @@ const HomePage = () => {
             } else {
                 var current_user = user;
             }
-            console.log(current_user.department);
+            // console.log(current_user.department);
             const temp = await axios
                 .get(url + `/mentors/all?department=${slugify(current_user.department)}`)
                 .then(response => response.data);
-            console.log(temp);
+            // console.log(temp);
             return (temp);
         }
     });

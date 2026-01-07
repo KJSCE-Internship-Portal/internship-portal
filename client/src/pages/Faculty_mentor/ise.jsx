@@ -102,7 +102,7 @@ const Progress = () => {
           ];
 
           const matchingEntry = percentageMarksTable.find(entry => percentageMarks >= entry.percentage);
-          setInteraction(matchingEntry.marks);
+        //   setInteraction(matchingEntry.marks);
 
     }
 

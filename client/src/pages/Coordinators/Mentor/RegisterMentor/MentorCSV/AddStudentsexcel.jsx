@@ -28,36 +28,36 @@ const AddStudentsexcel = () => {
     };
     fetchData();
   }, []);
-  
+
 
   const uploadExcel = async () => {
     try {
       const updatedData = await Promise.all(
         csvData.map(async (row) => {
           const { Student_email, Mentor_email } = row;
-  
+
           const studentCheck = await axios.post(url + '/coordinator/check-student', { email: Student_email });
           console.log(studentCheck);
           const isStudentRegistered = studentCheck.data.isRegistered;
-  
+
           const mentorCheck = await axios.post(url + '/coordinator/check-mentor', { email: Mentor_email });
           const isMentorRegistered = mentorCheck.data.isRegistered;
-  
+
           return {
             ...row,
             assignStatus: isStudentRegistered && isMentorRegistered ? 'assign' : 'skip',
           };
         })
       );
-  
+
       const dataToUpload = updatedData.filter((row) => row.assignStatus === 'assign');
-  
+
       if (dataToUpload.length > 0) {
         const response = await axios.post(url + '/coordinator/add-students-excel', {
           csvData: csvData,
           department: user.department,
         });
-  
+
         if (response.data.success) {
           showToast(toast, 'Success', 'success', response.data.msg);
         } else {
@@ -70,14 +70,14 @@ const AddStudentsexcel = () => {
       showToast(toast, 'Error', 'error', 'Something went wrong.');
     }
   };
-  
+
   const [mentorEmailError, setMentorEmailError] = useState(false);
   const [studentEmailError, setEmailError] = useState(false);
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@somaiya\.edu$/;
     if (!emailRegex.test(email)) {
-        return 'Invalid email format';
+      return 'Invalid email format';
     }
     return '';
   };
@@ -87,50 +87,50 @@ const AddStudentsexcel = () => {
     const mentorEmailError = validateEmail(mentor_email);
 
     if (studentEmailError || mentorEmailError || roll_no.length === 0) {
-        setEmailError(studentEmailError);
-        setMentorEmailError(mentorEmailError);
-        showToast(toast, 'Error', 'error', 'Provide valid email(s) and roll number');
-        return;
+      setEmailError(studentEmailError);
+      setMentorEmailError(mentorEmailError);
+      showToast(toast, 'Error', 'error', 'Provide valid email(s) and roll number');
+      return;
     }
 
     try {
-        let current_user;
-        if (!user) {
-            current_user = await getUserDetails();
-            setUser(current_user);
-        } else {
-            current_user = user;
-        }
+      let current_user;
+      if (!user) {
+        current_user = await getUserDetails();
+        setUser(current_user);
+      } else {
+        current_user = user;
+      }
 
-        const response = await axios.post(url + '/coordinator/mentor/assign-student', {
-            mentor_email,
-            rollno: roll_no.toString(),
-            student_email,
-            department: current_user.department,
-        });
+      const response = await axios.post(url + '/coordinator/mentor/assign-student', {
+        mentor_email,
+        rollno: roll_no.toString(),
+        student_email,
+        department: current_user.department || null,
+      });
     } catch (error) {
-        showToast(toast, 'Error', 'error', 'Something Went Wrong');
+      showToast(toast, 'Error', 'error', 'Something Went Wrong');
     }
-};
+  };
 
-  
+
 
   const downloadTemplate = async () => {
     try {
       const response = await axios.get(url + '/donload-student-template', {
         responseType: 'blob'
-      });  
+      });
       const blobUrl = window.URL.createObjectURL(new Blob([response.data]));
 
       const link = document.createElement('a');
       link.href = blobUrl;
-      link.setAttribute('download', 'faculty-upload-Student.xlsx'); 
+      link.setAttribute('download', 'faculty-upload-Student.xlsx');
 
-    
+
       document.body.appendChild(link);
       link.click();
 
-      
+
       link.parentNode.removeChild(link);
     } catch (error) {
       showToast(toast, "Error", 'error', "Something went Wrong");
@@ -139,7 +139,7 @@ const AddStudentsexcel = () => {
 
   const onDrop = useCallback((acceptedFiles) => {
     const file = acceptedFiles[0];
-    setSelectedFile(file); 
+    setSelectedFile(file);
 
     try {
       if (file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
@@ -173,26 +173,41 @@ const AddStudentsexcel = () => {
       if (validationErrors.length === 0) {
         setCsvData(filteredData);
         setErrors([]);
-        console.log('Parsed Excel Data:', filteredData); 
+        // console.log('Parsed Excel Data:', filteredData);
       } else {
         setErrors(validationErrors);
-        console.error('Validation errors:', validationErrors); 
+        console.error('Validation errors:', validationErrors);
       }
     };
     reader.readAsArrayBuffer(file);
   };
 
   const handelSubmit = (filteredData) => {
-    for(let i=0; i<filteredData.length; i++){
+    const processedEmails = new Set();
+    const processedRollNo = new Set();
+    for (let i = 0; i < filteredData.length; i++) {
+      const { Student_email, Mentor_email, roll_no } = filteredData[i];
+
+      // Skip if the email has already been processed
+      if (processedEmails.has(Student_email) || processedRollNo.has(roll_no)) {
+        console.log(`Skipping duplicate email: ${Student_email}`);
+        showToast(toast, 'Error', 'error', `Duplicate Email found for ${Student_email}`);
+        continue;
+      }
+
+      // Add the email to the processed set
+      processedEmails.add(Student_email);
+      processedRollNo.add(roll_no);
+      // Call the handleAddStudent function
       handleAddStudent({
-        student_email: filteredData[i].Student_email,
-        mentor_email: filteredData[i].Mentor_email,
-        roll_no: filteredData[i].roll_no,
-      }); 
+        student_email: Student_email,
+        mentor_email: Mentor_email,
+        roll_no: roll_no,
+      });
     }
     showToast(toast, 'Success', 'success', 'Student Assigned');
-    setTimeout(()=>{window.location.reload()},10);
-    console.log("Students added succes");
+    setTimeout(() => { window.location.reload() }, 1000); 
+    console.log("Students added successfully");
   }
 
   const filterColumns = (data) => {
@@ -243,7 +258,7 @@ const AddStudentsexcel = () => {
       };
     });
 
-  
+
     const validationErrors = [...uniqueErrors].map((errorString) => JSON.parse(errorString));
 
     return {
@@ -293,19 +308,19 @@ const AddStudentsexcel = () => {
 
       </div>
       {showDataModal && (
-                        <Alert
-                        onConfirm={uploadExcel}
-                        text={'Upload Excel'}
-                        onClosec={() => setshowDataModal(false)}
+        <Alert
+          onConfirm={uploadExcel}
+          text={'Upload Excel'}
+          onClosec={() => setshowDataModal(false)}
 
-                        />)
-                        }
+        />)
+      }
       {
         errors.length == 0 && (
-          <button onClick= {() => handelSubmit(csvData)} style={{ width: '100%', border: 'none', height: '30px', marginTop: '20px', backgroundColor: '#b4f7ab', borderRadius: '15px', border: 'solid 0.5px #555' }}>Upload Excel</button>
+          <button onClick={() => handelSubmit(csvData)} style={{ width: '100%', border: 'none', height: '30px', marginTop: '20px', backgroundColor: '#b4f7ab', borderRadius: '15px', border: 'solid 0.5px #555' }}>Upload Excel</button>
         )
       }
-      <button onClick={()=>downloadTemplate()} style={{ width: '100%', border: 'none', height: '30px', marginTop: '20px', backgroundColor: '#b4f7ab', borderRadius: '15px', border: 'solid 0.5px #555' }}>Download Template</button>
+      <button onClick={() => downloadTemplate()} style={{ width: '100%', border: 'none', height: '30px', marginTop: '20px', backgroundColor: '#b4f7ab', borderRadius: '15px', border: 'solid 0.5px #555' }}>Download Template</button>
     </div>
   );
 };

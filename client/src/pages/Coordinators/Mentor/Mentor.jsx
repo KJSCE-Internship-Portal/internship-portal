@@ -31,7 +31,8 @@ const getRandomLightColor = () => {
 const MentorPage = () => {
     const [DeleteModal, setDeleteModal] = useState(false);
     const [unassignModalState, setUnassignModalState] = useState({});
-    
+    const [unassignAllModal, setUnassignAllModal] = useState(false);
+
     const { theme: colors } = useTheme();
     const { id } = useParams();
     const toast = useToast();
@@ -53,12 +54,12 @@ const MentorPage = () => {
     };
 
     const unassignStudent = async (roll) => {
-        if (data && data.data[0].email){
+        if (data && data.data[0].email) {
             try {
-                const res = await axios.post(url + '/coordinator/mentor/remove-assigned-student', { rollno: roll, mentor_email: data.data[0].email  });
+                const res = await axios.post(url + '/coordinator/mentor/remove-assigned-student', { rollno: roll, mentor_email: data.data[0].email });
                 if (res.data.success) {
                     showToast(toast, 'Success', 'success', 'Student Unassigned');
-                    setTimeout(()=>{window.location.reload()},10);
+                    setTimeout(() => { window.location.reload() }, 10);
                     setUnassignModalState(false);
                 } else {
                     showToast(toast, 'Error', 'error', res.data.msg);
@@ -70,12 +71,29 @@ const MentorPage = () => {
     }
 
     const removeMentor = async () => {
-        if (data && data.data[0].email){
+        if (data && data.data[0].email) {
             try {
                 const res = await axios.post(url + '/remove/mentor', { email: data.data[0].email });
                 if (res.data.success) {
                     showToast(toast, 'Success', 'success', 'Mentor Deleted');
                     window.location.href = "/coordinator/home";
+                } else {
+                    showToast(toast, 'Error', 'error', res.data.msg);
+                }
+            } catch (error) {
+                showToast(toast, 'Error', 'error', 'Something Went Wrong');
+            }
+        }
+    }
+
+    const unassignAllStudents = async () => {
+        console.log(data.data[0].email);
+        if (data && data.data[0].email) {
+            try {
+                const res = await axios.post(url + '/coordinator/mentor/unassign-all', { mentor_email: data.data[0].email });
+                if (res.data.success) {
+                    showToast(toast, 'Success', 'success', 'All Students Unassigned');
+                    setTimeout(() => { window.location.reload() }, 1000); 
                 } else {
                     showToast(toast, 'Error', 'error', res.data.msg);
                 }
@@ -100,29 +118,28 @@ const MentorPage = () => {
     return (
 
         <div style={{ height: '100%', width: '100%', minHeight: '100%', maxWidth: '100%', maxHeight: '100%', overflowY: 'hidden', padding: 10 }}>
-
             <div>
-                <span style={{ float: 'right', display: 'block' }}>
-                {DeleteModal && (
-                                    <Alert
-                                    onConfirm={removeMentor}
-                                    text={'Remove Mentor'}
-                                    onClosec={() => setDeleteModal(false)}
-                                    />
-                        )}
+                <span style={{ float: 'right', display: 'block', marginRight: '15px' }}>
+                    {DeleteModal && (
+                        <Alert
+                            onConfirm={removeMentor}
+                            text={'Remove Mentor'}
+                            onClosec={() => setDeleteModal(false)}
+                        />
+                    )}
                     <Tooltip label='Delete Mentor Permanently' placement='left'>
-            
                         <Button
                             // isLoading
                             loadingText='Deleting'
                             variant='outline'
                             colorScheme='red'
-                            onClick={()=>setDeleteModal(true)}
+                            onClick={() => setDeleteModal(true)}
                         >
                             <DeleteIcon />
                         </Button>
                     </Tooltip>
                 </span>
+
                 <div>
                     <span style={{ height: '80px', width: '80px', margin: '5px 0 20px 15px' }} className={styles.studentAvatar}>
                         <img src={data.data[0].profile_picture_url} alt="No Profile Photo" />
@@ -135,8 +152,33 @@ const MentorPage = () => {
                     {(data.data[0].email)}
                 </h3>
             </div>
-
             <div className={styles.studentsListContainer}>
+                {
+                    data.data[0].students.length > 0 && (
+                        <>
+                            {
+                                unassignAllModal && (
+                                    <Alert
+                                        onConfirm={unassignAllStudents}
+                                        text={'Unassign All Students'}
+                                        onClosec={() => setUnassignAllModal(false)}
+                                    />
+                                )
+                            }
+                            <Tooltip label='Unassign All Students' placement='right'>
+                                <Button
+                                    loadingText='Unassigning'
+                                    variant='outline'
+                                    colorScheme='red'
+                                    onClick={() => setUnassignAllModal(true)}
+                                    className='absolute top-0 right-0 w-64 h-32'
+                                >
+                                    UNASSIGN ALL STUDENTS
+                                </Button>
+                            </Tooltip>
+                        </>
+                    )
+                }
                 {
                     data.data[0].students.length > 0 ? (
                         data.data[0].students.map((student, index) => (
@@ -147,7 +189,7 @@ const MentorPage = () => {
                                     </span>
                                 </div>
                                 <div className={styles.studentName}>{student.rollno}</div>
-                                {/* <div className={styles.studentName} style={{marginLeft:"50px", border: "1px solid black", padding: "5px"}} onClick={() => {unassignStudent(student.rollno)}}>UNASSIGN</div> */}            
+                                {/* <div className={styles.studentName} style={{marginLeft:"50px", border: "1px solid black", padding: "5px"}} onClick={() => {unassignStudent(student.rollno)}}>UNASSIGN</div> */}
                                 <div className={styles.studentName} style={{ marginLeft: "50px", padding: "5px" }}>
                                     <Button
                                         loadingText='Unassigning'
@@ -170,11 +212,11 @@ const MentorPage = () => {
                                         }))}
                                     />
                                 )}
-                                </div>
-                            ))
+                            </div>
+                        ))
                     ) : (
-                            <div style={{ color: colors.font, fontStyle: 'italic', fontSize: '20px', height: '200px', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>No Students Allocated</div>
-                        )
+                        <div style={{ color: colors.font, fontStyle: 'italic', fontSize: '20px', height: '200px', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>No Students Allocated</div>
+                    )
                 }
 
             </div>

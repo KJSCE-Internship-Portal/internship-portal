@@ -13,7 +13,7 @@ export const logout = async () => {
         window.location.assign(url + '/logout');
         // window.location.reload();
     } catch (error) {
-        console.log("Could not Logout !");
+         console.log("Could not Logout !");
     }   
     
 }

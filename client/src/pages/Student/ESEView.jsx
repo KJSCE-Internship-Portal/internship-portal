@@ -17,7 +17,7 @@ const View = () => {
             const user = data.data.msg._doc;
             return user;
         } catch (error) {
-            console.log(error);
+            console.log('Error occurred while submitting data:', error);
             localStorage.removeItem('IMPaccessToken');
         }
     }
@@ -42,7 +42,7 @@ const View = () => {
         <section class={`bg-${colors.secondary} py-8 lg:py-16 antialiased min-h-screen`}>
         <div class="max-w-2xl mx-auto px-4">
         <div class="flex justify-between items-center mb-8">
-            <h2 class={`text-xl lg:text-3xl font-bold text-${colors.font}`}>ESE Work Done:</h2>
+            <h2 class={`text-xl lg:text-3xl font-bold text-${colors.font}`}>ESE Work Done Summary:</h2>
         </div>
         <div class="flex justify-between items-center mb-3">
             <h2 class={`text-lg lg:text-2xl font-bold text-${colors.font}`}>Work Done:</h2>

@@ -24,6 +24,7 @@ import {
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { url, c_url } from '../../Global/URL';
+axios.defaults.withCredentials = true;
 
 const FramePage = () => {
   const { theme: colors } = useTheme();
@@ -39,6 +40,7 @@ const FramePage = () => {
 
   const getUser = async () => {
     try {
+      console.log("accessToken", accessToken);
       const data = await axios.post(url + "/anyuser", { accessToken });
       const user = data.data.msg._doc;
       return user;
@@ -427,7 +429,7 @@ const FramePage = () => {
                   >
                     <div className="flex flex-col gap-1 items-start justify-start p-2 w-full">
                       <text className={`text-${colors.font} font-semibold text-md w-full`} size="txtRobotoRegular12Black900">
-                        ISE Work Done
+                        ISE Work Done Summary
                       </text>
                     </div>
                   </button>
@@ -439,7 +441,7 @@ const FramePage = () => {
                   >
                     <div className="flex flex-col gap-1 items-start justify-start p-2 w-full">
                       <text className={`text-${colors.font} font-semibold text-md w-full`} size="txtRobotoRegular12Black900">
-                        ESE Work Done
+                        ESE Work Done Summary
                       </text>
                     </div>
                   </button>

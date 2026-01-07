@@ -176,9 +176,7 @@ const deslugify = (slug) => {
 };
 
 const getAllStudents = async (req, res) => {
-
     try {
-
         const reqQuery = { ...req.query };
         if (reqQuery.department){
             reqQuery.department = deslugify(reqQuery.department);
@@ -188,8 +186,29 @@ const getAllStudents = async (req, res) => {
 
         let queryStr = JSON.stringify(reqQuery);
         queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
-        query = Student.find(JSON.parse(queryStr));
+        
+        // Add error handling for JSON parsing
+        let parsedQuery;
+        try {
+            parsedQuery = JSON.parse(queryStr);
+        } catch (parseError) {
+            console.error('Error parsing query string:', parseError);
+            return res.status(400).json({ success: false, msg: 'Invalid query parameters' });
+        }
+        
+        let query = Student.find(parsedQuery);
 
+        // Add pagination with limits to prevent oversized responses
+        const page = parseInt(req.query.page, 10) || 1;
+        const limit = parseInt(req.query.limit, 10) || 500; // Reduced from 100000 to a more reasonable number
+        const startIndex = (page - 1) * limit;
+        
+        query = query.skip(startIndex).limit(limit);
+        
+        // Get count separately with a limit
+        const total = await Student.countDocuments(parsedQuery);
+        
+        // Add projection to limit fields if needed
         if (req.query.select) {
             const fields = req.query.select.split(',').join(' ');
             query = query.select(fields);
@@ -199,39 +218,36 @@ const getAllStudents = async (req, res) => {
             const sortBy = req.query.sort.split(',').join(' ');
             query = query.sort(sortBy);
         }
-
-        const page = parseInt(req.query.page, 10) || 1;
-        const limit = parseInt(req.query.limit, 10) || 100000;
-        const startIndex = (page - 1) * limit;
+        
+        // Calculate pagination
         const endIndex = page * limit;
-        const total = await Student.countDocuments(query);
-
-        query = query.skip(startIndex).limit(limit);
         const pagination = {};
         if (endIndex < total) {
             pagination.next = {
                 page: page + 1,
                 limit
-            }
+            };
         }
         if (startIndex > 0) {
             pagination.prev = {
                 page: page - 1,
                 limit
-            }
+            };
         }
 
-        const student = await query;
-        if (!student) {
-            return res.status(401).json({ success: false, msg: "There are no Students" });
-        }
-        return res.status(200).json({ success: true, count: total, pagination, data: student });
+        const students = await query.lean(); // Using lean() for better performance
+        
+        return res.status(200).json({ 
+            success: true, 
+            count: total, 
+            pagination, 
+            data: students 
+        });
 
     } catch (error) {
-        console.log(`${error.message} (error)`.red);
+        console.error(`Error in getAllStudents: ${error.message}`, error);
         return res.status(400).json({ success: false, msg: error.message });
     }
-
 };
 
 const getOneStudent = async (req, res) => {
@@ -276,10 +292,19 @@ const approveStudent = async (req, res) => {
                     res.status(400).json({ success: false, msg: `Something Went Wrong ${error.message}` });
                 }
             } else {
-                const rejectedStudent = await Student.findOneAndDelete(
+                const rejectedStudent = await Student.findOneAndUpdate(
                     {
                     sub_id
                     },
+                    {
+                    $set: {
+                        'isApproved': false,
+                        'hasMentor' : false,
+                    },
+                    },
+                    {
+                    new: true,
+                    }
                 );
                 const updatedMentor = await Mentor.findOneAndUpdate(
                     {email},

@@ -44,11 +44,11 @@ export default function StudentNotification() {
       else {
         var user = currentUser;
       }
-      console.log(user);
+      // console.log(user);
       if (user.role == 'ADMIN') {
         setCanPost(true);
         const res = await axios.get(`${url}/announcements/all?page=${page}&limit=5&sort=-postedAt`);
-        console.log(res);
+        // console.log(res);
         setNotifications(res.data.data);
         setTotalPages(Math.min(Math.ceil(res.data.count / 5), 30));
       }
@@ -65,7 +65,7 @@ export default function StudentNotification() {
       }
 
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       localStorage.removeItem('IMPaccessToken');
     } finally {
       setLoading(false);

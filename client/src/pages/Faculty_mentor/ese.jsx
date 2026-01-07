@@ -100,7 +100,7 @@ const Progress = () => {
           ];
 
           const matchingEntry = percentageMarksTable.find(entry => percentageMarks >= entry.percentage);
-          setInteraction(matchingEntry.marks);
+        //   setInteraction(matchingEntry.marks);
 
     }
 
@@ -136,11 +136,27 @@ const Progress = () => {
     }
 
     const getEvaluationSheet = async () => {
-        const uint8Array = new Uint8Array(pdfBuffer.data);
-        const blob = new Blob([uint8Array], { type: 'application/pdf' });
-        const pdfUrl = URL.createObjectURL(blob);
-        window.open(pdfUrl, '_blank');
-    }
+        try {
+            // Decode base64 string to binary data
+            const binaryString = atob(pdfBuffer); // Decode base64 string
+            const len = binaryString.length;
+            const bytes = new Uint8Array(len);
+    
+            for (let i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+    
+            // Create a Blob from the binary data
+            const blob = new Blob([bytes], { type: 'application/pdf' });
+    
+            // Create a URL for the PDF blob and open it
+            const pdfUrl = URL.createObjectURL(blob);
+            window.open(pdfUrl, '_blank');
+        } catch (error) {
+            console.error('Failed to open PDF:', error);
+        }
+    };
+    
 
     const fetchData = async () => {
         try {
@@ -159,11 +175,16 @@ const Progress = () => {
             const buffer = calculateWeeks(student.internships[0].startDate, buffer_date);
             calcPeriodicMarks(filteredProgress, buffer);
             // calcPeriodicMarks(student.internships[0].progress);
-            if (student.internships[0].evaluation[1].pdf_buffer.data.length != 0) {
+            if (student.internships[0].evaluation[1].pdf_buffer.trim() === ''){
+                setToFill(true)
+            }
+            else {
                 setToFill(false);
             }
-            if (student?.internships?.[0]?.evaluation?.[1]?.pdf_buffer !== undefined) {
-                setPdfBuffer(student.internships[0].evaluation[1].pdf_buffer);
+            console.log("")
+            if (student?.internships?.[0]?.evaluation?.[1]?.pdf_buffer.trim() !== '') {
+                console.log("THIS IS BUFFERERERERER: ", student.internships[0].evaluation[1].pdf_buffer.trim())
+                setPdfBuffer(student.internships[0].evaluation[1].pdf_buffer.trim());
             }
             setDepartment(student.department);
             setRollNo(student.rollno);

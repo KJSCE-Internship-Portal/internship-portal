@@ -21,10 +21,25 @@ const handleLoginRequest = async (req, res) => {
         );
 
         const refreshToken = req.cookies?.refreshToken;
+      
 
         if (refreshToken) {
-            const accessToken = await handleRefreshLogin(refreshToken);
-            const redirectURL = `${process.env.CLIENT_URL}/redirection/${accessToken}`;
+            const payload1 = await handleRefreshLogin(refreshToken);
+            const redirectURL = `${process.env.CLIENT_URL}/redirection/${payload1["accessToken"]}`;
+            // const newpayload = {
+            //     email: payload1["email"],  // Assign 'email' as the key
+            //     role: payload1["role"],   // Assign 'role' as the key
+            // };
+
+            // const oaccessToken = await generateTokens(newpayload);
+            // res.cookie("oaccessToken", oaccessToken, {
+            //     path: '/',
+            //     maxAge: 60 * 30 * 1000,
+            //     httpOnly: true,
+            //     secure:false ,
+               
+            // });
+
             return res.redirect(redirectURL);
         }
 
@@ -42,6 +57,12 @@ const handleLoginRequest = async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 };
+
+async function generateTokens(payload) {
+    const accessToken = jwt.sign(payload, process.env.SECRET_JWT_KEY, { expiresIn: '30m' });
+    return  accessToken;
+};
+
 
 const callbackCheck = async (req, res) => {
     const code = req.query.code;
@@ -140,12 +161,27 @@ const callbackCheck = async (req, res) => {
                     const redirectURL = `${process.env.CLIENT_URL}/login`;
                     return res.redirect(redirectURL);
                 }
-                res.cookie("refreshToken", refreshToken, {
+                const payload ={
+                    role: updatedUser.role,
+                    email: updatedUser.email,
+                }
+                const oaccessToken = await generateTokens(payload);
+
+                res.cookie("oaccessToken", oaccessToken, {
                     path: '/',
-                    maxAge: 60 * 60 * 24 * 30 * 1000,
+                    maxAge: 60 * 60 * 24 * 1000,
+                    httpOnly: true,
+                    secure:false,
+                   
+                });
+                
+                res.cookie("grefreshToken", refreshToken, {
+                    path: '/',
+                    maxAge: 60 * 60 * 24 * 1000,
                     httpOnly: true,
                     secure: false,
                     overwrite: true,
+                    
                 });
 
                 const redirectURL = `${process.env.CLIENT_URL}/redirection/${accessToken}`;

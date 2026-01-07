@@ -68,7 +68,7 @@ const Work = () => {
         <section class={`bg-${colors.secondary} py-8 lg:py-16 antialiased min-h-screen`}>
         <div class="max-w-2xl mx-auto px-4">
         <div class="flex justify-between items-center mb-8">
-            <h2 class={`text-xl lg:text-3xl font-bold text-${colors.font}`}>ISE Work Done:</h2>
+            <h2 class={`text-xl lg:text-3xl font-bold text-${colors.font}`}>ISE Work Done Summary:</h2>
         </div>
         <form class="mb-6">
             <div class="flex justify-between items-center mb-3">

@@ -82,7 +82,7 @@ const AssignStudent = ({ mentor_sub_id, mentor_email }) => {
             else {
                 stu = listOfStudents;
             }
-            console.log(stu)
+            // console.log(stu)
         } catch (error) {
             console.log(error)
         }
@@ -102,9 +102,9 @@ const AssignStudent = ({ mentor_sub_id, mentor_email }) => {
                     mentor_email,
                     rollno: rollNo.toString(),
                     student_email: email,
-                    department: current_user.department,
+                    department: current_user.department || null,
                 });
-                console.log(response.data);
+                // console.log(response.data);
                 if (response.data.success) {
                     showToast(toast, 'Success', 'success', 'Student Assigned');
                     setEmail('');
