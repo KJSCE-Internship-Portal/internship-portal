@@ -1,0 +1,136 @@
+@import url("https://fonts.googleapis.com/css?family=Oswald:400,700");
+
+* {
+  font-family: "Oswald";
+  transition: 100ms all ease-in-out;
+  box-sizing: border-box;
+}
+
+.app {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.card {
+  width: 100%;
+  .card-header {
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    top: -75px;
+    flex-direction: column;
+
+    @media (min-width: 601px) {
+      max-width: 960px;
+      flex-direction: row;
+    }
+  }
+
+  .card-main {
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    background-color: white;
+    padding: 20px 10px;
+    flex-direction: column;
+    position: relative;
+    top: -50px;
+
+    @media (min-width: 601px) {
+      width: 100%;
+      max-width: 960px;
+      padding: 10px 30px;
+    }
+  }
+}
+
+.hello {
+  display: flex;
+  align-items: center;
+  margin-left: 5%;
+  img {
+    display: none; // Hide the image
+  }
+}
+
+.heading-box {
+  width: 100%;
+  min-width: 270px;
+  padding-left: 2%;
+  h1 {
+    font-size: 3em;
+    top: -30px;
+    margin: 0;
+    margin-bottom: 5px;
+    color: black;
+  }
+  h3 {
+    font-weight: 2em;
+    color: #666666;
+    top: -10px;
+    font-weight: normal;
+    margin: 0;
+    margin-top: 5%;
+  }
+}
+
+.button-box {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-top: 5%;
+  flex-direction: row;
+
+  @media (min-width: 601px) {
+    width: 30%;
+    justify-content: flex-end;
+    padding-right: 5%;
+    padding-top: 0;
+  }
+}
+
+
+
+  
+.activity {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    padding: 10px;
+    width: 100%;
+    border-bottom: 1px solid #eee;
+  
+    .activity-name {
+      margin-right: 5px; // Smaller space between label and value
+      font-weight: bold; // Make the label bold
+      color: #333; // Darker text for better readability
+    }
+  
+    .index {
+      margin-left: 5px; // Space after label, before value
+      color: #555; // Slightly lighter text for the value
+    }
+  
+    &:hover {
+      background-color: black;
+      color: white;
+      cursor: pointer;
+  
+      .activity-name,
+      .index {
+        color: white; // Ensures text color changes on hover
+      }
+  
+      .material-icons {
+        color: white; // Ensures icon color changes on hover
+      }
+    }
+  }
+  
